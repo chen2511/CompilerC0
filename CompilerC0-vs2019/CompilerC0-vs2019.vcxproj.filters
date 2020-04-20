@@ -21,12 +21,18 @@
     <ClCompile Include="scan.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="parser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scan.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="global.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

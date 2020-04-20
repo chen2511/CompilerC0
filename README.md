@@ -1,20 +1,30 @@
 # CompilerC0
 
+>   考虑到有些图片等内容显示不全，有pdf文档
+>
+>   github地址：https://github.com/chen2511/CompilerC0
+
 [TOC]
 
 ## 零、文件说明
 
->   global.h：全局数据结构、全局变量
->
->   scan.h：局部数据结构、外部调用函数
->
->   scan.cpp：内部函数
+-   global.h：全局数据结构、全局变量
+
+-   scan.h：词法分析关键函数声明
+
+-   scan.cpp：词法分析实现
+-   parser.cpp：语法分析：递归下降分析
+-   parser.h：语法分析关键函数声明
+
+
+
+### 统计信息
 
 
 
 ## 一、词法分析：
 
->   理论来自louden书和慕课
+>   理论来自louden书和哈工大慕课、ppt和曾老师的课堂
 
 >   文件：scan.h;scan.cpp
 
@@ -117,7 +127,7 @@ typedef enum {
 
 
 
-### DFA编程实现
+### DFA编程思想
 
 >   来自louden书的思路
 
@@ -213,11 +223,14 @@ typedef enum {
 
 ### 2.1 文法改造
 
+>   这一部分 花了大量时间，需要验证文法的可行性；以及编程的可行性
+
 #### 二义性
 
 -   if else
-
 -   表达式
+
+>   解决办法：改造文法和EBNF
 
 >   未发现其他二义性的地方
 
@@ -241,7 +254,7 @@ typedef enum {
 
 
 
-#### 使用EBNF
+#### EBNF
 
 EBNF更适合递归下降分析法
 
@@ -251,15 +264,19 @@ EBNF更适合递归下降分析法
 
 
 
-### 2.2 编程实现
+### 2.2 编程思想
 
 #### 基本方法
 
 ![image-20200419225239669](README.assets/image-20200419225239669.png)
 
-
+>   case选择不同的，遇到终结符，就match；非终结符就调用函数
 
 #### 重复和选择：使用EBNF
+
+>   这里面的判断条件是根据 first集的 或者 空语句的时候，就要follow集
+>
+>   总之就是一个要求：根据当前token，进入一个确定的分支，没有回溯
 
 ##### 可选结构
 
@@ -277,27 +294,78 @@ EBNF更适合递归下降分析法
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### 2.3 数据结构
 
+#### AST
+
+未打算使用抽象语法树，因为发现可以不使用抽象语法树，直接转IR（三地址码等），可能建立起来还会多此一举；而且考虑到未发现统一的语法树结构定义，而且文法不同，也要做出改变。
+
+但可能不直观，不知道分析结果。所以调试代码的时候，只能写一部分代码，然后进行针对性的单元测试。
+
+
+
+#### 回溯指针
+
+```c++
+static int flashBackIndex;
+```
+
+
+
+### 2.4 关键函数
+
+```c++
+// 匹配 期待的 token；否则报错
+// 读取下一个token
+static void match(TokenType expectToken)
+```
+
+#### 非终结符过程
+
+```c++
+//为每一个非终结符创建一个函数
+void program();
+
+void constDeclaration();
+void constDefine();
+void varDeclaration();
+void varDefine();
+void typeID();
+void functionDefinitionWithReturn();
+void DeclarationHead();
+void functionDefinitionWithoutReturn();
+void paraTable();
+void complexSentense();
+void mainFunction();
+
+void signedNum();
+
+void statementSequence();
+void statement();
+void assignStatement();
+void ifStatement();
+void loopStatement();
+void callWithReturn();
+void callWithoutReturn();
+void valueParaTable();
+void readStatement();
+void writeStatement();
+void returnStatement();
+
+void exp();
+void term();
+void factor();
+void boolExp();
+void boolTerm();
+void boolFactor();
+void conditionFactor();
+```
 
 
 
 
-### 2.4 注意问题
+
+### 2.5 注意问题
 
 #### 1、公共因子
 
@@ -307,8 +375,31 @@ EBNF更适合递归下降分析法
 
 这一部分为了 文法上的简便，没有进行公共因子的提取；
 
-选择类似LL(n)的方法。。。。。一次性往后看好多
-
-
+选择类似LL(n)的方法，一次性往后看好多
 
 分三段，设flag
+
+
+
+#### 2、单元测试
+
+-   常、变量说明
+
+类型测试、多条语句测试、是否函数定义测试
+
+-   函数定义（语句列为空）
+
+函数定义选择测试、结构测试、参数表、复合语句测试（实际上空语句）
+
+-   语句列、语句
+-   表达式：算术、布尔
+
+#### 3、错误处理
+
+![image-20200421011557996](README.assets/image-20200421011557996.png)
+
+发现：
+
+要是少了一些token，继续往下匹配，还能成功继续；（token不动，分析继续）
+
+但是有时候，比如int写成in，有时候死活下不去

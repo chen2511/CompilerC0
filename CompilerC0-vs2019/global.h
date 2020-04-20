@@ -18,9 +18,9 @@ typedef enum {
     PLUS, MINU, MULT, DIV,                      //18-21:+ - * /
     AND, OR, NOT,                               //22-24:&& || !
     LSS, LEQ, GRE, GEQ, NEQ, EQL,               //25-30关系运算符: < <= > >= != ==
-    ASSIGN, COLON, COMMA, SEMICOLON,            //31-34: =  :  ,  ;
-    LBRACE, RBRACE, LBRACKET, RBRACKET,         //35-38:{ } [ ]
-    LPARENTHES, RPARENTHES,                     //39-40:( )                                         
+    ASSIGN, COMMA, SEMICOLON,                   //31-33: =  ,  ;
+    LBRACE, RBRACE, LBRACKET, RBRACKET,         //34-37:{ } [ ]
+    LPARENTHES, RPARENTHES,                     //38-39:( )                                         
 }TokenType;
 
 //Token:枚举类型TokenType、值string value
@@ -33,8 +33,13 @@ typedef struct {
 extern FILE* sourceFile;
 //行号
 extern int g_lineNumber;
+//在buf中的指针；
+extern int g_lexBegin;
+//forward 指向下一个将要读取的字符；lexBegin表示该token开始的位置
+extern int g_forward;
+
 //token
-extern Token token;
+extern Token g_token;
 //是否到达文件末尾
 extern bool EOF_flag;
 

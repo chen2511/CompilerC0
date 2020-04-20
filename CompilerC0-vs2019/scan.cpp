@@ -6,10 +6,9 @@ using namespace std;
 
 //在识别出标识符之后，验证是否关键字
 const char* reservedWords[] = {
-    "case", "char", "const", "default", "else",
-    "false", "for", "if", "int", "main",
-    "printf", "return", "scanf", "switch", "true",
-    "void", "while"
+    "char", "const",  "else", "false", "for", 
+    "if", "int", "main", "printf", "return", 
+    "scanf", "true", "void", "while"
 };
 
 //缓冲数组
@@ -41,16 +40,16 @@ void copyValue(string tmpstr)
     int i;
     int len = tmpstr.length();
     for (i = 0; i < tmpstr.length(); i++)
-        token.value[i] = tmpstr.at(i);
-    token.value[i] = '\0';
+        g_token.value[i] = tmpstr.at(i);
+    g_token.value[i] = '\0';
 }
 
 //查看是否为关键字，若是，改变token Type
 void compareWithKeyWord()
 {
     for (int i = 0; i < RESERVEDWORD_NUM; i++) {
-        if (0 == strcmp(token.value, reservedWords[i])) {
-            token.opType = (TokenType)i;
+        if (0 == strcmp(g_token.value, reservedWords[i])) {
+            g_token.opType = (TokenType)i;
             break;
         }
     }
@@ -61,6 +60,8 @@ void getNextToken() {
     string tmpstr;
     char ch;
     StateType state = STATE_START;
+
+    g_lexBegin = g_forward;
 
     while (STATE_DONE != state) {
         ch = getNextChar();
@@ -74,7 +75,7 @@ void getNextToken() {
                 if ('0' == ch) {
                     state = STATE_DONE;
                     tmpstr += ch;
-                    token.opType = TokenType::NUM;
+                    g_token.opType = TokenType::NUM;
                 }
                 else {
                     state = STATE_NUM;
@@ -96,21 +97,21 @@ void getNextToken() {
                 tmpstr += ch;
                 switch (ch) {
                 case '+':                       // +
-                    token.opType = TokenType::PLUS;
+                    g_token.opType = TokenType::PLUS;
                     break;
                 case '-':                       // -
-                    token.opType = TokenType::MINU;
+                    g_token.opType = TokenType::MINU;
                     break;
                 case '*':                       // *
-                    token.opType = TokenType::MULT;
+                    g_token.opType = TokenType::MULT;
                     break;
                 case '/':                       // /
-                    token.opType = TokenType::DIV;
+                    g_token.opType = TokenType::DIV;
                     break;
                 case '&':                       // &&
                     ch = getNextChar();
                     if ('&' == ch) {
-                        token.opType = TokenType::AND;
+                        g_token.opType = TokenType::AND;
                         tmpstr += ch;
                     }
                     else {
@@ -120,7 +121,7 @@ void getNextToken() {
                 case '|':                       //||
                     ch = getNextChar();
                     if ('|' == ch) {
-                        token.opType = TokenType::OR;
+                        g_token.opType = TokenType::OR;
                         tmpstr += ch;
                     }
                     else {
@@ -130,73 +131,70 @@ void getNextToken() {
                 case '!':                       // ! !=
                     ch = getNextChar();
                     if ('=' == ch) {
-                        token.opType = TokenType::NEQ;
+                        g_token.opType = TokenType::NEQ;
                         tmpstr += ch;
                     }
                     else {
                         backSpace();
-                        token.opType = TokenType::NOT;
+                        g_token.opType = TokenType::NOT;
                     }
                     break;
                 case '<':                       // < <=
                     ch = getNextChar();
                     if ('=' == ch) {
-                        token.opType = TokenType::LEQ;
+                        g_token.opType = TokenType::LEQ;
                         tmpstr += ch;
                     }
                     else {
                         backSpace();
-                        token.opType = TokenType::LSS;
+                        g_token.opType = TokenType::LSS;
                     }
                     break;
                 case '>':                       // > >=
                     ch = getNextChar();
                     if ('=' == ch) {
-                        token.opType = TokenType::GEQ;
+                        g_token.opType = TokenType::GEQ;
                         tmpstr += ch;
                     }
                     else {
                         backSpace();
-                        token.opType = TokenType::GRE;
+                        g_token.opType = TokenType::GRE;
                     }
                     break;
                 case '=':                       // = ==
                     ch = getNextChar();
                     if ('=' == ch) {
-                        token.opType = TokenType::EQL;
+                        g_token.opType = TokenType::EQL;
                         tmpstr += ch;
                     }
                     else {
                         backSpace();
-                        token.opType = TokenType::ASSIGN;
+                        g_token.opType = TokenType::ASSIGN;
                     }
                     break;
-                case ':':                       // :
-                    token.opType = TokenType::COLON;
-                    break;
                 case ',':
-                    token.opType = TokenType::COMMA;
+                    g_token.opType = TokenType::COMMA;
                     break;
                 case ';':
-                    token.opType = TokenType::SEMICOLON;
+                    g_token.opType = TokenType::SEMICOLON;
                     break;
                 case '{':
-                    token.opType = TokenType::LBRACE;
+                    g_token.opType = TokenType::LBRACE;
                     break;
                 case '}':
-                    token.opType = TokenType::RBRACE;
+                    g_token.opType = TokenType::RBRACE;
                     break;
                 case '[':
-                    token.opType = TokenType::LBRACKET;
+                    g_token.opType = TokenType::LBRACKET;
                     break;
                 case ']':
-                    token.opType = TokenType::RBRACKET;
+                    g_token.opType = TokenType::RBRACKET;
                     break;
                 case '(':
-                    token.opType = TokenType::LPARENTHES;
+                    g_token.opType = TokenType::LPARENTHES;
                     break;
                 case ')':
-                    token.opType = TokenType::RPARENTHES;
+                    g_token.opType = TokenType::RPARENTHES;
                     break;
                 }
             }
@@ -212,6 +210,8 @@ void getNextToken() {
 
             ch = getNextChar();
             state = STATE_DONE;
+            // 有一处bug，下面这句忘记加了。。。
+            g_token.opType = TokenType::LETTER;
             if ('\'' != ch) {
                 backSpace();
                 cout << "lex error:not '\n";
@@ -226,7 +226,7 @@ void getNextToken() {
             else {
                 state = STATE_DONE;
                 backSpace();
-                token.opType = TokenType::IDEN;
+                g_token.opType = TokenType::IDEN;
 
             }
             break;
@@ -238,14 +238,14 @@ void getNextToken() {
             else {
                 state = STATE_DONE;
                 backSpace();
-                token.opType = TokenType::NUM;
+                g_token.opType = TokenType::NUM;
             }
             break;
 
         case STATE_STRING:
             if ('"' == ch) {
                 state = STATE_DONE;
-                token.opType = TokenType::STRING;
+                g_token.opType = TokenType::STRING;
             }
             else if (32 <= ch && 126 >= ch) {
                 tmpstr += ch;
@@ -259,16 +259,16 @@ void getNextToken() {
             break;
         }
     }
-    if (TokenType::IDEN == token.opType) {             //查询关键字表
+    if (TokenType::IDEN == g_token.opType) {             //查询关键字表
 
     }
 
     copyValue(tmpstr);
-
-    compareWithKeyWord();
+    if (g_token.opType == TokenType::IDEN) {
+        compareWithKeyWord();
+    }
+    
 }
-
-
 
 //返回下一个字符
 char getNextChar() {
@@ -279,6 +279,9 @@ char getNextChar() {
             //成功读取
             g_bufSize = strlen(g_lineBuf);
             g_forward = 0;
+
+            //之前这里忘记设为0了
+            g_lexBegin = 0;
         }
         else {
             //文件结尾

@@ -1,13 +1,35 @@
-const int g_cc;
+const int a = 22;
+const int b = -22, c = 0;
+const char d = 'z', e = 'x';
 
-int g_bb;
+int g_bb, g_a;
+char g_cc[0], g_cd[5];
+int aaaa;
 
+void null(){
 
-int cmp(){
-	return 33;
 }
 
-void cmp2(){
+int cmp(int a, char b){
+	const int a = 1, b = 2;
+	const int a = 2;
+	const char c = '2', d = '3';
+	const char c = '4';
+
+
+	int a,b;
+	int c;
+	char c;
+	char a,b;
+}
+
+void f_1(int c, int d){
+	int c;
+
+}
+
+void main(){
+
 
 }
 
