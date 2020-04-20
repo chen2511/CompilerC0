@@ -1,0 +1,25 @@
+const int g_cc;
+
+int g_bb;
+
+
+int cmp(){
+	return 33;
+}
+
+void cmp2(){
+
+}
+
+void main()
+{
+	int ab = 0;
+	int _cc = 9995;
+	char mccc = 'c';
+	if(a == b){
+		printf("aaaaaa");
+	}
+	while(true){
+		a = b;
+	}
+}
