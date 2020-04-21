@@ -45,18 +45,22 @@ void main()
 	char c;
 	char a,b;
 
-	if(){
+
+	a = f_2 * 55 * ( -1 + arr[2] - 'g' ) + callfunction();
+
+
+	if( ( true )&& ! false && true || 88 <= '8' && fun1 != 22){
 		printf("aaaaaa");
 	}
-	while(){
+	while(true){
 		;
 	}
 
-	a=;
-	arr[]=;
+	a=88;
+	arr[2]=33;
 
-	if()
-	if(){
+	if(false)
+	if(true){
 	
 	}
 	else{
@@ -64,23 +68,24 @@ void main()
 	}
 
 
-	while(){
-	
+	while(! false ){
+		printf(3 * a);
+		printf();
 	
 	}
 
-	for(a=; ; b=)
+	for(a=1; a == b; b=3)
 		;
 
 	f_a();
-	f_b(,,);
+	f_b(8*6,2,a);
 
 	scanf(a);
 	scanf(b,c);
 
-	printf("aaaa11",);
+	printf("aaaa11",a);
 	printf("aaaa11");
-	printf();
+	printf(acc);
 
 	return ;
 }

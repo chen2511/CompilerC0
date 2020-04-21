@@ -542,11 +542,6 @@ void statement() {
 		// error
 		printf("error in statement() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
-
-
-
-
-
 }
 
 
@@ -608,7 +603,12 @@ void forLoopStatement() {
 //30. < 有返回值的函数调用语句 > :: = <标识符>‘(’<值参数表>‘)’
 // 表达式中用此函数
 void callWithReturn() {
-
+	match(TokenType::IDEN);
+	match(TokenType::LPARENTHES);
+	if (TokenType::RPARENTHES != g_token.opType) {
+		valueParaTable();
+	}
+	match(TokenType::RPARENTHES);
 }
 
 
@@ -683,41 +683,226 @@ void returnStatement() {
 	}
 }
 
+
+/************************  以上：语法分析第三次测试内容  ***********************/
+
 //36. < 算术表达式 > :: = ［＋｜－］<项>{ <加法运算符><项> }
 void exp() {
+	bool isNegative = false;
 
+	// ［＋｜－］
+	if (TokenType::PLUS == g_token.opType || TokenType::MINU == g_token.opType) {
+		if (TokenType::MINU == g_token.opType) {
+			isNegative = true;
+			match(TokenType::MINU);
+		}
+		else {
+			match(TokenType::PLUS);
+		}
+	}
+
+	term();
+
+	if (isNegative) {
+		// 正的 不做处理，负数 会把第一项的值， 变号
+	}
+	// { <加法运算符><项> }
+	while (TokenType::PLUS == g_token.opType || TokenType::MINU == g_token.opType) {
+		if (TokenType::MINU == g_token.opType) {
+			match(TokenType::MINU);
+			term();
+		}
+		else {
+			match(TokenType::PLUS);
+			term();
+		}
+	}
 }
 
 
 //37. < 项 > :: = <因子>{ <乘法运算符><因子> }
 void term() {
+	factor();
 
+	while (TokenType::MULT == g_token.opType || TokenType::DIV == g_token.opType) {
+		if (TokenType::MULT == g_token.opType) {
+			match(TokenType::MULT);
+			factor();
+		}
+		else {
+			match(TokenType::DIV);
+			factor();
+		}
+	}
 }
 
 //38. < 因子 > :: = <标识符>｜<标识符>‘[’<算术表达式>‘]’｜<整数> | <字符>｜<有返回值函数调用语句> | ‘(’<算术表达式>‘)’
 void factor() {
+	// <标识符>｜<标识符>‘[’<算术表达式>‘]’｜<有返回值函数调用语句>
+	if (TokenType::IDEN == g_token.opType) {
+		// 此处要判断是 调用还是 赋值
+		flashBackIndex = g_lexBegin;
+		flashBackLineNum = g_lineNumber;
+		getNextToken();
 
+		bool isCall = false;
+		if (TokenType::LPARENTHES == g_token.opType) {
+			// 函数调用
+			isCall = true;
+		}
+		
+		g_forward = flashBackIndex;
+		g_lineNumber = flashBackLineNum;
+		getNextToken();
+
+		// <有返回值函数调用语句>
+		if (isCall) {
+			callWithReturn();
+		}
+		else {
+			// <标识符>｜<标识符>‘[’<算术表达式>‘]’
+			match(TokenType::IDEN);
+			if (TokenType::LBRACKET == g_token.opType) {
+				match(TokenType::LBRACKET);
+				exp();
+				match(TokenType::RBRACKET);
+			}
+		}
+	}
+	else if (TokenType::NUM == g_token.opType) {
+		match(TokenType::NUM);
+	}
+	else if (TokenType::LETTER == g_token.opType) {
+		match(TokenType::LETTER);
+	}
+	else if (TokenType::LPARENTHES == g_token.opType) {
+		match(TokenType::LPARENTHES);
+		exp();
+		match(TokenType::RPARENTHES);
+	}
+	else {
+		printf("error in factor() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+	}
 }
 
 //39. < 布尔表达式 > :: = <布尔项>{ ‘ || ’ <布尔项> }
 void boolExp() {
-
+	boolTerm();
+	// { ‘ || ’ <布尔项> }
+	while (TokenType::OR == g_token.opType) {
+		match(TokenType::OR);
+		boolTerm();
+	}
 }
 
 //40. < 布尔项 > :: = <布因子>{ && <布因子> }
 void boolTerm() {
+	boolFactor();
+	// { && <布因子> }
+	while (TokenType::AND == g_token.opType) {
 
+		match(TokenType::AND);
+		boolFactor();
+	}
 }
 
 
 //41. < 布因子 > :: = false | true | !<布因子> | ‘(‘<布尔表达式>’)’ | <条件因子>[<条件运算符> <条件因子>]
 void boolFactor() {
+	switch (g_token.opType) {
+	case TokenType::FALSE:
+		match(TokenType::FALSE);
+		break;
+	case TokenType::TRUE:
+		match(TokenType::TRUE);
+		break;
+	case TokenType::NOT:
+		match(TokenType::NOT);
 
+		boolFactor();
+
+		break;
+	case TokenType::LPARENTHES:
+		match(TokenType::LPARENTHES);
+		boolExp();
+		match(TokenType::RPARENTHES);
+		break;
+	default:
+		conditionFactor();
+		// [<条件运算符> <条件因子>]
+		if (TokenType::LSS == g_token.opType || TokenType::LEQ == g_token.opType ||
+			TokenType::GRE == g_token.opType || TokenType::GEQ == g_token.opType ||
+			TokenType::NEQ == g_token.opType || TokenType::EQL == g_token.opType
+			) {
+			switch (g_token.opType) {
+			case TokenType::LSS:
+				match(TokenType::LSS);
+				break;
+			case TokenType::LEQ:
+				match(TokenType::LEQ);
+				break;
+			case TokenType::GRE:
+				match(TokenType::GRE);
+				break;
+			case TokenType::GEQ:
+				match(TokenType::GEQ);
+				break;
+			case TokenType::NEQ:
+				match(TokenType::NEQ);
+				break;
+			case TokenType::EQL:
+				match(TokenType::EQL);
+				break;
+			}
+			conditionFactor();
+		}
+	}
 }
 
 
 //42. < 条件因子 > :: = <标识符>[‘[’<算术表达式>‘]’]｜ <整数> | <字符> | <有返回值函数调用语句>
 void conditionFactor() {
+	// <标识符>｜<标识符>‘[’<算术表达式>‘]’｜<有返回值函数调用语句>
+	if (TokenType::IDEN == g_token.opType) {
+		// 此处要判断是 调用还是 赋值
+		flashBackIndex = g_lexBegin;
+		flashBackLineNum = g_lineNumber;
+		getNextToken();
+
+		bool isCall = false;
+		if (TokenType::LPARENTHES == g_token.opType) {
+			// 函数调用
+			isCall = true;
+		}
+
+		g_forward = flashBackIndex;
+		g_lineNumber = flashBackLineNum;
+		getNextToken();
+
+		// <有返回值函数调用语句>
+		if (isCall) {
+			callWithReturn();
+		}
+		else {
+			// <标识符>｜<标识符>‘[’<算术表达式>‘]’
+			match(TokenType::IDEN);
+			if (TokenType::LBRACKET == g_token.opType) {
+				match(TokenType::LBRACKET);
+				exp();
+				match(TokenType::RBRACKET);
+			}
+		}
+	}
+	else if (TokenType::NUM == g_token.opType) {
+		match(TokenType::NUM);
+	}
+	else if (TokenType::LETTER == g_token.opType) {
+		match(TokenType::LETTER);
+	}
+	else {
+		printf("error in conditionFactor() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+	}
+
 
 }
 
