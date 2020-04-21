@@ -8,7 +8,7 @@ using namespace std;
 FILE* sourceFile;
 
 int g_lineNumber = 0;
-Token g_token;
+_tToken g_token;
 
 
 int main(int argc, char* argv[])
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
     parser();
 
-    
+
 
     return 0;
 }

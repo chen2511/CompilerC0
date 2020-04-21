@@ -21,27 +21,66 @@ int cmp(int a, char b){
 	int c;
 	char c;
 	char a,b;
+
+	
+	
 }
 
 void f_1(int c, int d){
 	int c;
 
-}
-
-void main(){
-
-
+	;
 }
 
 void main()
 {
-	int ab = 0;
-	int _cc = 9995;
-	char mccc = 'c';
-	if(a == b){
+	const int a = 1, b = 2;
+	const int a = 2;
+	const char c = '2', d = '3';
+	const char c = '4';
+
+
+	int a,b;
+	int c;
+	char c;
+	char a,b;
+
+	if(){
 		printf("aaaaaa");
 	}
-	while(true){
-		a = b;
+	while(){
+		;
 	}
+
+	a=;
+	arr[]=;
+
+	if()
+	if(){
+	
+	}
+	else{
+	
+	}
+
+
+	while(){
+	
+	
+	}
+
+	for(a=; ; b=)
+		;
+
+	f_a();
+	f_b(,,);
+
+	scanf(a);
+	scanf(b,c);
+
+	printf("aaaa11",);
+	printf("aaaa11");
+	printf();
+
+	return ;
 }

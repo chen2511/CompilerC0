@@ -7,6 +7,7 @@ using namespace std;
 static bool b_functionDeclaration = false;
 static bool b_mainFunction = false;
 static int flashBackIndex;
+static int flashBackLineNum;
 
 static void match(TokenType expectToken);
 
@@ -31,12 +32,13 @@ void statementSequence();
 void statement();
 void assignStatement();
 void ifStatement();
-void loopStatement();
+void whileLoopStatement();
+void forLoopStatement();
 void callWithReturn();
 void callWithoutReturn();
 void valueParaTable();
-void readStatement();
-void writeStatement();
+void scanfStatement();
+void printfStatement();
 void returnStatement();
 
 void exp();
@@ -54,7 +56,7 @@ void parser() {
 	//测试时：单独调用其他过程
 	program();
 
-	
+
 
 	if (!EOF_flag) {
 		cout << "error: not EOF" << endl;
@@ -88,6 +90,8 @@ void program() {
 	// 可选：如果不是 int 和 char 会直接跳过（没有变量定义），但还需要进一步判断有返回值函数定义
 	if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
 		flashBackIndex = g_lexBegin;
+		flashBackLineNum = g_lineNumber;
+
 		//因为token获取的值完全依赖于两个指针，将前一个指针保存即可
 		//缓存token开始位置，比如识别到int的开始位置，因为末尾要再取一次token
 		getNextToken();
@@ -100,7 +104,7 @@ void program() {
 			if (TokenType::COMMA == g_token.opType) {			// 逗号
 
 			}
-			else if(TokenType::SEMICOLON == g_token.opType) { // 分号
+			else if (TokenType::SEMICOLON == g_token.opType) { // 分号
 
 			}
 			else if (TokenType::LBRACKET == g_token.opType) {	// 左中括号
@@ -113,6 +117,7 @@ void program() {
 		}
 		// 回溯
 		g_forward = flashBackIndex;
+		g_lineNumber = flashBackLineNum;
 		getNextToken();
 
 		if (b_functionDeclaration) {
@@ -120,7 +125,7 @@ void program() {
 		}
 		else {
 			varDeclaration();			// 进入变量说明
-		}	
+		}
 
 	}
 
@@ -132,6 +137,7 @@ void program() {
 		}
 		else if (TokenType::VOID == g_token.opType) {		// 有可能是无返回值函数定义，也有可能是 主函数
 			flashBackIndex = g_lexBegin;
+			flashBackLineNum = g_lineNumber;
 			getNextToken();
 
 			if (TokenType::MAIN == g_token.opType) {
@@ -139,6 +145,7 @@ void program() {
 			}
 			// 回溯
 			g_forward = flashBackIndex;
+			g_lineNumber = flashBackLineNum;
 			getNextToken();
 
 			// 根据是否主函数标志 选择
@@ -240,7 +247,8 @@ void varDeclaration() {
 	//循环终止条件：不是int、char （无返定义和主函数）或者 开始函数定义
 	while ((TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) && !b_functionDeclaration) {
 		flashBackIndex = g_lexBegin;
-		
+		flashBackLineNum = g_lineNumber;
+
 		getNextToken();
 		getNextToken();
 		//预读两个token，进一步判断
@@ -264,6 +272,8 @@ void varDeclaration() {
 		}
 		// 回溯
 		g_forward = flashBackIndex;
+		g_lineNumber = flashBackLineNum;
+
 		getNextToken();
 
 
@@ -275,7 +285,7 @@ void varDeclaration() {
 			match(TokenType::SEMICOLON);
 		}
 	}
-	
+
 
 
 }
@@ -290,7 +300,7 @@ void varDefine() {
 		if (TokenType::NUM == g_token.opType) {
 			if ('0' == g_token.value[0])
 				printf("error in varDefine() :in line %d ,tokenType %d value: %s ;array size is 0 \n", g_lineNumber, g_token.opType, g_token.value);
-				
+
 
 
 		}
@@ -430,29 +440,141 @@ void mainFunction() {
 
 //25.<语句列> ::= ｛<语句>｝
 void statementSequence() {
+	// FIRST( <语句> )：； if while for } ID(f) ID scanf printf return 
+	while (TokenType::SEMICOLON == g_token.opType || TokenType::IF == g_token.opType || TokenType::WHILE == g_token.opType ||
+		TokenType::FOR == g_token.opType || TokenType::LBRACE == g_token.opType || TokenType::IDEN == g_token.opType ||
+		TokenType::SCANF == g_token.opType || TokenType::PRINTF == g_token.opType || TokenType::RETURN == g_token.opType) {
 
+		statement();
+
+	}
+
+	// FOLLOW(<语句列>): }
+	if (TokenType::RBRACE == g_token.opType) {
+		// 语句列里面一个语句也没有， 跳过
+	}
+	else {		// 既不是语句也不是 }
+		printf("error in statementSequence() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+	}
 }
 
 /*
-26. < 语句 > :: = <条件语句>｜<循环语句>｜‘{ ’<语句列>‘ }’｜<有返回值的函数调用语句>; ｜<无返回值的函数调用语句>; 
+26. < 语句 > :: = <条件语句>｜<循环语句>｜‘{ ’<语句列>‘ }’｜<有返回值的函数调用语句>; ｜<无返回值的函数调用语句>;
 		｜<赋值语句>; ｜<读语句>; ｜<写语句>; ｜<空>; ｜<返回语句>;
 
 !!!!!!注意：这里的  “<空>; ” 和 空语句是不一样的，只有个分号
 */
 void statement() {
+	if (TokenType::SEMICOLON == g_token.opType) {
+		// <空>;
+		match(TokenType::SEMICOLON);
+	}
+	else if (TokenType::IF == g_token.opType) {
+		// <条件语句>:
+		ifStatement();
+	}
+	else if (TokenType::WHILE == g_token.opType) {
+		// <循环语句>
+		whileLoopStatement();
+	}
+	else if (TokenType::FOR == g_token.opType) {
+		// <循环语句>
+		forLoopStatement();
+	}
+	else if (TokenType::LBRACE == g_token.opType) {
+		//‘{ ’<语句列>‘ }’
+		match(TokenType::LBRACE);
+		statementSequence();
+		match(TokenType::RBRACE);
+	}
+	else if (TokenType::IDEN == g_token.opType) {
+		// <有返回值的函数调用语句>;
+		// <无返回值的函数调用语句>;
+		// <赋值语句>;
+
+		// 此处要判断是 调用还是 赋值； 无论是否有返回值，都是一样的
+		flashBackIndex = g_lexBegin;
+		flashBackLineNum = g_lineNumber;
+
+		getNextToken();
+
+		bool isAssign = false;
+		if (TokenType::ASSIGN == g_token.opType || TokenType::LBRACKET == g_token.opType) {
+			// 赋值语句
+			isAssign = true;
+		}
+		else {
+			// 函数调用
+		}
+
+		g_forward = flashBackIndex;
+		g_lineNumber = flashBackLineNum;
+
+		getNextToken();
+
+		if (isAssign) {
+			assignStatement();
+		}
+		else {
+			// 反正这里的函数调用都是 不利用其 返回值， 等价于无返回值的调用
+			callWithoutReturn();
+		}
+		match(TokenType::SEMICOLON);
+
+	}
+	else if (TokenType::SCANF == g_token.opType) {
+		// <读语句>;
+		scanfStatement();
+		match(TokenType::SEMICOLON);
+
+	}
+	else if (TokenType::PRINTF == g_token.opType) {
+		// <写语句>;
+		printfStatement();
+		match(TokenType::SEMICOLON);
+	}
+	else if (TokenType::RETURN == g_token.opType) {
+		// <返回语句>;
+		returnStatement();
+		match(TokenType::SEMICOLON);
+	}
+	else {
+		// error
+		printf("error in statement() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+	}
+
+
+
+
 
 }
 
 
 //27. < 赋值语句 > :: = <标识符>[‘[’<算术表达式>‘]’]＝<算术表达式>
 void assignStatement() {
-
+	match(TokenType::IDEN);
+	if (TokenType::LBRACKET == g_token.opType) {
+		match(TokenType::LBRACKET);
+		exp();
+		match(TokenType::RBRACKET);
+	}
+	match(TokenType::ASSIGN);
+	exp();
 }
 
 
 //28. < 条件语句 > :: = if ‘(’<布尔表达式>‘)’<语句>［else<语句>］
 void ifStatement() {
+	match(TokenType::IF);
+	match(TokenType::LPARENTHES);
+	boolExp();
+	match(TokenType::RPARENTHES);
+	statement();
 
+	if (TokenType::ELSE == g_token.opType) {
+		match(TokenType::ELSE);
+		statement();
+	}
 }
 
 /*
@@ -460,20 +582,45 @@ void ifStatement() {
 
 for循环中的三个表达式：初始化表达式、循环变量测试表达式、循环变量修正表达式
 */
-void loopStatement() {
+// while ‘(’<布尔表达式>‘)’<语句>
+void whileLoopStatement() {
+	match(TokenType::WHILE);
+	match(TokenType::LPARENTHES);
+	boolExp();
+	match(TokenType::RPARENTHES);
+	statement();
+}
 
+// for‘(’<赋值语句>; <布尔表达式>; <赋值语句>‘)’<语句>
+void forLoopStatement() {
+	match(TokenType::FOR);
+	match(TokenType::LPARENTHES);
+	assignStatement();
+	match(TokenType::SEMICOLON);
+	boolExp();
+	match(TokenType::SEMICOLON);
+	assignStatement();
+	match(TokenType::RPARENTHES);
+	statement();
 }
 
 
 //30. < 有返回值的函数调用语句 > :: = <标识符>‘(’<值参数表>‘)’
+// 表达式中用此函数
 void callWithReturn() {
 
 }
 
 
 //31. < 无返回值的函数调用语句 > :: = <标识符>‘(’<值参数表>‘)’
+// 单纯调用语句 用此函数
 void callWithoutReturn() {
-
+	match(TokenType::IDEN);
+	match(TokenType::LPARENTHES);
+	if (TokenType::RPARENTHES != g_token.opType) {
+		valueParaTable();
+	}
+	match(TokenType::RPARENTHES);
 }
 
 
@@ -483,13 +630,24 @@ void callWithoutReturn() {
 >>>>>>>> 空语句：这里也有一处空语句，但follow集只有')'一个元素
 */
 void valueParaTable() {
-
+	exp();
+	while (TokenType::COMMA == g_token.opType) {
+		match(TokenType::COMMA);
+		exp();
+	}
 }
 
 
 //33. < 读语句 > :: = scanf ‘(’<标识符>{, <标识符>}‘)’
-void readStatement() {
-
+void scanfStatement() {
+	match(TokenType::SCANF);
+	match(TokenType::LPARENTHES);
+	match(TokenType::IDEN);
+	while (TokenType::COMMA == g_token.opType) {
+		match(TokenType::COMMA);
+		match(TokenType::IDEN);
+	}
+	match(TokenType::RPARENTHES);
 }
 
 
@@ -498,13 +656,31 @@ void readStatement() {
 
 定义写语句是以printf为起始的，后接圆括号括起来的字符串或表达式或者两者都有，若两者都存在，则字符串在先，以逗号隔开。
 */
-void writeStatement() {
+void printfStatement() {
+	match(TokenType::PRINTF);
+	match(TokenType::LPARENTHES);
+	if (TokenType::STRING == g_token.opType) {
+		match(TokenType::STRING);
+		if (TokenType::COMMA == g_token.opType) {
+			match(TokenType::COMMA);
+			exp();
+		}
+	}
+	else {
+		exp();
 
+	}
+	match(TokenType::RPARENTHES);
 }
 
 //35. < 返回语句 > :: = return[‘(’<算术表达式>‘)’]
 void returnStatement() {
-
+	match(TokenType::RETURN);
+	if (TokenType::LPARENTHES == g_token.opType) {
+		match(TokenType::LPARENTHES);
+		exp();
+		match(TokenType::RPARENTHES);
+	}
 }
 
 //36. < 算术表达式 > :: = ［＋｜－］<项>{ <加法运算符><项> }
