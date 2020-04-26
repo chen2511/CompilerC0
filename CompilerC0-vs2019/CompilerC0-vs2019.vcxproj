@@ -150,6 +150,7 @@
     <ClInclude Include="scan.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Output_ast.txt" />
     <Text Include="Text.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

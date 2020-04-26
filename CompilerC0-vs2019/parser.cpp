@@ -63,6 +63,12 @@ TreeNode* parser() {
 	if (!EOF_flag) {
 		cout << "error: not EOF" << endl;
 	}
+
+	if (PRINT_AST_TOFILE) {
+		AST_File = fopen("Output_ast.txt", "w+");
+		printAST(synaxTree);
+	}
+
 	return synaxTree;
 }
 
@@ -888,14 +894,14 @@ TreeNode* scanfStatement() {
 	match(TokenType::SCANF);
 	match(TokenType::LPARENTHES);
 
-	p = newStmtNode(StmtKind::Seq_StmtK);
+	p = newStmtNode(StmtKind::Read_StmtK_Idlist);
 	p->attr.name = copyString(g_token.value);
 	t->child[0] = p;
 
 	match(TokenType::IDEN);
 	while (TokenType::COMMA == g_token.opType) {
 		match(TokenType::COMMA);
-		q = newStmtNode(StmtKind::Seq_StmtK);
+		q = newStmtNode(StmtKind::Read_StmtK_Idlist);
 		q->attr.name = copyString(g_token.value);
 		p->sibling = q;
 		p = q;
@@ -916,7 +922,7 @@ TreeNode* printfStatement() {
 	match(TokenType::PRINTF);
 	match(TokenType::LPARENTHES);
 	if (TokenType::STRING == g_token.opType) {
-		t->child[0] = newStmtNode(StmtKind::Write_StmtK);
+		t->child[0] = newStmtNode(StmtKind::Write_StmtK_Str);
 		t->child[0]->attr.str = copyString(g_token.value);
 
 		match(TokenType::STRING);

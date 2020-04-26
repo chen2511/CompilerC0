@@ -6,6 +6,8 @@ using namespace std;
 #pragma warning(disable:4996)
 
 FILE* sourceFile;
+FILE* AST_File;
+
 
 int g_lineNumber = 0;
 _tToken g_token;

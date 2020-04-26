@@ -21,6 +21,8 @@ TreeNode* newBoolExpNode(BoolExpKind kind);
 
 char* copyString(char* s);
 
+void printAST(TreeNode* tree);
+
 #endif // !AST_H
 
 

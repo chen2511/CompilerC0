@@ -1,12 +1,15 @@
 #pragma once
 #ifndef GLOBAL_H
 #define GLOBAL_H
+#pragma warning(disable:4996)
 
 #include <string>
 #include <iostream>
 #include <string.h>
 
 #define RESERVEDWORD_NUM 14
+
+#define PRINT_AST_TOFILE true
 
 //枚举类型TokenType：
 typedef enum {
@@ -32,6 +35,7 @@ typedef struct {
 
 //源文件
 extern FILE* sourceFile;
+extern FILE* AST_File;
 //行号
 extern int g_lineNumber;
 //在buf中的指针；
@@ -60,7 +64,11 @@ typedef enum {
 typedef enum {
     If_StmtK, While_StmtK, For_StmtK, Assign_StmtK,         //条件， 循环， 赋值 语句
     Call_StmtK, Seq_StmtK, Read_StmtK, Write_StmtK,         //调用， 语句列， 读，写语句
-    Ret_StmtK                                              //返回语句
+    Ret_StmtK,                                              //返回语句
+    // 为了便于遍历AST， 增加节点类型：即语句每个成分都有一个类型
+    Write_StmtK_Str,
+    Read_StmtK_Idlist
+
 }StmtKind;
 
 typedef enum {
@@ -108,7 +116,7 @@ typedef struct TreeNode {
         TokenType op;                                   // 操作类型：通常是表达式中
         int val;                                        // NUM的值
         char cval;                                      // Char 型 值
-        char* name;                                     // Id 的值
+        char* name;                                     // Id 的值，也可以是函数名，Str的值
         bool bval;                                      // bool 常量
         char* str;                                      // String 类型
     }attr;                                          // 节点属性

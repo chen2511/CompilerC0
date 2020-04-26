@@ -69,7 +69,7 @@ void main()
 	scanf(b,c);
 
 	printf("aaaa11",a);
-	printf("aaaa11");
+	printf("aaaa12221");
 	printf(acc);
 
 	if(false)

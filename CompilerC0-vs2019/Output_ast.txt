@@ -1,0 +1,170 @@
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_a		value:	22
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_b		value:	-22
+ID name:		gc_c		value:	0
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		gc_d		value:	z
+ID name:		gc_e		value:	x
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_a
+ID name: g_b
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: g_c
+ID name: g_d
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_e
+
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_a 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 
+Stmt Sequence>>>   
+
+Assign to: a
+ +  +  %  *  *  5  ()  func  +  a  53  []  a  3  599 <<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_b 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 1 a	1 a	
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	2
+ID name:		e		value:	3
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
+
+Stmt Sequence>>>   
+
+Ret Stmt:
+ +  a  b <<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_c 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 1 c	1 c	
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: c
+
+Stmt Sequence>>>   
+<<<Stmt Sequence End  
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	2
+ID name:		e		value:	3
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
+
+Stmt Sequence>>>   
+
+Assign to: a
+ +  *  *  f_2  55  -  +  %  1  []  arr  2  103  ()  f_b 
+If :
+ ||  &&  &&  ||  bool(1)  8  ||  bool(0)  bool(1)  &&  <=  88  56  !=  ()  f_b  22 Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: aaaaaa
+<<<Stmt Sequence End  
+
+While Stmt:
+ bool(1) Stmt Sequence>>>   
+<<<Stmt Sequence End  
+
+For Stmt:
+
+Assign to: a
+ 1  ==  a  b 
+Assign to: b
+ 3 
+Assign to: g_a
+ 88 
+Assign to: g_c
+ 33  2 
+Call Stmt:  Function: f_a 
+
+Call Stmt:  Function: f_b 
+ *  8  6  2  a 
+Read Stmt:
+Read ID: a
+
+Read Stmt:
+Read ID: b
+Read ID: c
+
+Write Stmt:
+Write Str: aaaa11
+ a 
+Write Stmt:
+Write Str: aaaa12221
+
+Write Stmt:
+ acc 
+If :
+ bool(0) 
+If :
+ bool(1) Stmt Sequence>>>   
+<<<Stmt Sequence End  
+Stmt Sequence>>>   
+<<<Stmt Sequence End  
+
+Ret Stmt:
+<<<Stmt Sequence End  
