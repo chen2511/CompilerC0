@@ -1,6 +1,7 @@
 #include "global.h"
 #include "parser.h"
 #include "scan.h"
+#include "ast.h"
 
 using namespace std;
 
@@ -12,55 +13,57 @@ static int flashBackLineNum;
 static void match(TokenType expectToken);
 
 //为每一个非终结符创建一个函数
-void program();
+TreeNode* program();
 
-void constDeclaration();
-void constDefine();
-void varDeclaration();
-void varDefine();
-void typeID();
-void functionDefinitionWithReturn();
-void DeclarationHead();
-void functionDefinitionWithoutReturn();
-void paraTable();
-void complexStatement();
-void mainFunction();
+TreeNode* constDeclaration();
+TreeNode* constDefine();
+TreeNode* varDeclaration();
+TreeNode* __varDeclaration();
+TreeNode* varDefine();
+Type typeID();
+TreeNode* functionDefinitionWithReturn();
+TreeNode* DeclarationHead();
+TreeNode* functionDefinitionWithoutReturn();
+void paraTable(FuncInfo * finfo);
+TreeNode* complexStatement();
+TreeNode* mainFunction();
 
-void signedNum();
+TreeNode* signedNum();
 
-void statementSequence();
-void statement();
-void assignStatement();
-void ifStatement();
-void whileLoopStatement();
-void forLoopStatement();
-void callWithReturn();
-void callWithoutReturn();
-void valueParaTable();
-void scanfStatement();
-void printfStatement();
-void returnStatement();
+TreeNode* statementSequence();
+TreeNode* statement();
+TreeNode* assignStatement();
+TreeNode* ifStatement();
+TreeNode* whileLoopStatement();
+TreeNode* forLoopStatement();
+TreeNode* callWithReturn();
+TreeNode* callWithoutReturn();
+TreeNode* valueParaTable();
+TreeNode* scanfStatement();
+TreeNode* printfStatement();
+TreeNode* returnStatement();
 
-void exp();
-void term();
-void factor();
-void boolExp();
-void boolTerm();
-void boolFactor();
-void conditionFactor();
+TreeNode* exp();
+TreeNode* term();
+TreeNode* factor();
+TreeNode* boolExp();
+TreeNode* boolTerm();
+TreeNode* boolFactor();
+TreeNode* conditionFactor();
 
 // 分析开始，调用程序
-void parser() {
+TreeNode* parser() {
+	TreeNode* synaxTree;
+
 	getNextToken();
 	//语法分析开始
 	//测试时：单独调用其他过程
-	program();
-
-
+	synaxTree = program();
 
 	if (!EOF_flag) {
 		cout << "error: not EOF" << endl;
 	}
+	return synaxTree;
 }
 
 // 匹配 期待的 token；否则报错
@@ -78,10 +81,23 @@ static void match(TokenType expectToken) {
 13.<程序> ::= ［<常量说明>］［<变量说明>］{<有返回值函数定义>|<无返回值函数定义>}<主函数>
 这里有很多的公因子，但是为了文法简单，好理解；就在程序上实现，没有提取
 */
-void program() {
+TreeNode* program() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;									// 返回t， p中间处理
+	
+	
+
 	// ［<常量说明>］
 	if (TokenType::CONST == g_token.opType) {
-		constDeclaration();
+		if (NULL == t) {
+			t = constDeclaration();
+			p = t;
+		}
+		else {
+			TreeNode* q = constDeclaration();
+			p->sibling = q;
+			p = q;
+		}
 	}
 
 
@@ -124,7 +140,16 @@ void program() {
 			//是函数定义：什么都不做，跳过，进入下一部分
 		}
 		else {
-			varDeclaration();			// 进入变量说明
+			// 进入变量说明
+			if (NULL == t) {
+				t = varDeclaration();
+				p = t;
+			}
+			else {
+				TreeNode* q = varDeclaration();
+				p->sibling = q;
+				p = q;
+			}
 		}
 
 	}
@@ -133,7 +158,15 @@ void program() {
 	// 前面的必须按顺序来，错过了就不能定义了。这里可以随机顺序
 	while ((TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType || TokenType::VOID == g_token.opType) && !b_mainFunction) {
 		if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) { //有返回值的定义
-			functionDefinitionWithReturn();
+			if (NULL == t) {
+				t = functionDefinitionWithReturn();
+				p = t;
+			}
+			else {
+				TreeNode* q = functionDefinitionWithReturn();
+				p->sibling = q;
+				p = q;
+			}
 		}
 		else if (TokenType::VOID == g_token.opType) {		// 有可能是无返回值函数定义，也有可能是 主函数
 			flashBackIndex = g_lexBegin;
@@ -153,94 +186,169 @@ void program() {
 				// b_mainFunction 标志已改变，跳过该循环，进入主函数
 			}
 			else {
-				functionDefinitionWithoutReturn();
+				if (NULL == t) {
+					t = functionDefinitionWithoutReturn();
+					p = t;
+				}
+				else {
+					TreeNode* q = functionDefinitionWithoutReturn();
+					p->sibling = q;
+					p = q;
+				}
 			}
 		}
 	}
 
 	// <主函数>
-	mainFunction();
+	if (NULL == t) {
+		t = mainFunction();
+		p = t;
+	}
+	else {
+		TreeNode* q = mainFunction();
+		p->sibling = q;
+		p = q;
+	}
 
+	return t;
 }
 
 /*
 14.<常量说明> ::= const<常量定义>;{ const<常量定义>;}
 */
-void constDeclaration() {
+TreeNode* constDeclaration() {
 	match(TokenType::CONST);
-	constDefine();
+
+	TreeNode* t = newDecNode(DecKind::Const_DecK);
+	TreeNode* p = constDefine();
+	t->child[0] = p;
+
 	match(TokenType::SEMICOLON);
 
 	// 多个const 行
 	while (TokenType::CONST == g_token.opType) {
 		match(TokenType::CONST);
-		constDefine();
+
+		TreeNode* q = constDefine();
+		p->sibling = q;
+		p = q;
+
 		match(TokenType::SEMICOLON);
 	}
+
+	return t;
 }
 
 //15. < 常量定义 > :: = int<标识符>＝<整数>{, <标识符>＝<整数>} | char<标识符>＝<字符>{, <标识符>＝<字符>}
-void constDefine() {
+TreeNode* constDefine() {
+	TreeNode* t = newDecNode(DecKind::Const_DefK);					// 常量定义节点
 	//int
-	if (TokenType::INT == g_token.opType) {
+	if (TokenType::INT == g_token.opType) {								// 定义列表节点
+		t->type = Type::T_INTEGER;
+		TreeNode* p = newDecNode(DecKind::Const_DefK);
+		t->child[0] = p;
 		match(TokenType::INT);
+		
+		// 保存标识符
+		p->attr.name = copyString(g_token.value);
 		match(TokenType::IDEN);
+		
 		match(TokenType::ASSIGN);
-		signedNum();
+		
+		//保存整形数据
+		p->child[0] = signedNum();
 		// {, <标识符>＝<整数>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
+
+			TreeNode* q = newDecNode(DecKind::Const_DefK);
+			p->sibling = q;
+			q->attr.name = copyString(g_token.value);
 			match(TokenType::IDEN);
+
 			match(TokenType::ASSIGN);
-			signedNum();
+			
+			q->child[0] = signedNum();
+			p = q;
 		}
 	}
 	//char
 	else if (TokenType::CHAR == g_token.opType) {
+		t->type = Type::T_CHAR;					// 常量定义 类型
+		// 下面是 常量列表
+		TreeNode* p = newDecNode(DecKind::Const_DefK);
+		t->child[0] = p;
 		match(TokenType::CHAR);
+
+		// 保存标识符
+		p->attr.name = copyString(g_token.value);
 		match(TokenType::IDEN);
+
 		match(TokenType::ASSIGN);
+
+		p->child[0] = newDecNode(DecKind::Const_DefK);
+		//保存字符数据
+		p->attr.cval = atoi(g_token.value);
 		match(TokenType::LETTER);
 		//{, <标识符>＝<字符>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
+			TreeNode* q = newDecNode(DecKind::Const_DefK);
+			p->sibling = q;
+			q->attr.name = copyString(g_token.value);
+
 			match(TokenType::IDEN);
 			match(TokenType::ASSIGN);
+
+			q->child[0] = newDecNode(DecKind::Const_DefK);
+			//保存字符数据
+			q->attr.cval = atoi(g_token.value);
 			match(TokenType::LETTER);
+
+			p = q;
 		}
 	}
 	else {
 		printf("error in constDefine() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
+
+	return t;
 }
 
 //9.<整数> ::= ［＋｜－］<无符号整数>
 //只有定义时会遇到，其他时候单独处理
-void signedNum() {
-	//没写完善。。。。具体语义 后续继续完善
+TreeNode* signedNum() {
+	
 	int sign = 1;
 	if (TokenType::MINU == g_token.opType) {		// -
 		sign = -1;
 		match(TokenType::MINU);
-		//计划进行单独处理，即 * -1
 	}
 	else if (TokenType::PLUS == g_token.opType) {
 		match(TokenType::PLUS);
-		//不用处理
 	}
 	else if (TokenType::NUM != g_token.opType) {
 		printf("error in signedNum() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
-		return;
+		return nullptr;
 	}
 	// 如果是负的，应该在这里进行一定处理
+	TreeNode* t = newDecNode(DecKind::Const_DefK);
+	int valoftoken = atoi(g_token.value);
+	valoftoken *= sign;
+	t->attr.val = valoftoken;
 	match(TokenType::NUM);
 
+	return t;
 }
 
 //16.<变量说明> ::= <变量定义>;{<变量定义>;}
 //这里有可能会和后面的有返回值函数定义冲突
-void varDeclaration() {
-	varDefine();
+TreeNode* varDeclaration() {
+	TreeNode* t = newDecNode(DecKind::Var_DecK);
+
+	TreeNode* p = varDefine();
+	t->child[0] = p;
+
 	match(TokenType::SEMICOLON);
 
 	// 变量定义判断 重复；一旦开始函数定义，立即退出，不能继续变量定义
@@ -278,57 +386,77 @@ void varDeclaration() {
 
 
 		if (b_functionDeclaration) {							// 有返回值函数定义：退出
-			return;
+			return nullptr;
 		}
 		else {
-			varDefine();			// 进入变量定义
+			// 进入变量定义
+			TreeNode* q = varDefine();
+			p->sibling = q;
+			p = q;
 			match(TokenType::SEMICOLON);
 		}
 	}
 
-
-
+	return t;
 }
 
 //17.<变量定义> ::= <类型标识符><标识符>[‘[’<无符号整数>‘]’] {,<标识符>[‘[’<无符号整数>‘]’]}
-void varDefine() {
-	typeID();
+TreeNode* varDefine() {
+	TreeNode* t = newDecNode(DecKind::Var_DefK);
+
+	Type _vartype = typeID();
+	t->type = _vartype;
+
+	TreeNode* p = newDecNode(DecKind::Var_DefK);
+	t->child[0] = p;
+
+	p->attr.name = copyString(g_token.value);
 	match(TokenType::IDEN);
 
 	if (TokenType::LBRACKET == g_token.opType) {			//数组定义
 		match(TokenType::LBRACKET);
+		// 数组大小
 		if (TokenType::NUM == g_token.opType) {
+			p->vec = atoi(g_token.value);
 			if ('0' == g_token.value[0])
 				printf("error in varDefine() :in line %d ,tokenType %d value: %s ;array size is 0 \n", g_lineNumber, g_token.opType, g_token.value);
-
-
-
 		}
 		match(TokenType::NUM);
 		match(TokenType::RBRACKET);
 	}
 	while (TokenType::COMMA == g_token.opType) {			//重复定义
 		match(TokenType::COMMA);
+
+		TreeNode* q = newDecNode(DecKind::Var_DefK);
+		q->attr.name = copyString(g_token.value);
+
 		match(TokenType::IDEN);
 		if (TokenType::LBRACKET == g_token.opType) {
 			match(TokenType::LBRACKET);
 			if (TokenType::NUM == g_token.opType) {
+				q->vec = atoi(g_token.value);
 				if ("0" == g_token.value)
 					printf("error in varDefine() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 			}
 			match(TokenType::NUM);
 			match(TokenType::RBRACKET);
 		}
+		p->sibling = q;
+		p = q;
 	}
+
+	return t;
 }
 
 //18.<类型标识符> ::= int | char
-void typeID() {
+Type typeID() {
 	if (TokenType::INT == g_token.opType) {
 		match(TokenType::INT);
+		return Type::T_INTEGER;
 	}
 	else if (TokenType::CHAR == g_token.opType) {
 		match(TokenType::CHAR);
+		return Type::T_CHAR;
 	}
 	else {
 		printf("error in typeID() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
@@ -336,20 +464,33 @@ void typeID() {
 }
 
 //19.<有返回值函数定义> ::= <声明头部>‘(’<参数表>‘)’ ‘{’<复合语句>‘}’
-void functionDefinitionWithReturn() {
-	DeclarationHead();
+TreeNode* functionDefinitionWithReturn() {
+	//DeclarationHead(); 
+	// 方便处理，并不使用
+	TreeNode* t = newDecNode(DecKind::Func_DecK);
+
+	Type rettype = typeID();
+
+	t->attr.name = copyString(g_token.value);
+	t->pfinfo = new FuncInfo;
+	t->pfinfo->rettype = rettype;
+	match(TokenType::IDEN);
+
 	match(TokenType::LPARENTHES);
-	paraTable();
+	paraTable(t->pfinfo);
 	match(TokenType::RPARENTHES);
 	match(TokenType::LBRACE);
 
-	complexStatement();
+	t->child[0] = complexStatement();
 
 	match(TokenType::RBRACE);
+
+	return t;
 }
 
 //20.<声明头部> ::= int<标识符> | char<标识符>
-void DeclarationHead() {
+// 方便处理，并不使用
+TreeNode* DeclarationHead() {
 	if (TokenType::INT == g_token.opType) {
 		match(TokenType::INT);
 	}
@@ -360,92 +501,153 @@ void DeclarationHead() {
 		printf("error in DeclarationHead() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
 	match(TokenType::IDEN);
+
+	return nullptr;
 }
 
 //21.<无返回值函数定义> ::= void<标识符>‘(’<参数表>‘)’ ‘{’<复合语句>‘}’
-void functionDefinitionWithoutReturn() {
+TreeNode* functionDefinitionWithoutReturn() {
+	TreeNode* t = newDecNode(DecKind::Func_DecK);
+
 	match(TokenType::VOID);
+	t->pfinfo = new FuncInfo;
+	t->pfinfo->rettype = Type::T_VOID;
+
+	t->attr.name = copyString(g_token.value);
 	match(TokenType::IDEN);
 	match(TokenType::LPARENTHES);
-	paraTable();
+	paraTable(t->pfinfo);
 	match(TokenType::RPARENTHES);
 	match(TokenType::LBRACE);
 
-	complexStatement();
+	t->child[0] = complexStatement();
 
 	match(TokenType::RBRACE);
+
+	return t;
 }
 
 //22.<参数表> ::= <类型标识符><标识符>{,<类型标识符><标识符>}| <空>
-void paraTable() {
+void paraTable(FuncInfo* finfo) {
 	// <类型标识符><标识符>
+	int cnt = 0;
 	if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
-		typeID();
+		Type _t = typeID();
+		finfo->paratable[cnt].ptype = _t;
+		finfo->paratable[cnt++].pname = copyString(g_token.value);
 		match(TokenType::IDEN);
 		// {,<类型标识符><标识符>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
 			typeID();
+			finfo->paratable[cnt].ptype = _t;
+			finfo->paratable[cnt++].pname = copyString(g_token.value);
 			match(TokenType::IDEN);
 		}
 	}
 	// <空>
 	;
+	finfo->paranum = cnt;
 }
 
 ////////////////////////////16'.__<变量说明> ::= <变量定义>;{<变量定义>;}
 //这里是单纯的 <变量说明>
-inline void __varDeclaration() {
+TreeNode* __varDeclaration() {
 	// <变量定义>;
-	varDefine();
+	TreeNode* t = newDecNode(DecKind::Var_DecK);
+
+	TreeNode* p = varDefine();
+	t->child[0] = p;
+
 	match(TokenType::SEMICOLON);
 	// {<变量定义>;}
 	while (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
-		varDefine();
+		TreeNode* q = varDefine();
+		p->sibling = q;
+		p = q;
 		match(TokenType::SEMICOLON);
 	}
+	return t;
 }
 
 //23.<复合语句> ::= ［<常量说明>］［<变量说明>］<语句列>
-void complexStatement() {
+TreeNode* complexStatement() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+	TreeNode* q = NULL;
 	// ［<常量说明>］
 	if (TokenType::CONST == g_token.opType) {
-		constDeclaration();
+		t = constDeclaration();
+		p = t;
 	}
 	// ［<变量说明>］
 	if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
 		// 这里没有直接调用"varDeclaration"函数，因为函数中有一些多余的过程 来识别“函数定义”
-		__varDeclaration();
+		if (NULL == t) {
+			t = __varDeclaration();
+			p = t;
+		}
+		else {
+			q = __varDeclaration();
+			p->sibling = q;
+			p = q;
+		}
 	}
 
 	// <语句列>
-	statementSequence();
+	if (NULL == t) {
+		t = statementSequence();
+	}
+	else {
+		q = statementSequence();
+		p->sibling = q;
+		p = q;
+	}
+	
 
+	return t;
 }
 
 //24.<主函数> ::= void main ‘(’ ‘)’ ‘{’<复合语句>‘}’
-void mainFunction() {
+TreeNode* mainFunction() {
+	TreeNode* t = newDecNode(DecKind::MainFunc_DecK);
+
 	match(TokenType::VOID);
 	match(TokenType::MAIN);
 	match(TokenType::LPARENTHES);
 	match(TokenType::RPARENTHES);
 	match(TokenType::LBRACE);
 
-	complexStatement();
+	t->child[0] = complexStatement();
 
 	match(TokenType::RBRACE);
+
+	return t;
+
 }
 
 /********************* 以上是语法分析第二次单元测试的内容	*************************/
 
 //25.<语句列> ::= ｛<语句>｝
-void statementSequence() {
+TreeNode* statementSequence() {
+	TreeNode* t = newStmtNode(StmtKind::Seq_StmtK);
+	TreeNode* p = NULL;
+	TreeNode* q = NULL;
 	// FIRST( <语句> )：； if while for } ID(f) ID scanf printf return 
 	while (TokenType::SEMICOLON == g_token.opType || TokenType::IF == g_token.opType || TokenType::WHILE == g_token.opType ||
 		TokenType::FOR == g_token.opType || TokenType::LBRACE == g_token.opType || TokenType::IDEN == g_token.opType ||
 		TokenType::SCANF == g_token.opType || TokenType::PRINTF == g_token.opType || TokenType::RETURN == g_token.opType) {
-
-		statement();
+			
+		if (NULL == p) {					// 第一条语句
+			p = statement();
+			t->child[0] = p;
+		}
+		else {								// 之后的语句
+			q = statement();
+			p->sibling = q;
+			p = q;
+		}
+		
 
 	}
 
@@ -456,6 +658,8 @@ void statementSequence() {
 	else {		// 既不是语句也不是 }
 		printf("error in statementSequence() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
+
+	return t;
 }
 
 /*
@@ -464,27 +668,29 @@ void statementSequence() {
 
 !!!!!!注意：这里的  “<空>; ” 和 空语句是不一样的，只有个分号
 */
-void statement() {
+TreeNode* statement() {
+	TreeNode* t = NULL;
 	if (TokenType::SEMICOLON == g_token.opType) {
 		// <空>;
 		match(TokenType::SEMICOLON);
+		return nullptr;									// 空语句返回空指针，什么都不做
 	}
 	else if (TokenType::IF == g_token.opType) {
 		// <条件语句>:
-		ifStatement();
+		t = ifStatement();
 	}
 	else if (TokenType::WHILE == g_token.opType) {
 		// <循环语句>
-		whileLoopStatement();
+		t = whileLoopStatement();
 	}
 	else if (TokenType::FOR == g_token.opType) {
 		// <循环语句>
-		forLoopStatement();
+		t = forLoopStatement();
 	}
 	else if (TokenType::LBRACE == g_token.opType) {
 		//‘{ ’<语句列>‘ }’
 		match(TokenType::LBRACE);
-		statementSequence();
+		t = statementSequence();
 		match(TokenType::RBRACE);
 	}
 	else if (TokenType::IDEN == g_token.opType) {
@@ -513,63 +719,74 @@ void statement() {
 		getNextToken();
 
 		if (isAssign) {
-			assignStatement();
+			t = assignStatement();
 		}
 		else {
 			// 反正这里的函数调用都是 不利用其 返回值， 等价于无返回值的调用
-			callWithoutReturn();
+			t = callWithoutReturn();
 		}
 		match(TokenType::SEMICOLON);
 
 	}
 	else if (TokenType::SCANF == g_token.opType) {
 		// <读语句>;
-		scanfStatement();
+		t = scanfStatement();
 		match(TokenType::SEMICOLON);
 
 	}
 	else if (TokenType::PRINTF == g_token.opType) {
 		// <写语句>;
-		printfStatement();
+		t = printfStatement();
 		match(TokenType::SEMICOLON);
 	}
 	else if (TokenType::RETURN == g_token.opType) {
 		// <返回语句>;
-		returnStatement();
+		t = returnStatement();
 		match(TokenType::SEMICOLON);
 	}
 	else {
 		// error
 		printf("error in statement() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
+	return t;
 }
 
 
 //27. < 赋值语句 > :: = <标识符>[‘[’<算术表达式>‘]’]＝<算术表达式>
-void assignStatement() {
+TreeNode* assignStatement() {
+	TreeNode* t = newStmtNode(StmtKind::Assign_StmtK);
+	// 该节点 有两个个孩子：标识符（存在该节点中）、表达式、数组下标表达式（可选）（在子节点）
+	t->attr.name = copyString(g_token.value);
 	match(TokenType::IDEN);
-	if (TokenType::LBRACKET == g_token.opType) {
+
+	if (TokenType::LBRACKET == g_token.opType) {		//	赋值给数组
 		match(TokenType::LBRACKET);
-		exp();
+		t->child[1] = exp();							// 第二个孩子是 Index
 		match(TokenType::RBRACKET);
 	}
 	match(TokenType::ASSIGN);
-	exp();
+	t->child[0] = exp();								// 第一个孩子，是右端的表达式
+
+	return t;
 }
 
 
 //28. < 条件语句 > :: = if ‘(’<布尔表达式>‘)’<语句>［else<语句>］
-void ifStatement() {
+TreeNode* ifStatement() {
+	TreeNode* t = newStmtNode(StmtKind::If_StmtK);
+	// 有三个孩子， bool表达式、then语句、else语句
+
 	match(TokenType::IF);
 	match(TokenType::LPARENTHES);
-	boolExp();
+	t->child[0] = boolExp();				// 布尔表达式
 	match(TokenType::RPARENTHES);
-	statement();
+	t->child[1] = statement();				// then语句
 
 	if (TokenType::ELSE == g_token.opType) {
 		match(TokenType::ELSE);
-		statement();
+		t->child[2] = statement();			// else语句
 	}
+	return t;
 }
 
 /*
@@ -578,49 +795,73 @@ void ifStatement() {
 for循环中的三个表达式：初始化表达式、循环变量测试表达式、循环变量修正表达式
 */
 // while ‘(’<布尔表达式>‘)’<语句>
-void whileLoopStatement() {
+TreeNode* whileLoopStatement() {
+	TreeNode* t = newStmtNode(StmtKind::While_StmtK);
 	match(TokenType::WHILE);
 	match(TokenType::LPARENTHES);
-	boolExp();
+	t->child[0] = boolExp();
 	match(TokenType::RPARENTHES);
-	statement();
+	t->child[1] = statement();
+	return t;
 }
 
 // for‘(’<赋值语句>; <布尔表达式>; <赋值语句>‘)’<语句>
-void forLoopStatement() {
+TreeNode* forLoopStatement() {
+	TreeNode* t = newStmtNode(StmtKind::For_StmtK);
+	TreeNode* p = NULL;
+
 	match(TokenType::FOR);
 	match(TokenType::LPARENTHES);
-	assignStatement();
+	t->child[0] = assignStatement();
 	match(TokenType::SEMICOLON);
-	boolExp();
+	t->child[1] = boolExp();
 	match(TokenType::SEMICOLON);
-	assignStatement();
+	p = assignStatement();
 	match(TokenType::RPARENTHES);
-	statement();
+	t->child[2] = statement();
+	if (NULL == t->child[2]) {		// for循环是空语句
+		t->child[2] = p;					// 把for循环末尾的赋值语句直接填充
+	}
+	else {
+		t->child[2]->sibling = p;			// 把第三个赋值语句放到 循环体末尾
+	}
+	
+	return t;
 }
 
 
 //30. < 有返回值的函数调用语句 > :: = <标识符>‘(’<值参数表>‘)’
-// 表达式中用此函数
-void callWithReturn() {
+// 表达式中用此函数, 将其看做一个特定op，有两个子节点：函数名、参数列表
+TreeNode* callWithReturn() {
+	TreeNode* t = newExpNode(ExpKind::Op_ExpK);
+	t->attr.op = TokenType::CALL;
+
+	t->child[0] = newExpNode(ExpKind::Iden_ExpK);
+	t->child[0]->attr.name = copyString(g_token.value);
+
 	match(TokenType::IDEN);
 	match(TokenType::LPARENTHES);
 	if (TokenType::RPARENTHES != g_token.opType) {
-		valueParaTable();
+		t->child[1] = valueParaTable();
 	}
 	match(TokenType::RPARENTHES);
+	return t;
 }
-
 
 //31. < 无返回值的函数调用语句 > :: = <标识符>‘(’<值参数表>‘)’
 // 单纯调用语句 用此函数
-void callWithoutReturn() {
+TreeNode* callWithoutReturn() {
+	TreeNode* t = newStmtNode(StmtKind::Call_StmtK);
+
+	t->attr.name = copyString(g_token.value);
 	match(TokenType::IDEN);
+
 	match(TokenType::LPARENTHES);
 	if (TokenType::RPARENTHES != g_token.opType) {
-		valueParaTable();
+		t->child[0] = valueParaTable();
 	}
 	match(TokenType::RPARENTHES);
+	return t;
 }
 
 
@@ -629,25 +870,45 @@ void callWithoutReturn() {
 
 >>>>>>>> 空语句：这里也有一处空语句，但follow集只有')'一个元素
 */
-void valueParaTable() {
-	exp();
+TreeNode* valueParaTable() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+	TreeNode* q = NULL;
+	t = exp();
+	p = t;
 	while (TokenType::COMMA == g_token.opType) {
 		match(TokenType::COMMA);
-		exp();
+		q = exp();
+		p->sibling = q;
+		p = q;
 	}
+	return t;
 }
 
 
 //33. < 读语句 > :: = scanf ‘(’<标识符>{, <标识符>}‘)’
-void scanfStatement() {
+TreeNode* scanfStatement() {
+	TreeNode* t = newStmtNode(StmtKind::Read_StmtK);
+	TreeNode* p = NULL;
+	TreeNode* q = NULL;
 	match(TokenType::SCANF);
 	match(TokenType::LPARENTHES);
+
+	p = newStmtNode(StmtKind::Seq_StmtK);
+	p->attr.name = copyString(g_token.value);
+	t->child[0] = p;
+
 	match(TokenType::IDEN);
 	while (TokenType::COMMA == g_token.opType) {
 		match(TokenType::COMMA);
+		q = newStmtNode(StmtKind::Seq_StmtK);
+		q->attr.name = copyString(g_token.value);
+		p->sibling = q;
+		p = q;
 		match(TokenType::IDEN);
 	}
 	match(TokenType::RPARENTHES);
+	return t;
 }
 
 
@@ -656,38 +917,46 @@ void scanfStatement() {
 
 定义写语句是以printf为起始的，后接圆括号括起来的字符串或表达式或者两者都有，若两者都存在，则字符串在先，以逗号隔开。
 */
-void printfStatement() {
+TreeNode* printfStatement() {
+	TreeNode* t = newStmtNode(StmtKind::Write_StmtK);
 	match(TokenType::PRINTF);
 	match(TokenType::LPARENTHES);
 	if (TokenType::STRING == g_token.opType) {
+		t->child[0] = newStmtNode(StmtKind::Write_StmtK);
+		t->child[0]->attr.str = copyString(g_token.value);
+
 		match(TokenType::STRING);
 		if (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
-			exp();
+			t->child[1] = exp();
 		}
 	}
 	else {
-		exp();
-
+		t->child[1] = exp();
 	}
 	match(TokenType::RPARENTHES);
+	return t;
 }
 
 //35. < 返回语句 > :: = return[‘(’<算术表达式>‘)’]
-void returnStatement() {
+TreeNode* returnStatement() {
+	TreeNode* t = newStmtNode(StmtKind::Ret_StmtK);
 	match(TokenType::RETURN);
 	if (TokenType::LPARENTHES == g_token.opType) {
 		match(TokenType::LPARENTHES);
-		exp();
+		t->child[0] = exp();
 		match(TokenType::RPARENTHES);
 	}
+	return t;
 }
 
 
 /************************  以上：语法分析第三次测试内容  ***********************/
 
 //36. < 算术表达式 > :: = ［＋｜－］<项>{ <加法运算符><项> }
-void exp() {
+TreeNode* exp() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
 	bool isNegative = false;
 
 	// ［＋｜－］
@@ -701,44 +970,75 @@ void exp() {
 		}
 	}
 
-	term();
+	t = term();
 
 	if (isNegative) {
 		// 正的 不做处理，负数 会把第一项的值， 变号
+		p = newExpNode(ExpKind::Op_ExpK);
+		p->attr.op = TokenType::NEGATIVE;
+		p->child[0] = t;
+		t = p;
 	}
 	// { <加法运算符><项> }
 	while (TokenType::PLUS == g_token.opType || TokenType::MINU == g_token.opType) {
 		if (TokenType::MINU == g_token.opType) {
+			p = newExpNode(ExpKind::Op_ExpK);
+			p->attr.op = TokenType::MINU;
+			p->child[0] = t;
 			match(TokenType::MINU);
-			term();
+			t = term();
+			p->child[1] = t;
+			t = p;
 		}
 		else {
+			p = newExpNode(ExpKind::Op_ExpK);
+			p->attr.op = TokenType::PLUS;
+			p->child[0] = t;
 			match(TokenType::PLUS);
-			term();
+			t = term();
+			p->child[1] = t;
+			t = p;
 		}
 	}
+	return t;
 }
 
 
 //37. < 项 > :: = <因子>{ <乘法运算符><因子> }
-void term() {
-	factor();
+TreeNode* term() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+	t = factor();
 
 	while (TokenType::MULT == g_token.opType || TokenType::DIV == g_token.opType) {
 		if (TokenType::MULT == g_token.opType) {
+			p = newExpNode(ExpKind::Op_ExpK);
+			p->attr.op = TokenType::MULT;
+			p->child[0] = t;
 			match(TokenType::MULT);
-			factor();
+			t = factor();
+			p->child[1] = t;
+			t = p;
 		}
 		else {
+			p = newExpNode(ExpKind::Op_ExpK);
+			p->attr.op = TokenType::DIV;
+			p->child[0] = t;
 			match(TokenType::DIV);
-			factor();
+			t = factor();
+			p->child[1] = t;
+			t = p;
 		}
 	}
+	return t;
 }
 
 //38. < 因子 > :: = <标识符>｜<标识符>‘[’<算术表达式>‘]’｜<整数> | <字符>｜<有返回值函数调用语句> | ‘(’<算术表达式>‘)’
-void factor() {
+TreeNode* factor() {
 	// <标识符>｜<标识符>‘[’<算术表达式>‘]’｜<有返回值函数调用语句>
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+
 	if (TokenType::IDEN == g_token.opType) {
 		// 此处要判断是 调用还是 赋值
 		flashBackIndex = g_lexBegin;
@@ -757,83 +1057,124 @@ void factor() {
 
 		// <有返回值函数调用语句>
 		if (isCall) {
-			callWithReturn();
+			t = callWithReturn();
 		}
 		else {
 			// <标识符>｜<标识符>‘[’<算术表达式>‘]’
+			t = newExpNode(ExpKind::Iden_ExpK);
+			t->attr.name = copyString(g_token.value);
 			match(TokenType::IDEN);
 			if (TokenType::LBRACKET == g_token.opType) {
+				p = newExpNode(ExpKind::Op_ExpK);
+				p->attr.op = TokenType::ARRAYAT;
+				p->child[0] = t;
 				match(TokenType::LBRACKET);
-				exp();
+				t = exp();
 				match(TokenType::RBRACKET);
+				p->child[1] = t;
+				t = p;
 			}
 		}
 	}
 	else if (TokenType::NUM == g_token.opType) {
+		t = newExpNode(ExpKind::Num_ExpK);
+		t->attr.val = atoi(g_token.value);
 		match(TokenType::NUM);
 	}
 	else if (TokenType::LETTER == g_token.opType) {
+		t = newExpNode(ExpKind::Num_ExpK);
+		t->attr.val = atoi(g_token.value);
 		match(TokenType::LETTER);
 	}
 	else if (TokenType::LPARENTHES == g_token.opType) {
 		match(TokenType::LPARENTHES);
-		exp();
+		t = exp();
 		match(TokenType::RPARENTHES);
 	}
 	else {
 		printf("error in factor() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
+
+	return t;
+
 }
 
 //39. < 布尔表达式 > :: = <布尔项>{ ‘ || ’ <布尔项> }
-void boolExp() {
-	boolTerm();
+TreeNode* boolExp() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+	t = boolTerm();
 	// { ‘ || ’ <布尔项> }
 	while (TokenType::OR == g_token.opType) {
+		p = newBoolExpNode(BoolExpKind::Op_BoolEK);
+		p->attr.op = TokenType::OR;
+		p->child[0] = t;
 		match(TokenType::OR);
-		boolTerm();
+		t = boolTerm();
+		p->child[1] = t;
+		t = p;
 	}
+	return t;
 }
 
 //40. < 布尔项 > :: = <布因子>{ && <布因子> }
-void boolTerm() {
-	boolFactor();
+TreeNode* boolTerm() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+	t = boolFactor();
 	// { && <布因子> }
 	while (TokenType::AND == g_token.opType) {
-
+		p = newBoolExpNode(BoolExpKind::Op_BoolEK);
+		p->attr.op = TokenType::AND;
+		p->child[0] = t;
 		match(TokenType::AND);
-		boolFactor();
+		t = boolFactor();
+		p->child[1] = t;
+		t = p;
 	}
+	return t;
 }
 
 
 //41. < 布因子 > :: = false | true | !<布因子> | ‘(‘<布尔表达式>’)’ | <条件因子>[<条件运算符> <条件因子>]
-void boolFactor() {
+TreeNode* boolFactor() {
+	TreeNode* t = NULL;
+	TreeNode* p = NULL;
+
 	switch (g_token.opType) {
 	case TokenType::FALSE:
+		t = newBoolExpNode(BoolExpKind::Const_BoolEK);
+		t->attr.bval = false;
 		match(TokenType::FALSE);
 		break;
 	case TokenType::TRUE:
+		t = newBoolExpNode(BoolExpKind::Const_BoolEK);
+		t->attr.bval = true;
 		match(TokenType::TRUE);
 		break;
 	case TokenType::NOT:
 		match(TokenType::NOT);
-
-		boolFactor();
+		t = newBoolExpNode(BoolExpKind::Op_BoolEK);
+		t->attr.op = TokenType::NOT;
+		t->child[0] = boolFactor();
 
 		break;
 	case TokenType::LPARENTHES:
 		match(TokenType::LPARENTHES);
-		boolExp();
+		t = boolExp();
 		match(TokenType::RPARENTHES);
 		break;
-	default:
-		conditionFactor();
+	default: // <条件因子>[<条件运算符> <条件因子>]
+		//conditionFactor();
+		t = exp();
 		// [<条件运算符> <条件因子>]
 		if (TokenType::LSS == g_token.opType || TokenType::LEQ == g_token.opType ||
 			TokenType::GRE == g_token.opType || TokenType::GEQ == g_token.opType ||
 			TokenType::NEQ == g_token.opType || TokenType::EQL == g_token.opType
 			) {
+			p = newBoolExpNode(BoolExpKind::ConOp_BoolEK);
+			p->attr.op = g_token.opType;
+			p->child[0] = t;
 			switch (g_token.opType) {
 			case TokenType::LSS:
 				match(TokenType::LSS);
@@ -854,14 +1195,20 @@ void boolFactor() {
 				match(TokenType::EQL);
 				break;
 			}
-			conditionFactor();
+			//conditionFactor();
+			t = exp();
+			p->child[1] = t;
+			t = p;
 		}
 	}
+
+	return t;
 }
 
 
 //42. < 条件因子 > :: = <标识符>[‘[’<算术表达式>‘]’]｜ <整数> | <字符> | <有返回值函数调用语句>
-void conditionFactor() {
+// 方便处理，并不使用; 用的是表达式来识别
+TreeNode* conditionFactor() {
 	// <标识符>｜<标识符>‘[’<算术表达式>‘]’｜<有返回值函数调用语句>
 	if (TokenType::IDEN == g_token.opType) {
 		// 此处要判断是 调用还是 赋值
@@ -903,7 +1250,7 @@ void conditionFactor() {
 		printf("error in conditionFactor() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 	}
 
-
+	return nullptr;
 }
 
 /*
