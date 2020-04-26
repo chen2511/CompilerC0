@@ -440,7 +440,7 @@ void conditionFactor();
 
 
 
-
+>   atoi 转 char型变0
 
 
 

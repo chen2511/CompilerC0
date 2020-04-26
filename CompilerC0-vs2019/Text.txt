@@ -1,32 +1,32 @@
-const int a = 22;
-const int b = -22, c = 0;
-const char d = 'z', e = 'x';
+const int gc_a = 22;
+const int gc_b = -22, gc_c = 0;
+const char gc_d = 'z', gc_e = 'x';
 
-int g_bb, g_a;
-char g_cc[0], g_cd[5];
-int aaaa;
+int g_a, g_b;
+char g_c[0], g_d[5];
+int g_e;
 
-void null(){
-
+void f_a(){
+	a = -5 * func() * ( a + '5') + a[3] + 599;
 }
 
-int cmp(int a, char b){
+int f_b(int a, char b){
 	const int a = 1, b = 2;
-	const int a = 2;
-	const char c = '2', d = '3';
-	const char c = '4';
+	const int c = 2;
+	const char d = '2', e = '3';
+	const char f = '4';
 
 
-	int a,b;
-	int c;
-	char c;
-	char a,b;
+	int g,h;
+	int i;
+	char j;
+	char k,l;
 
-	
+	return (a + b);	
 	
 }
 
-void f_1(int c, int d){
+void f_c(int c, int d){
 	int c;
 
 	;
@@ -35,47 +35,32 @@ void f_1(int c, int d){
 void main()
 {
 	const int a = 1, b = 2;
-	const int a = 2;
-	const char c = '2', d = '3';
-	const char c = '4';
+	const int c = 2;
+	const char d = '2', e = '3';
+	const char f = '4';
 
 
-	int a,b;
-	int c;
-	char c;
-	char a,b;
+	int g,h;
+	int i;
+	char j;
+	char k,l;
 
 
-	a = f_2 * 55 * ( -1 + arr[2] - 'g' ) + callfunction();
+	a = f_2 * 55 * ( -1 + arr[2] - 'g' ) + f_b();
 
 
-	if( ( true )&& ! false && true || 88 <= '8' && fun1 != 22){
+	if( ( true || 8 )&& ! false && true || 88 <= '8' && f_b() != 22){
 		printf("aaaaaa");
 	}
 	while(true){
 		;
 	}
 
-	a=88;
-	arr[2]=33;
-
-	if(false)
-	if(true){
-	
-	}
-	else{
-	
-	}
-
-
-	while(! false ){
-		printf(3 * a);
-		printf();
-	
-	}
-
 	for(a=1; a == b; b=3)
 		;
+
+	g_a=88;
+	g_c[2]=33;
 
 	f_a();
 	f_b(8*6,2,a);
@@ -86,6 +71,15 @@ void main()
 	printf("aaaa11",a);
 	printf("aaaa11");
 	printf(acc);
+
+	if(false)
+	if(true){
+	
+	}
+	else{
+	
+	}
+
 
 	return ;
 }

@@ -17,7 +17,7 @@ TreeNode* newExpNode(ExpKind kind);
 TreeNode* newBoolExpNode(BoolExpKind kind);
 
 // 定义函数时，保存函数信息：返回类型和参数表
-FuncInfo* newFuncInfo(Type t);
+// FuncInfo* newFuncInfo(Type t);
 
 char* copyString(char* s);
 

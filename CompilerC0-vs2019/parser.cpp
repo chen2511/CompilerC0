@@ -89,15 +89,8 @@ TreeNode* program() {
 
 	// ［<常量说明>］
 	if (TokenType::CONST == g_token.opType) {
-		if (NULL == t) {
-			t = constDeclaration();
-			p = t;
-		}
-		else {
-			TreeNode* q = constDeclaration();
-			p->sibling = q;
-			p = q;
-		}
+		t = constDeclaration();
+		p = t;
 	}
 
 
@@ -288,7 +281,8 @@ TreeNode* constDefine() {
 
 		p->child[0] = newDecNode(DecKind::Const_DefK);
 		//保存字符数据
-		p->attr.cval = atoi(g_token.value);
+		
+		p->child[0]->attr.cval = g_token.value[0];
 		match(TokenType::LETTER);
 		//{, <标识符>＝<字符>}
 		while (TokenType::COMMA == g_token.opType) {
@@ -302,7 +296,7 @@ TreeNode* constDefine() {
 
 			q->child[0] = newDecNode(DecKind::Const_DefK);
 			//保存字符数据
-			q->attr.cval = atoi(g_token.value);
+			q->child[0]->attr.cval = g_token.value[0];
 			match(TokenType::LETTER);
 
 			p = q;
@@ -539,7 +533,7 @@ void paraTable(FuncInfo* finfo) {
 		// {,<类型标识符><标识符>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
-			typeID();
+			Type _t = typeID();
 			finfo->paratable[cnt].ptype = _t;
 			finfo->paratable[cnt++].pname = copyString(g_token.value);
 			match(TokenType::IDEN);
@@ -1083,7 +1077,7 @@ TreeNode* factor() {
 	}
 	else if (TokenType::LETTER == g_token.opType) {
 		t = newExpNode(ExpKind::Num_ExpK);
-		t->attr.val = atoi(g_token.value);
+		t->attr.val = g_token.value[0];
 		match(TokenType::LETTER);
 	}
 	else if (TokenType::LPARENTHES == g_token.opType) {

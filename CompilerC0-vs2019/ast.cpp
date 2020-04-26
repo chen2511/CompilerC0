@@ -37,7 +37,8 @@ TreeNode* newStmtNode(StmtKind kind) {
 	t->lineno = g_lineNumber;
 	t->nodekind = NodeKind::StmtK;
 	t->kind.stmt = kind;
-	// attr vec type 不做初始化
+	// attr type 不做初始化
+	t->vec = -1;
 	t->pfinfo = NULL;
 
 	return t;
@@ -57,7 +58,8 @@ TreeNode* newExpNode(ExpKind kind) {
 	t->lineno = g_lineNumber;
 	t->nodekind = NodeKind::ExpK;
 	t->kind.exp = kind;
-	// attr vec type 不做初始化
+	// attr type 不做初始化
+	t->vec = -1;
 	t->pfinfo = NULL;
 
 	return t;
@@ -77,17 +79,18 @@ TreeNode* newBoolExpNode(BoolExpKind kind) {
 	t->lineno = g_lineNumber;
 	t->nodekind = NodeKind::BoolExpK;
 	t->kind.bexp = kind;
-	// attr vec type 不做初始化
+	// attr type 不做初始化
+	t->vec = -1;
 	t->pfinfo = NULL;
 
 	return t;
 }
 
 // 定义函数时，保存函数信息：返回类型和参数表
-FuncInfo* newFuncInfo(Type t)
-{
-	return nullptr;
-}
+//FuncInfo* newFuncInfo(Type t)
+//{
+//	return nullptr;
+//}
 
 char* copyString(char* s)
 {
