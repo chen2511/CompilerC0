@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string.h>
 
+
 #define RESERVEDWORD_NUM 14
 
 #define PRINT_AST_TOFILE true
@@ -128,6 +129,32 @@ typedef struct TreeNode {
 }TreeNode;
 
 
+/////////////////// 语义分析
+#define SYMBOL_TABLE_SIZE 211
+
+typedef enum IDType {
+    Const_ID, Var_ID, Para_ID, Func_ID
+}IDType;
+
+// 符号表中的每一项
+typedef struct Symbol {
+    char* name;					// 标识符名字
+    IDType type;				// ID类型： const，var，para，function
+    Type valueType;				// ID的类型值：常变量的类型、参数类型、函数返回类型
+    int value;					// 常量定义值						只有常数定义才会传入
+    int adress;					// 内存地址
+    int vec;					// 数组大小，不是数组为-1；			只有定义数组时，才会传入
+    FuncInfo* pfinfo;			// 函数信息，AST中已有，拷贝即可；  只有函数定义是，才会传进，否则NULL
+    struct Symbol* next;		// 有相同hash值时，下一条
+}Symbol, * SymbolList;
+
+typedef struct SymTab {
+    SymTab* next;				// 多张表；指向下一张表
+    char* fname;
+    SymbolList hashTable[SYMBOL_TABLE_SIZE];
+}SymTab;
+
+extern SymTab* g_symtab;
 
 #endif
 

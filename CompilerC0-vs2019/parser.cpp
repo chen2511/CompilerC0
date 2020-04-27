@@ -1,3 +1,7 @@
+/*
+	递归下降子程序实现语法分析，并生成抽象语法树
+*/
+
 #include "global.h"
 #include "parser.h"
 #include "scan.h"

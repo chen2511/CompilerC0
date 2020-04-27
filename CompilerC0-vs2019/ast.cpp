@@ -1,5 +1,9 @@
 #include "ast.h"
 
+/*
+	AST节点的建立、输出AST到文件的实现
+*/
+
 
 // 创建声明节点：包括常量、变量、函数等等说明定义，传入具体声明类型，返回节点指针
 TreeNode* newDecNode(DecKind kind) {
@@ -187,6 +191,68 @@ void tran2opcode(TokenType op) {
 	}
 }
 
+// 中序输出 表达式 ； 之前是先序
+void printExp(TreeNode* exp) {
+	if (NULL == exp)
+		return;
+	printExp(exp->child[0]);
+
+
+	switch (exp->kind.exp)
+	{
+	case ExpKind::Num_ExpK:
+		fprintf(AST_File, " %d ", exp->attr.val);
+		break;
+	case ExpKind::Iden_ExpK:
+		fprintf(AST_File, " %s ", exp->attr.name);
+		break;
+	case ExpKind::Letter_ExpK:
+		fprintf(AST_File, " '%c' ", exp->attr.cval);
+		break;
+	case ExpKind::Op_ExpK:
+		tran2opcode(exp->attr.op);
+		fprintf(AST_File, " %s ", op_code);
+		break;
+	default:
+		break;
+	}
+
+	printExp(exp->child[1]);
+
+}
+
+void printBoolExp(TreeNode* exp) {
+	if (NULL == exp)
+		return;
+	printBoolExp(exp->child[0]);
+
+	if (exp->nodekind == NodeKind::BoolExpK) {
+		printExp(exp);
+	}
+	else {
+		switch (exp->kind.bexp)
+		{
+		case BoolExpKind::Op_BoolEK:
+			tran2opcode(exp->attr.op);
+			fprintf(AST_File, " %s ", op_code);
+			break;
+		case BoolExpKind::Const_BoolEK:
+			fprintf(AST_File, " %d ", exp->attr.bval);
+			break;
+		case BoolExpKind::ConOp_BoolEK:
+			tran2opcode(exp->attr.op);
+			fprintf(AST_File, " %s ", op_code);
+			break;
+		default:
+			break;
+		}
+	}
+
+	
+
+	printBoolExp(exp->child[0]);
+}
+
 // 输出抽象语法树；还是有必要的，因为后面调试的时候，要是出什么问题，可以通过输出的结果来查找问题；是哪一阶段的问题
 void printAST(TreeNode* tree)
 {
@@ -286,7 +352,7 @@ void printAST(TreeNode* tree)
 				fprintf(AST_File, "\nCall Stmt:  Function: %s \n", tree->attr.name);
 				break;
 			case StmtKind::Seq_StmtK:
-				fprintf(AST_File, "Stmt Sequence>>>   \n");
+				fprintf(AST_File, "\nStmt Sequence>>>   \n");
 				break;
 			case StmtKind::Read_StmtK:
 				fprintf(AST_File, "\nRead Stmt:\n");
@@ -308,24 +374,9 @@ void printAST(TreeNode* tree)
 			}
 		}
 		else if (NodeKind::ExpK == tree->nodekind) {
-			switch (tree->kind.exp)
-			{
-			case ExpKind::Num_ExpK:
-				fprintf(AST_File, " %d ", tree->attr.val);
-				break;
-			case ExpKind::Iden_ExpK:
-				fprintf(AST_File, " %s ", tree->attr.name);
-				break;
-			case ExpKind::Letter_ExpK:
-				fprintf(AST_File, " '%c' ", tree->attr.cval);
-				break;
-			case ExpKind::Op_ExpK:
-				tran2opcode(tree->attr.op);
-				fprintf(AST_File, " %s ", op_code);
-				break;
-			default:
-				break;
-			}
+			// 好像还是 原来的顺序比较好； 这样的话 输出结果没有括号，有歧义
+			printExp(tree);
+			return;
 		}
 		else
 		{
@@ -352,7 +403,7 @@ void printAST(TreeNode* tree)
 					printAST(tree->child[i]);
 			}
 			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Seq_StmtK) {
-				fprintf(AST_File, "<<<Stmt Sequence End  \n");
+				fprintf(AST_File, "\n<<<Stmt Sequence End  \n");
 			}
 			tree = tree->sibling;
 		}

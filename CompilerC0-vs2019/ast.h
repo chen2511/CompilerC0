@@ -19,8 +19,10 @@ TreeNode* newBoolExpNode(BoolExpKind kind);
 // 定义函数时，保存函数信息：返回类型和参数表
 // FuncInfo* newFuncInfo(Type t);
 
+// 拷贝token中的字符串到动态分配的空间
 char* copyString(char* s);
 
+// 输出抽象语法树到文件
 void printAST(TreeNode* tree);
 
 #endif // !AST_H

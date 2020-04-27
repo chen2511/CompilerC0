@@ -27,6 +27,12 @@
     <ClCompile Include="ast.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="symtab.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="semantic.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scan.h">
@@ -39,6 +45,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="ast.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="symtab.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="semantic.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,8 @@
 #include "global.h"
 #include "scan.h"
 #include "parser.h"
+#include "semantic.h"
+#include "symtab.h"
 
 using namespace std;
 #pragma warning(disable:4996)
@@ -8,10 +10,10 @@ using namespace std;
 FILE* sourceFile;
 FILE* AST_File;
 
-
 int g_lineNumber = 0;
 _tToken g_token;
 
+SymTab* g_symtab;
 
 int main(int argc, char* argv[])
 {
@@ -23,15 +25,10 @@ int main(int argc, char* argv[])
         cout << "source file open successfully!\n";
     }
 
-    // ´Ê·¨·ÖÎö²âÊÔ
-    //do {
-    //    getNextToken();
-    //    if (!EOF_flag)
-    //        cout << " token type: " << token.opType << " value: " << token.value << endl;
-    //} while (!EOF_flag);
+    TreeNode* synaxtree = parser();
 
-    parser();
-
+    g_symtab = initSimpleSymTable((char*)("Global"));
+    semanticAnalyze(synaxtree);
 
 
     return 0;
