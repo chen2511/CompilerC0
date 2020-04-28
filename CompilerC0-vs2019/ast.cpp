@@ -1,7 +1,9 @@
 #include "ast.h"
 
 /*
-	AST节点的建立、输出AST到文件的实现
+	内容包括两部分：
+		AST节点的建立	new***Node()、分配存储空间 copystring()
+		输出AST到文件的实现 printAST()
 */
 
 
@@ -111,6 +113,8 @@ char* copyString(char* s)
 	
 }
 
+
+// op输出 从数字变成 操作符
 static char op_code[10];
 void tran2opcode(TokenType op) {
 	switch (op)
@@ -140,10 +144,6 @@ void tran2opcode(TokenType op) {
 		op_code[0] = '(';
 		op_code[1] = ')';
 		op_code[2] = '\0';
-		break;
-	case TokenType::NEGATIVE:
-		op_code[0] = '%';
-		op_code[1] = '\0';
 		break;
 	case TokenType::AND:
 		op_code[0] = '&';
@@ -192,6 +192,7 @@ void tran2opcode(TokenType op) {
 }
 
 // 中序输出 表达式 ； 之前是先序
+// 事实上这里有个bug，关于函数调用，参数显示不完全；但AST是正确的；以后再修改把
 void printExp(TreeNode* exp) {
 	if (NULL == exp)
 		return;
@@ -205,9 +206,6 @@ void printExp(TreeNode* exp) {
 		break;
 	case ExpKind::Iden_ExpK:
 		fprintf(AST_File, " %s ", exp->attr.name);
-		break;
-	case ExpKind::Letter_ExpK:
-		fprintf(AST_File, " '%c' ", exp->attr.cval);
 		break;
 	case ExpKind::Op_ExpK:
 		tran2opcode(exp->attr.op);
@@ -251,6 +249,15 @@ void printBoolExp(TreeNode* exp) {
 	
 
 	printBoolExp(exp->child[0]);
+}
+
+void printParaList(TreeNode* st) {
+	fprintf(AST_File, "Paras: ");
+	while (st != NULL) {
+		printExp(st);
+		st = st->sibling;
+	}
+	fprintf(AST_File, "\n");
 }
 
 // 输出抽象语法树；还是有必要的，因为后面调试的时候，要是出什么问题，可以通过输出的结果来查找问题；是哪一阶段的问题
@@ -399,11 +406,17 @@ void printAST(TreeNode* tree)
 		}
 		if (NULL != tree) {
 			for (int i = 0; i < MAX_TREENODE_CHILD_NUM; i++) {
+				if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Call_StmtK) 	// 函数调用
+					break;
 				if (NULL != tree->child[i])
 					printAST(tree->child[i]);
 			}
-			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Seq_StmtK) {
+			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Seq_StmtK) {		// 语句列
 				fprintf(AST_File, "\n<<<Stmt Sequence End  \n");
+			}
+
+			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Call_StmtK) {		// 函数调用
+				printParaList(tree->child[0]);
 			}
 			tree = tree->sibling;
 		}

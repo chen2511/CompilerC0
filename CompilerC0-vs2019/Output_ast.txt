@@ -30,8 +30,8 @@ ID name: g_e
 
 Stmt Sequence>>>   
 
-Assign to: a
- 5  *  func  ()  *  a  +  53  %  +  a  []  3  +  599 
+Assign to: a1
+ 0  -  5  *  func  ()  *  a2  +  53  +  a3  []  3  +  599 
 <<<Stmt Sequence End  
 
 >>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
@@ -123,8 +123,27 @@ ID name: l
 
 Stmt Sequence>>>   
 
-Assign to: a
- f_2  *  55  *  1  %  +  arr  []  2  -  103  +  f_b  () 
+Assign to: k
+ a_2  *  55  *  0  -  1  +  k  []  2  +  g_a  +  j  -  103  +  f_b  ()  dddd  +  f_b  ()  *  f_c  ()  *  f_undefine  () 
+Call Stmt:  Function: f_un 
+Paras: 
+
+Call Stmt:  Function: f_c 
+Paras:  g  h 
+
+Call Stmt:  Function: f_c 
+Paras:  g 
+
+Read Stmt:
+Read ID: a
+
+Read Stmt:
+Read ID: g
+Read ID: h
+
+Read Stmt:
+Read ID: k
+
 If :
  ||  &&  &&  ||  bool(1)  8  ||  bool(0)  bool(1)  &&  <=  88  56  !=  f_b  ()  22 
 Stmt Sequence>>>   
@@ -143,36 +162,21 @@ Stmt Sequence>>>
 For Stmt:
 
 Assign to: a
- 1  ==  a  b 
+ 1  ==  a  eee 
 Assign to: b
  3 
-Assign to: g_a
- 88 
-Assign to: g_c
- 33  2 
-Call Stmt:  Function: f_a 
-
-Call Stmt:  Function: f_b 
- 8  *  6 
-Read Stmt:
-Read ID: a
-
-Read Stmt:
-Read ID: b
-Read ID: c
-
 Write Stmt:
 Write Str: aaaa11
  a 
 Write Stmt:
-Write Str: aaaa12221
+Write Str: aaaa12221%c
 
 Write Stmt:
  acc 
 If :
  bool(0) 
 If :
- bool(1) 
+ ___true 
 Stmt Sequence>>>   
 
 <<<Stmt Sequence End  

@@ -111,7 +111,7 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 		return true;
 	}
 	else {									// 已定义，报错
-		printf("Error in lineno %d : %s had been defined\n", lineno, name);
+		printf("Error in line %d : %s 重定义\n", lineno, name);
 		return false;
 	}
 }

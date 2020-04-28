@@ -7,7 +7,7 @@ char g_c[0], g_d[5];
 int g_e;
 
 void f_a(){
-	a = -5 * func() * ( a + '5') + a[3] + 599;
+	a1 = -5 * func() * ( a2 + '5') + a3[3] + 599;
 }
 
 int f_b(int a, char b){
@@ -42,38 +42,38 @@ void main()
 
 	int g,h;
 	int i;
-	char j;
+	char j[30];
 	char k,l;
 
 
-	a = f_2 * 55 * ( -1 + arr[2] - 'g' ) + f_b();
+	k = a_2 * 55 * ( -1 + k[2] + g_a + j - 'g' ) + f_b(dddd, dddd2) + f_b() * f_c() * f_undefine();
 
+	f_un();
+	f_c(g, h);
+	f_c(g);
+
+	scanf(a);
+	scanf(g, h);
+	scanf(k);
+	
 
 	if( ( true || 8 )&& ! false && true || 88 <= '8' && f_b() != 22){
 		printf("aaaaaa");
 	}
+
 	while(true){
 		;
 	}
 
-	for(a=1; a == b; b=3)
+	for(a=1; a == eee; b=3)
 		;
 
-	g_a=88;
-	g_c[2]=33;
-
-	f_a();
-	f_b(8*6,2,a);
-
-	scanf(a);
-	scanf(b,c);
-
 	printf("aaaa11",a);
-	printf("aaaa12221");
+	printf("aaaa12221%c");
 	printf(acc);
 
 	if(false)
-	if(true){
+	if(___true){
 	
 	}
 	else{

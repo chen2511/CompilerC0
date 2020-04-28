@@ -978,10 +978,20 @@ TreeNode* exp() {
 
 	if (isNegative) {
 		// 正的 不做处理，负数 会把第一项的值， 变号
+		//p = newExpNode(ExpKind::Op_ExpK);
+		//p->attr.op = TokenType::NEGATIVE;
+		//p->child[0] = t;
+		//t = p;
+
+		// 新方法： 开始的负号转换成： 0 - term
 		p = newExpNode(ExpKind::Op_ExpK);
-		p->attr.op = TokenType::NEGATIVE;
-		p->child[0] = t;
+		p->attr.op = TokenType::MINU;
+		p->child[1] = t;
 		t = p;
+
+		p = newExpNode(ExpKind::Num_ExpK);
+		p->attr.val = 0;
+		t->child[0] = p;
 	}
 	// { <加法运算符><项> }
 	while (TokenType::PLUS == g_token.opType || TokenType::MINU == g_token.opType) {

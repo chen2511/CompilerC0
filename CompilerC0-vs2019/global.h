@@ -25,7 +25,7 @@ typedef enum {
     ASSIGN, COMMA, SEMICOLON,                   //31-33: =  ,  ;
     LBRACE, RBRACE, LBRACKET, RBRACKET,         //34-37:{ } [ ]
     LPARENTHES, RPARENTHES,                     //38-39:( )      
-    CALL, ARRAYAT, NEGATIVE                     // 在表达式中额外的操作：函数调用、数组、取负值
+    CALL, ARRAYAT                               // 在表达式中额外的操作：函数调用、数组，但不会在语法分析阶段出现
 }TokenType;
 
 //Token:枚举类型TokenType、值string value
@@ -72,8 +72,10 @@ typedef enum {
 
 }StmtKind;
 
+
+
 typedef enum {
-    Op_ExpK, Num_ExpK, Iden_ExpK, Letter_ExpK               //操作类型 ， 数字， 标识符
+    Op_ExpK, Num_ExpK, Iden_ExpK                           //操作类型 ， 数字（字母常量按数字保存）， 标识符
 }ExpKind;
 
 typedef enum {
