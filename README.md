@@ -9,12 +9,16 @@
 ## 零、文件说明
 
 -   global.h：全局数据结构、全局变量
-
--   scan.h：词法分析关键函数声明
-
+-   scan.h：
 -   scan.cpp：词法分析实现
+-   parser.h：
 -   parser.cpp：语法分析：递归下降分析
--   parser.h：语法分析关键函数声明
+-   ast.h：
+-   ast.cpp：AST创建不同类型节点、输出AST
+-   symtab.h：
+-   symtab.cpp：符号表基本操作：插入、查找、初始化
+-   semantic.h：
+-   semantic.cpp：遍历AST，构建符号表、语义检查
 
 
 
@@ -225,7 +229,7 @@ typedef enum {
 
 >   这一部分 花了大量时间，需要验证文法的可行性；以及编程的可行性
 
-#### 二义性
+#### 2.1.1 二义性
 
 -   if else
 -   表达式
@@ -234,15 +238,15 @@ typedef enum {
 
 >   未发现其他二义性的地方
 
-#### 左递归
+#### 2.1.2 左递归
 
 可以较为容易地判断出：没有直接和间接左递归。
 
-#### 回溯
+#### 2.1.3 回溯
 
 通过改造文法（简单的改造，提取公共左因子；但为了直观、更方便处理，有的不改造了）或者  算法处理（if else 进一步判断，判断后回溯，感觉思想类似LL(n)了，事实上就没有消除回溯）
 
-#### 计算FIRST和FOLLOW集
+#### 2.1.4 计算FIRST和FOLLOW集
 
 >   可以用于选择、重复的case判断
 
@@ -254,7 +258,7 @@ typedef enum {
 
 
 
-#### EBNF
+#### 2.1.5 EBNF
 
 EBNF更适合递归下降分析法
 
@@ -266,13 +270,13 @@ EBNF更适合递归下降分析法
 
 ### 2.2 编程思想
 
-#### 基本方法
+#### 2.2.1 基本方法
 
 ![image-20200419225239669](README.assets/image-20200419225239669.png)
 
 >   case选择不同的，遇到终结符，就match；非终结符就调用函数
 
-#### 重复和选择：使用EBNF
+#### 2.2.2 重复和选择：使用EBNF
 
 >   这里面的判断条件是根据 first集的 或者 空语句的时候，就要follow集
 >
@@ -296,7 +300,7 @@ EBNF更适合递归下降分析法
 
 ### 2.3 数据结构
 
-#### AST
+#### 2.3.1 AST
 
 未打算使用抽象语法树，因为发现可以不使用抽象语法树，直接转IR（三地址码等），可能建立起来还会多此一举；而且考虑到未发现统一的语法树结构定义，而且文法不同，也要做出改变。
 
@@ -304,7 +308,7 @@ EBNF更适合递归下降分析法
 
 
 
-#### 回溯指针
+#### 2.3.2 回溯指针
 
 ```c++
 static int flashBackIndex;
@@ -314,7 +318,7 @@ static int flashBackIndex;
 
 ### 2.4 关键函数
 
-#### 匹配终结符函数
+#### 2.4.1 匹配终结符函数
 
 ```c++
 // 匹配 期待的 token；否则报错
@@ -322,7 +326,7 @@ static int flashBackIndex;
 static void match(TokenType expectToken)
 ```
 
-#### 非终结符过程
+#### 2.4.2 非终结符过程
 
 ```c++
 //为每一个非终结符创建一个函数
@@ -369,7 +373,7 @@ void conditionFactor();
 
 ### 2.5 注意问题
 
-#### 1、公共因子
+#### 2.5.1、公共因子
 
 ```
 13.<程序> ::= ［<常量说明>］［<变量说明>］{<有返回值函数定义>|<无返回值函数定义>}<主函数>
@@ -383,7 +387,7 @@ void conditionFactor();
 
 
 
-#### 2、单元测试
+#### 2.5.2、单元测试
 
 -   常、变量说明
 
@@ -396,7 +400,7 @@ void conditionFactor();
 -   语句列、语句
 -   表达式：算术、布尔
 
-#### 3、错误处理
+#### 2.5.3、错误处理
 
 ![image-20200421011557996](README.assets/image-20200421011557996.png)
 
@@ -412,21 +416,445 @@ void conditionFactor();
 
 >   因为一开始没有这个打算，这是临时加的，所以放到最后了。
 
+#### 2.6.1 设计抽象语法树
+
 先根据 语法定义手动画出可能的抽象语法树；
+
+>   高清图可查看svg
+
+![image-20200429162352589](README.assets/image-20200429162352589.png)
+
+语句：
+
+![image-20200429162421569](README.assets/image-20200429162421569.png)
+
+表达式
+
+![image-20200429162432363](README.assets/image-20200429162432363.png)
+
+布尔表达式
+
+![image-20200429162443694](README.assets/image-20200429162443694.png)
+
+#### 2.6.2 数据结构
 
 然后结合图和文法，设计数据结构；
 
+大体说明：总的有四种类型：DecK, StmtK, ExpK, BoolExpK（NodeKind nodekind; 字段保存）
+
+具体类型：union确定
+
+```c++
+#define MAX_TREENODE_CHILD_NUM  3                       // 最大孩子节点数
+#define MAX_PARAMETERE_NUM      8                       // 最大参数个数
+
+typedef enum {
+    DecK, StmtK, ExpK, BoolExpK                         //声明，语句，表达式，布尔表达式
+}NodeKind;
+
+typedef enum {
+    Const_DecK, Var_DecK, Func_DecK, MainFunc_DecK,         //常量说明，变量说明， 非主函数说明， 主函数说明
+    Const_DefK, Var_DefK                                    //常量定义，变量定义
+}DecKind;
+
+typedef enum {
+    If_StmtK, While_StmtK, For_StmtK, Assign_StmtK,         //条件， 循环， 赋值 语句
+    Call_StmtK, Seq_StmtK, Read_StmtK, Write_StmtK,         //调用， 语句列， 读，写语句
+    Ret_StmtK,                                              //返回语句
+    // 为了便于遍历AST， 增加节点类型：即语句每个成分都有一个类型
+    Write_StmtK_Str,
+    Read_StmtK_Idlist
+}StmtKind;
+
+typedef enum {
+    Op_ExpK, Num_ExpK, Iden_ExpK                           //操作类型 ， 数字（字母常量按数字保存）， 标识符
+}ExpKind;
+
+typedef enum {
+    Op_BoolEK,                                              //布尔表达式操作：与或非； 
+    Const_BoolEK, ConOp_BoolEK                              //布尔常量， 条件运算符
+    //ConFac_BoolEK                                           // 条件因子， 其实就是简化了一点的表达式
+    // 条件因子 用的是表达式节点，与表达式构造方法相同， 但是在另一个过程里实现（语法定义中不是表达式，但实际是）
+}BoolExpKind;
+
+// 类型信息： 可以是定义时 保存的类型信息；也可以用于 检验表达式中类型是否匹配
+typedef enum {
+    T_VOID, T_INTEGER, T_CHAR
+}Type;
+
+// 函数信息：返回类型和参数表；也可以链接到符号表中
+typedef struct {
+    Type rettype;
+    struct {
+        Type ptype;
+        char* pname;
+    }paratable[MAX_PARAMETERE_NUM];
+    int paranum;
+}FuncInfo;
+
+// AST 的节点：左孩子右兄弟的树形结构；但表达式部分 又是二叉树结构
+typedef struct TreeNode {
+    struct TreeNode* child[MAX_TREENODE_CHILD_NUM];     // 左孩子，最多三个，通常只有一个，特定语句有多个
+    struct TreeNode* sibling;                           // 右兄弟
+    int lineno;                                     // 错误报告行号
+    
+    NodeKind nodekind;                              // 节点类型
+    union {
+        DecKind dec;
+        StmtKind stmt;
+        ExpKind exp;
+        BoolExpKind bexp;
+    }kind;                                          // 节点具体类型
+
+    union {
+        TokenType op;                                   // 操作类型：通常是表达式中
+        int val;                                        // NUM的值
+        char cval;                                      // Char 型 值
+        char* name;                                     // Id 的值，也可以是函数名，Str的值
+        bool bval;                                      // bool 常量
+        char* str;                                      // String 类型
+    }attr;                                          // 节点属性
+    int vec;                                        // 变量定义阶段设置：数组长度，不是数组就是-1 ； 
+    Type type;                                      // 常、变量定义 ，类型说明 和 表达式类型检查
+                                                    // 函数信息：返回类型和参数表；也可以链接到符号表中
+    FuncInfo* pfinfo;                               // 函数定义阶段设置：函数信息； 或者是函数调用阶段的参数表
+
+}TreeNode;
+```
+
 之后再验证数据结构
 
+#### 2.6.3 编程验证
+
+```c++
+#pragma once
+#ifndef AST_H
+#define AST_H
+
+#include "global.h"
+
+// 创建声明节点：包括常量、变量、函数等等说明定义，传入具体声明类型，返回节点指针
+TreeNode* newDecNode(DecKind kind);
+
+// 创建语句节点：传入具体声明类型，返回节点指针
+TreeNode* newStmtNode(StmtKind kind);
+
+// 创建表达式节点：传入具体声明类型，返回节点指针
+TreeNode* newExpNode(ExpKind kind);
+
+// 创建布尔表达式节点：传入具体声明类型，返回节点指针
+TreeNode* newBoolExpNode(BoolExpKind kind);
+
+// 定义函数时，保存函数信息：返回类型和参数表
+// FuncInfo* newFuncInfo(Type t);
+
+// 拷贝token中的字符串到动态分配的空间
+char* copyString(char* s);
+
+// 输出抽象语法树到文件
+void printAST(TreeNode* tree);
+
+#endif // !AST_H
+```
 
 
-表达式策略：计算时只有三种节点：操作（+-*/数组、call、取负）、数字（字符也当作数字运算）、标识符
+
+表达式策略：计算时只有三种节点：操作（+-*/数组、call、取负（改为0- term））、数字（字符也当作数字运算）、标识符
 
 如果是赋值会进行截断处理；比较时都是整形
 
 >   终于明白为什么参数个数一致即可；int转char截断即可；char转int扩展；所以只需要记录个数
 
+#### 2.6.4 输出到文件
 
+主要工作是遍历AST
+
+主要思想是：（深度优先思想）先遍历所有孩子节点，再遍历兄弟节点。
+
+>   重大bug：不要用return，不然兄弟节点会被跳过；break即可
+
+例子：
+
+```c++
+const int gc_a = 22;
+const int gc_b = -22, gc_c = 0;
+const char gc_d = 'z', gc_e = 'x';
+
+int g_a, g_b;
+char g_c[0], g_d[5];
+int g_e;
+
+void f_a(){
+	a1 = -5 * func() * ( a2 + '5') + a3[3] + 599;
+}
+
+int f_b(int a, char b){
+	const int a = 1, b = 2;
+	const int c = 2;
+	const char d = '2', e = '3';
+	const char f = '4';
+
+
+	int g,h;
+	int i;
+	char j;
+	char k,l;
+
+	return (a + b);	
+	
+}
+
+void f_c(int c, int d){
+	int c;
+
+	;
+}
+
+void main()
+{
+	const int a = 1, b = 2;
+	const int c = 2;
+	const char d = '2', e = '3';
+	const char f = '4';
+
+
+	int g,h;
+	int i;
+	char j[30];
+	char k,l;
+
+
+	k = a_2 * 55 * ( -1 + k[2] + g_a + j - 'g' ) + f_b(dddd, dddd2) + f_b() * f_c() * f_undefine();
+
+	f_un();
+	f_c(g, h);
+	f_c(g);
+
+	scanf(a);
+	scanf(g, h);
+	scanf(k);
+	
+
+	if( ( true || 8 )&& ! false && true || 88 <= '8' && f_b() != 22){
+		printf("aaaaaa");
+	}
+
+	while(true){
+		;
+	}
+
+	for(a=1; a == eee; b=3)
+		;
+
+	printf("aaaa11",a);
+	printf("aaaa12221%c");
+	printf(acc);
+
+	if(false)
+	if(___true){
+	
+	}
+	else{
+	
+	}
+
+
+	return ;
+}
+```
+
+
+
+```
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_a		value:	22
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_b		value:	-22
+ID name:		gc_c		value:	0
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		gc_d		value:	z
+ID name:		gc_e		value:	x
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_a
+ID name: g_b
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: g_c
+ID name: g_d
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_e
+
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_a 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 
+
+Stmt Sequence>>>   
+
+Assign to: a1
+ 0  -  5  *  func  ()  *  a2  +  53  +  a3  []  3  +  599 
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_b 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 1 a	1 a	
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	2
+ID name:		e		value:	3
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
+
+
+Stmt Sequence>>>   
+
+Ret Stmt:
+ a  +  b 
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_c 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 1 c	1 c	
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: c
+
+
+Stmt Sequence>>>   
+
+<<<Stmt Sequence End  
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	2
+ID name:		e		value:	3
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
+
+
+Stmt Sequence>>>   
+
+Assign to: k
+ a_2  *  55  *  0  -  1  +  k  []  2  +  g_a  +  j  -  103  +  f_b  ()  dddd  +  f_b  ()  *  f_c  ()  *  f_undefine  () 
+Call Stmt:  Function: f_un 
+Paras: 
+
+Call Stmt:  Function: f_c 
+Paras:  g  h 
+
+Call Stmt:  Function: f_c 
+Paras:  g 
+
+Read Stmt:
+Read ID: a
+
+Read Stmt:
+Read ID: g
+Read ID: h
+
+Read Stmt:
+Read ID: k
+
+If :
+ ||  &&  &&  ||  bool(1)  8  ||  bool(0)  bool(1)  &&  <=  88  56  !=  f_b  ()  22 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: aaaaaa
+
+<<<Stmt Sequence End  
+
+While Stmt:
+ bool(1) 
+Stmt Sequence>>>   
+
+<<<Stmt Sequence End  
+
+For Stmt:
+
+Assign to: a
+ 1  ==  a  eee 
+Assign to: b
+ 3 
+Write Stmt:
+Write Str: aaaa11
+ a 
+Write Stmt:
+Write Str: aaaa12221%c
+
+Write Stmt:
+ acc 
+If :
+ bool(0) 
+If :
+ ___true 
+Stmt Sequence>>>   
+
+<<<Stmt Sequence End  
+
+Stmt Sequence>>>   
+<<<Stmt Sequence End  
+Ret Stmt:
+
+<<<Stmt Sequence End  
+```
 
 
 
@@ -436,7 +864,7 @@ void conditionFactor();
 
 >   一遍的编译器中，词法分析、语法分析、语义分析是同时进行的
 >
->   我的顺序：在生成抽象语法树之后，再遍历抽象语法树，构建符号表，进行语义分析（事实上技术上的难度没什么差别，都很简单，甚至在语法分析分析当前token时，直接进行语义分析更简单）
+>   我的顺序：在生成抽象语法树之后，再遍历抽象语法树，构建符号表，进行语义分析（事实上技术上的难度没什么差别，都很简单，做的事情基本一样）
 
 
 
@@ -473,6 +901,8 @@ typedef struct SymTab {
     SymbolList hashTable[SYMBOL_TABLE_SIZE];
 }SymTab;
 ```
+
+>   此处有些设计不好，枚举类型和成员名字容易混淆
 
 一张全局表，每个函数对应一张符号子表
 
