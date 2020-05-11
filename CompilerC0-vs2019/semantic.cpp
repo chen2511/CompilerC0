@@ -5,17 +5,19 @@
 static bool isGlobal = true;
 
 void semanticExp(TreeNode* tree);
-int checkParaNum(TreeNode* list);
+int checkParaNum(TreeNode* list, FuncInfo* pf);
 
 
 // 检查 函数调用 参数列表 ，返回个数
-int checkParaNum(TreeNode* list) {
+int checkParaNum(TreeNode* list, FuncInfo* pf) {
 	// 参数列表是一个表达式列表，里面的每一个表达式都要检查
 	int cnt = 0;
 	while (NULL != list) {
-		cnt++;
+		
 		semanticExp(list);
+		list->type = pf->paratable[cnt].ptype;
 		list = list->sibling;
+		cnt++;
 	}
 	return cnt;
 }
@@ -54,7 +56,7 @@ void semanticExp(TreeNode* tree) {
 			}
 
 			// 检查参数个数， 同时检查每个参数的表达式是否合法
-			if (lookup->pfinfo->paranum != checkParaNum(tree->child[1])) {
+			if (lookup->pfinfo->paranum != checkParaNum(tree->child[1], lookup->pfinfo)) {
 				printf("Error in line %d : 函数参数不匹配, %s()\n", tree->lineno, lookup->name);
 				return;
 			}
@@ -244,7 +246,7 @@ void semanticAnalyze(TreeNode* tree)
 					}
 					else {											// 是函数，要检查参数
 						// 检查参数个数， 同时检查每个参数的表达式是否合法
-						if (lookup->pfinfo->paranum != checkParaNum(tree->child[0])) {
+						if (lookup->pfinfo->paranum != checkParaNum(tree->child[0], lookup->pfinfo)) {
 							printf("Error in line %d : 函数参数不匹配: %s()\n", tree->lineno, lookup->name);
 							//return;
 						}
@@ -314,6 +316,7 @@ void semanticAnalyze(TreeNode* tree)
 					printf("Error in line %d : 缺少占用符 \n", tree->lineno);
 					//return;
 				}
+				tree->type = Type::T_VOID;
 			}
 				break;
 			case StmtKind::Write_StmtK_Str:			// 并不会进入这里， 上一级 处理了

@@ -33,6 +33,9 @@
     <ClCompile Include="semantic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ir.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scan.h">
@@ -53,9 +56,13 @@
     <ClInclude Include="semantic.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ir.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Text.txt" />
     <Text Include="Output_ast.txt" />
+    <Text Include="IR.txt" />
   </ItemGroup>
 </Project>

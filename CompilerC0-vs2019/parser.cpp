@@ -816,9 +816,9 @@ TreeNode* forLoopStatement() {
 
 	match(TokenType::FOR);
 	match(TokenType::LPARENTHES);
-	t->child[0] = assignStatement();
+	t->child[1] = assignStatement();
 	match(TokenType::SEMICOLON);
-	t->child[1] = boolExp();
+	t->child[0] = boolExp();
 	match(TokenType::SEMICOLON);
 	p = assignStatement();
 	match(TokenType::RPARENTHES);

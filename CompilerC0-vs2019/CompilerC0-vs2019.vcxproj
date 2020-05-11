@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ast.cpp" />
+    <ClCompile Include="ir.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="scan.cpp" />
@@ -148,12 +149,14 @@
   <ItemGroup>
     <ClInclude Include="ast.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="ir.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="scan.h" />
     <ClInclude Include="semantic.h" />
     <ClInclude Include="symtab.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="IR.txt" />
     <Text Include="Output_ast.txt" />
     <Text Include="Text.txt" />
   </ItemGroup>

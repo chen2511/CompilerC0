@@ -3,12 +3,14 @@
 #include "parser.h"
 #include "semantic.h"
 #include "symtab.h"
+#include "ir.h"
 
 using namespace std;
 #pragma warning(disable:4996)
 
 FILE* sourceFile;
 FILE* AST_File;
+FILE* IR_FILE;
 
 int g_lineNumber = 0;
 _tToken g_token;
@@ -30,6 +32,10 @@ int main(int argc, char* argv[])
     g_symtab = initSimpleSymTable((char*)("Global"));
     semanticAnalyze(synaxtree);
 
+    
+    IR_Analyze(synaxtree);
+    IR_FILE = fopen("IR.txt", "w+");
+    printIR();
 
     return 0;
 }

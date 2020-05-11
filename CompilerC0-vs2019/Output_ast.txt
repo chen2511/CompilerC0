@@ -30,14 +30,14 @@ ID name: g_e
 
 Stmt Sequence>>>   
 
-Assign to: a1
- 0  -  5  *  func  ()  *  a2  +  53  +  a3  []  3  +  599 
+Assign to: g_b
+ 0  -  5  *  gc_a  +  53  +  g_d  []  3  +  599 
 <<<Stmt Sequence End  
 
 >>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
  Function Name: f_b 
  Function Info: Return Type(VOID,INT,CHAR):1 
-		ParaTable(VOID,INT,CHAR): 1 a	1 a	
+		ParaTable(VOID,INT,CHAR): 1 pa	1 pa	
 
 ------------ Const Declaration ------------
 
@@ -77,7 +77,7 @@ Ret Stmt:
 >>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
  Function Name: f_c 
  Function Info: Return Type(VOID,INT,CHAR):0 
-		ParaTable(VOID,INT,CHAR): 1 c	1 c	
+		ParaTable(VOID,INT,CHAR): 1 pc	1 pc	
 
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
@@ -124,18 +124,9 @@ ID name: l
 Stmt Sequence>>>   
 
 Assign to: k
- a_2  *  55  *  0  -  1  +  k  []  2  +  g_a  +  j  -  103  +  f_b  ()  dddd  +  f_b  ()  *  f_c  ()  *  f_undefine  () 
-Call Stmt:  Function: f_un 
-Paras: 
-
+ a  *  55  *  0  -  1  +  j  []  2  +  g_a  +  k  -  103  +  f_b  ()  b 
 Call Stmt:  Function: f_c 
 Paras:  g  h 
-
-Call Stmt:  Function: f_c 
-Paras:  g 
-
-Read Stmt:
-Read ID: a
 
 Read Stmt:
 Read ID: g
@@ -145,7 +136,7 @@ Read Stmt:
 Read ID: k
 
 If :
- ||  &&  &&  ||  bool(1)  8  ||  bool(0)  bool(1)  &&  <=  88  56  !=  f_b  ()  22 
+ ||  &&  &&  ||  bool(1)  8  ||  bool(0)  bool(1)  &&  <=  88  56  !=  c  22 
 Stmt Sequence>>>   
 
 Write Stmt:
@@ -157,34 +148,30 @@ While Stmt:
  bool(1) 
 Stmt Sequence>>>   
 
+Write Stmt:
+Write Str: aaaaaa
+
 <<<Stmt Sequence End  
+
+Call Stmt:  Function: f_b 
+Paras:  b  c 
 
 For Stmt:
-
-Assign to: a
- 1  ==  a  eee 
-Assign to: b
+ ==  a  b 
+Assign to: l
+ 1  +  1 
+Assign to: j
+ 6  +  l  5 
+Assign to: i
  3 
 Write Stmt:
-Write Str: aaaa11
+Write Str: aaaa11%d
  a 
 Write Stmt:
-Write Str: aaaa12221%c
+Write Str: aaaa12221
 
 Write Stmt:
- acc 
-If :
- bool(0) 
-If :
- ___true 
-Stmt Sequence>>>   
-
-<<<Stmt Sequence End  
-
-Stmt Sequence>>>   
-
-<<<Stmt Sequence End  
-
+ a 
 Ret Stmt:
 
 <<<Stmt Sequence End  

@@ -37,6 +37,7 @@ typedef struct {
 //源文件
 extern FILE* sourceFile;
 extern FILE* AST_File;
+extern FILE* IR_FILE;
 //行号
 extern int g_lineNumber;
 //在buf中的指针；
@@ -117,8 +118,8 @@ typedef struct TreeNode {
 
     union {
         TokenType op;                                   // 操作类型：通常是表达式中
-        int val;                                        // NUM的值
-        char cval;                                      // Char 型 值
+        int val;                                        // NUM的值：exp中 char也是存这个
+        char cval;                                      // Char 型 值：常量定义
         char* name;                                     // Id 的值，也可以是函数名，Str的值
         bool bval;                                      // bool 常量
         char* str;                                      // String 类型
@@ -127,6 +128,10 @@ typedef struct TreeNode {
     Type type;                                      // 常、变量定义 ，类型说明 和 表达式类型检查
                                                     // 函数信息：返回类型和参数表；也可以链接到符号表中
     FuncInfo* pfinfo;                               // 函数定义阶段设置：函数信息； 或者是函数调用阶段的参数表
+
+    // 转化成IR中用到
+    char* place;
+    int TC, FC;
 
 }TreeNode;
 
@@ -157,6 +162,46 @@ typedef struct SymTab {
 }SymTab;
 
 extern SymTab* g_symtab;
+
+
+
+////////////////////////// IR
+
+#define MAX_QUADVAR_NUM 1000
+
+typedef struct {
+    char op[15];
+    char* var1;
+    char* var2;
+    char* var3;
+}Quadvar;
+
+extern Quadvar quadvarlist[MAX_QUADVAR_NUM];
+extern int NXQ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif
 

@@ -3,14 +3,14 @@ const int gc_b = -22, gc_c = 0;
 const char gc_d = 'z', gc_e = 'x';
 
 int g_a, g_b;
-char g_c[0], g_d[5];
+char g_c[3], g_d[5];
 int g_e;
 
 void f_a(){
-	a1 = -5 * func() * ( a2 + '5') + a3[3] + 599;
+	g_b = -5 * ( gc_a + '5') + g_d[3] + 599;
 }
 
-int f_b(int a, char b){
+int f_b(int pa, char pb){
 	const int a = 1, b = 2;
 	const int c = 2;
 	const char d = '2', e = '3';
@@ -26,7 +26,7 @@ int f_b(int a, char b){
 	
 }
 
-void f_c(int c, int d){
+void f_c(int pc, int pd){
 	int c;
 
 	;
@@ -46,40 +46,30 @@ void main()
 	char k,l;
 
 
-	k = a_2 * 55 * ( -1 + k[2] + g_a + j - 'g' ) + f_b(dddd, dddd2) + f_b() * f_c() * f_undefine();
+	k = a * 55 * ( -1 + j[2] + g_a + k - 'g' ) + f_b(b, c);
 
-	f_un();
 	f_c(g, h);
-	f_c(g);
 
-	scanf(a);
 	scanf(g, h);
 	scanf(k);
 	
 
-	if( ( true || 8 )&& ! false && true || 88 <= '8' && f_b() != 22){
+	if( ( true || 8 )&& ! false && true || 88 <= '8' && c != 22){
 		printf("aaaaaa");
 	}
 
 	while(true){
-		;
+		printf("aaaaaa");
 	}
 
-	for(a=1; a == eee; b=3)
-		;
+	f_b(b, c);
 
-	printf("aaaa11",a);
-	printf("aaaa12221%c");
-	printf(acc);
+	for(l=1+1; a == b; i=3)
+		j[5] = 6+l;
 
-	if(false)
-	if(___true){
-	
-	}
-	else{
-	
-	}
-
+	printf("aaaa11%d",a);
+	printf("aaaa12221");
+	printf(a);
 
 	return ;
 }
