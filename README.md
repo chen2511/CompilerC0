@@ -1048,3 +1048,44 @@ static int f_adress = 0;
 
 
 
+
+
+
+
+## 五、目标代码生成
+
+>   https://firmianay.gitbooks.io/ctf-all-in-one/doc/1.5.2_assembly.html#36-mips%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80
+
+两种格式用于寻址：
+
+-   使用寄存器号码，例如 `$ 0` 到 `$ 31`
+-   使用别名，例如 `$ t1`，`$ sp`
+
+-   特殊寄存器 Lo 和 Hi 用于存储乘法和除法的结果
+
+-   不能直接寻址; 使用特殊指令 `mfhi`（ “ 从 Hi 移动 ” ）和 `mflo`（ “ 从 Lo 移动 ” ）访问的内容
+
+| 寄存器    | 别名      | 用途                                                         |
+| --------- | --------- | ------------------------------------------------------------ |
+| `$0`      | `$zero`   | 常量0(constant value 0)                                      |
+| `$1`      | `$at`     | 保留给汇编器(Reserved for assembler)                         |
+| `$2-$3`   | `$v0-$v1` | 函数调用返回值(values for results and expression evaluation) |
+| `$4-$7`   | `$a0-$a3` | 函数调用参数(arguments)                                      |
+| `$8-$15`  | `$t0-$t7` | 暂时的(或随便用的)                                           |
+| `$16-$23` | `$s0-$s7` | 保存的(或如果用，需要SAVE/RESTORE的)(saved)                  |
+| `$24-$25` | `$t8-$t9` | 暂时的(或随便用的)                                           |
+| `$26~$27` | `$k0~$k1` | 保留供中断/陷阱处理程序使用                                  |
+| `$28`     | `$gp`     | 全局指针(Global Pointer)                                     |
+| `$29`     | `$sp`     | 堆栈指针(Stack Pointer)                                      |
+| `$30`     | `$fp`     | 帧指针(Frame Pointer)                                        |
+| `$31`     | `$ra`     | 返回地址(return address)                                     |
+
+
+
+
+
+>   东：先处理fp，fp到sp，fp=sp，再处理ra，jal；进入函数：保存参数到内存，之后就是函数体；返回阶段：处理返回值v1寄存器，ra到t0，再恢复ra，sp，fp，jr t0
+
+
+
+>   杨：

@@ -407,15 +407,19 @@ void IR_Analyze(TreeNode* tree)
 				char* truelabel = newlabel();
 				char* falselabel = newlabel();
 
+				char* conlabel = newlabel();
 
 				gen("lab", newempty(), newempty(), truelabel);
 				backPatch(tree->child[0]->TC, truelabel);
 
 				IR_Analyze(tree->child[1]);
+				gen("j", newempty(), newempty(), conlabel);
 
 				gen("lab", newempty(), newempty(), falselabel);
 				backPatch(tree->child[0]->FC, falselabel);
 				IR_Analyze(tree->child[2]);
+
+				gen("lab", newempty(), newempty(), conlabel);
 			}
 			break;
 			case StmtKind::While_StmtK:

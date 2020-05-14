@@ -81,11 +81,40 @@ Ret Stmt:
 
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
-ID name: c
+ID name: i
+ID name: sum
 
 
 Stmt Sequence>>>   
 
+Assign to: i
+ 0 
+Assign to: sum
+ 0 
+While Stmt:
+ <  i  100 
+Stmt Sequence>>>   
+
+If :
+ &&  ==  i  0  <  sum  30 
+Stmt Sequence>>>   
+
+Assign to: sum
+ sum  +  i  *  2 
+<<<Stmt Sequence End  
+
+Stmt Sequence>>>   
+
+Assign to: sum
+ sum  +  1 
+<<<Stmt Sequence End  
+
+Assign to: i
+ i  +  1 
+<<<Stmt Sequence End  
+
+Assign to: sum
+ sum  +  1 
 <<<Stmt Sequence End  
 
 ***************************************************
