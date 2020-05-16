@@ -142,3 +142,26 @@ Symbol* lookUp_SymTab(char* name)
 	// 都没有，未定义
 	return nullptr;
 }
+
+
+Symbol* lookUp_SymTab(char* name, bool& isGlobal)
+{
+	isGlobal = false;
+	int h = hash(name);
+	// 先检查函数表
+	SymbolList list = g_symtab->next->hashTable[h];
+	while ((list != NULL) && (strcmp(name, list->name) != 0))
+		list = list->next;
+	if (NULL != list)
+		return list;
+	else {				// 在检查全局表
+		isGlobal = true;
+		list = g_symtab->hashTable[h];
+		while ((list != NULL) && (strcmp(name, list->name) != 0))
+			list = list->next;
+		if (NULL != list)
+			return list;
+	}
+	// 都没有，未定义
+	return nullptr;
+}

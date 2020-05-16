@@ -13,6 +13,9 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 // 返回符号节点指针、未定义返回空指针；
 Symbol* lookUp_SymTab(char* name);
 
+// 目标代码生成时使用，是否全局变量
+Symbol* lookUp_SymTab(char* name, bool& isGlobal);
+
 // 语义分析
 
 
