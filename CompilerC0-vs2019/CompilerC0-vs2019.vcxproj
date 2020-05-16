@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="asm.cpp" />
     <ClCompile Include="ast.cpp" />
     <ClCompile Include="ir.cpp" />
     <ClCompile Include="main.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="symtab.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="asm.h" />
     <ClInclude Include="ast.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="ir.h" />
@@ -156,6 +158,7 @@
     <ClInclude Include="symtab.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="asm.txt" />
     <Text Include="IR.txt" />
     <Text Include="Output_ast.txt" />
     <Text Include="Text.txt" />

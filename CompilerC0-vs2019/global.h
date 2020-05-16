@@ -38,6 +38,7 @@ typedef struct {
 extern FILE* sourceFile;
 extern FILE* AST_File;
 extern FILE* IR_FILE;
+extern FILE* ASM_FILE;
 //行号
 extern int g_lineNumber;
 //在buf中的指针；
@@ -119,7 +120,7 @@ typedef struct TreeNode {
     union {
         TokenType op;                                   // 操作类型：通常是表达式中
         int val;                                        // NUM的值：exp中 char也是存这个
-        char cval;                                      // Char 型 值：常量定义
+        unsigned char cval;                             // Char 型 值：常量定义
         char* name;                                     // Id 的值，也可以是函数名，Str的值
         bool bval;                                      // bool 常量
         char* str;                                      // String 类型
@@ -153,12 +154,16 @@ typedef struct Symbol {
     int vec;					// 数组大小，不是数组为-1；			只有定义数组时，才会传入
     FuncInfo* pfinfo;			// 函数信息，AST中已有，拷贝即可；  只有函数定义是，才会传进，否则NULL
     struct Symbol* next;		// 有相同hash值时，下一条
+
+    bool isreg;                 // isreg 用于生成目标代码阶段，记录是否保存在寄存器中；默认为false；与寄存器分配相关
+    
 }Symbol, * SymbolList;
 
 typedef struct SymTab {
     SymTab* next;				// 多张表；指向下一张表
-    char* fname;
-    SymbolList hashTable[SYMBOL_TABLE_SIZE];
+    char* fname;                // 表名 = 函数名
+    SymbolList hashTable[SYMBOL_TABLE_SIZE];        // 哈希表
+    int varsize;                // 函数局部变量和临时变量的空间大小
 }SymTab;
 
 extern SymTab* g_symtab;
@@ -179,8 +184,14 @@ typedef struct {
 extern Quadvar quadvarlist[MAX_QUADVAR_NUM];
 extern int NXQ;
 
-
-
+#define MAX_STRINGLIST_SIZE 100
+extern char* stringlist[MAX_STRINGLIST_SIZE];
+extern int str_index;
+/////////// FOR genASM
+typedef struct {
+    int regindex;
+    char* varname;
+}RegInfo;
 
 
 

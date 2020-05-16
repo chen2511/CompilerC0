@@ -5,6 +5,7 @@ static int g_adress = 0;
 static int f_adress = 0;
 
 #define SHIFT 4
+#define CHAR_SIZE 4
 
 // 散列函数
 static int hash(char* key)
@@ -28,7 +29,7 @@ SymTab* initSimpleSymTable(char* name)
 	for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
 		st->hashTable[i] = NULL;
 	}
-
+	st->varsize = 0;
 	f_adress = 0;		// 每次有一个新函数，函数表指针变化，相对地址
 	
 	return st;
@@ -68,6 +69,10 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 		sym->vec = vec;
 		sym->pfinfo = p;
 
+		// 默认 false
+		sym->isreg = false;
+
+		// 计算地址，插入表中
 		if (isGlobal) {						// 根据是否全局表，设置地址，插入相应表
 			sym->adress = g_adress;
 			// 更新地址
@@ -76,7 +81,7 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 				size = 4;				// int
 			}
 			else {
-				size = 1;				// 字符
+				size = CHAR_SIZE;				// 字符
 			}
 			if (-1 != vec) {
 				g_adress += size * vec;
@@ -87,6 +92,7 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 			// 全局表
 			sym->next = g_symtab->hashTable[h];
 			g_symtab->hashTable[h] = sym;
+			g_symtab->varsize = g_adress;
 		}
 		else {								// 函数表
 			sym->adress = f_adress;
@@ -96,7 +102,7 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 				size = 4;				// int
 			}
 			else {
-				size = 1;				// 字符
+				size = CHAR_SIZE;				// 字符
 			}
 			if (-1 != vec) {
 				f_adress += size * vec;
@@ -107,6 +113,7 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 			// 插入函数表
 			sym->next = g_symtab->next->hashTable[h];
 			g_symtab->next->hashTable[h] = sym;
+			g_symtab->next->varsize = f_adress;
 		}
 		return true;
 	}

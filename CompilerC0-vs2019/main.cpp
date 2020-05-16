@@ -4,6 +4,7 @@
 #include "semantic.h"
 #include "symtab.h"
 #include "ir.h"
+#include "asm.h"
 
 using namespace std;
 #pragma warning(disable:4996)
@@ -11,6 +12,7 @@ using namespace std;
 FILE* sourceFile;
 FILE* AST_File;
 FILE* IR_FILE;
+FILE* ASM_FILE;
 
 int g_lineNumber = 0;
 _tToken g_token;
@@ -36,6 +38,10 @@ int main(int argc, char* argv[])
     IR_Analyze(synaxtree);
     IR_FILE = fopen("IR.txt", "w+");
     printIR();
+
+    ASM_FILE = fopen("asm.txt", "w+");
+    genasm();
+
 
     return 0;
 }

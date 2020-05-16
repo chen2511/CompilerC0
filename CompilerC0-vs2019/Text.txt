@@ -1,6 +1,6 @@
 const int gc_a = 22;
 const int gc_b = -22, gc_c = 0;
-const char gc_d = 'z', gc_e = 'x';
+const char gc_d = 254, gc_e = 'x';
 
 int g_a, g_b;
 char g_c[3], g_d[5];
@@ -76,7 +76,6 @@ void main()
 	for(l=1+1; a == b; i=3)
 		j[5] = 6+l;
 
-	printf("aaaa11%d",a);
 	printf("aaaa12221");
 	printf(a);
 

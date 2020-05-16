@@ -9,6 +9,10 @@ int labelcnt = 0;
 // 四元式列表
 Quadvar quadvarlist[MAX_QUADVAR_NUM];
 
+char* stringlist[MAX_STRINGLIST_SIZE];
+
+int str_index = 0;
+
 static char zero[5] = "0\0";
 
 char* newtemp();
@@ -162,7 +166,7 @@ void IR_Exp(TreeNode* tree) {
 			IR_Exp(tree->child[0]);
 			insertPara(tree->child[1]);
 			tree->place = newtemp();
-			gen("call", tree->child[0]->place, newempty(), tree->place);
+			gen("callret", tree->child[0]->place, newempty(), tree->place);
 		}
 		else if (tree->attr.op == TokenType::ARRAYAT) {			// 下标运算，检查标识符是否是数组， 并且检查index位置的表达式；但不检查越界
 			IR_Exp(tree->child[0]);
@@ -491,16 +495,17 @@ void IR_Analyze(TreeNode* tree)
 			break;
 			case StmtKind::Write_StmtK:
 			{
-				char* pstr = newempty();
+				//char* pstr = newempty();
 				if (NULL != tree->child[0]) {		// 有Str
-					pstr = tree->child[0]->attr.str;
+					stringlist[str_index] = tree->child[0]->attr.str;
 					if (NULL != tree->child[1]) {		// 有Exp
 						IR_Exp(tree->child[1]);
-						gen("print", pstr, tree->child[1]->place, (tree->type == Type::T_INTEGER) ? (char*)"int" : (char*)"char");
+						gen("print", newitoa(str_index), tree->child[1]->place, (tree->type == Type::T_INTEGER) ? (char*)"int" : (char*)"char");
 					}
 					else {
-						gen("print", pstr, newempty(), newempty());
+						gen("print", newitoa(str_index), newempty(), newempty());
 					}
+					str_index++;
 				}
 				else {								// 没有Str
 					if (NULL != tree->child[1]) {		// 有Exp

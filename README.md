@@ -1046,6 +1046,55 @@ static int f_adress = 0;
 
 
 
+```c++
+#define MAX_QUADVAR_NUM 1000
+
+typedef struct {
+    char op[15];
+    char* var1;
+    char* var2;
+    char* var3;
+}Quadvar;
+
+extern Quadvar quadvarlist[MAX_QUADVAR_NUM];
+extern int NXQ;
+```
+
+
+
+### 四元式
+
+| op        | var1          | var2            | var3     |
+| --------- | ------------- | :-------------- | -------- |
+| +-*/      | id/num        | id/num          | id       |
+| callret   | id（函数名）  |                 | id       |
+| getarray  | id（数组名）  | id/num（index） | id       |
+| jop       | id            | id              | label    |
+| j         |               |                 | label    |
+| jnz       | id/num        |                 | label    |
+| const     | int/char      | val             | name     |
+| int/char  |               |                 | name     |
+| intarray  | size          |                 | name     |
+| chararray | size          |                 | name     |
+| Func      | int/char/void |                 | name     |
+| para      | int/char      |                 | name     |
+| Main      |               |                 |          |
+| setarray  | id/num        | index           | name     |
+| assign    | id/num        |                 | name     |
+| lab       |               |                 | label    |
+| call      | name          |                 |          |
+| vpara     |               |                 | id/num   |
+| scanf     |               |                 | name     |
+| print     | str_index     |                 |          |
+| print     |               | id/num          | int/char |
+| ret       |               |                 | id/num   |
+| ret       |               |                 |          |
+|           |               |                 |          |
+
+
+
+
+
 
 
 
@@ -1053,6 +1102,8 @@ static int f_adress = 0;
 
 
 ## 五、目标代码生成
+
+### 5.0 理论基础
 
 >   https://firmianay.gitbooks.io/ctf-all-in-one/doc/1.5.2_assembly.html#36-mips%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80
 
@@ -1089,3 +1140,34 @@ static int f_adress = 0;
 
 
 >   杨：
+
+>   MIPS编程入门（妈妈说标题要高大上，才会有人看>_<！）https://www.cnblogs.com/thoupin/p/4018455.html
+
+![image-20200514184733334](README.assets/image-20200514184733334.png)
+
+
+
+
+
+### 5.1 思路
+
+#### 1、一种较为简单的思路：（没有考虑寄存器分配的问题）
+
+首先处理全局变量：.data段
+
+之后就是处理函数：.text段，处理$fp,$sp,$ra,局部变量的分配，临时变量分配（全分配，出现位置var3）；之后开始函数体，主要是一些语句：流程控制（选择、循环），赋值，函数调用（无返回值），读写（syscall）；
+
+返回阶段：寄存器还原、返回值
+
+>   事实上，这里用到的寄存器，除特殊指针外，只有t1，t0；计算出中间变量，立即送入内存（事实上这里并不高效，因为接下来可能会使用，又需要取出，完全是多余的；而且临时变量全部分配空间，内存会浪费）；但这有一个好处，就是处理简单，寄存器中的数据是不需要保存的。（下一步，优化阶段，计划采用一定的寄存器分配策略，优化时空）
+
+再一步细化就是表达式的问题，针对算术表达式：+-*/，数组下标，较为简单，取操作数即可，计算完将结果送给内存。函数调用（有返回值）处理完参数之后，直接调用即可，无需考虑寄存器的问题。（但，若后续使用一定的寄存器分配策略就需要保存寄存器状态）。
+
+
+
+
+
+### bug
+
+1、语法树中char的类型改为unsigned char
+

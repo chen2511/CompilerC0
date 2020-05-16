@@ -1,0 +1,14 @@
+.data:
+	$gc_a:	.word	22
+	$gc_b:	.word	-22
+	$gc_c:	.word	0
+	$gc_d:	.word	120
+	$gc_e:	.word	205
+	$g_a:	.word
+	$g_b:	.word
+	$g_c:	.space	12
+	$g_d:	.space	20
+	$g_e:	.word
+	$string0:	.asciiz	"aaaaaa"
+	$string1:	.asciiz	"aaaaaa"
+	$string2:	.asciiz	"aaaa12221"

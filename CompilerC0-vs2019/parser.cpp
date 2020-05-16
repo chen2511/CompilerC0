@@ -292,8 +292,20 @@ TreeNode* constDefine() {
 		p->child[0] = newDecNode(DecKind::Const_DefK);
 		//保存字符数据
 		
-		p->child[0]->attr.cval = g_token.value[0];
-		match(TokenType::LETTER);
+		if (g_token.opType == TokenType::LETTER) {
+			p->child[0]->attr.cval = g_token.value[0];
+			match(TokenType::LETTER);
+		}
+		else {
+			int a = atoi(g_token.value);
+			a += 256;
+			a = (unsigned char)(a);
+			p->child[0]->attr.cval = (unsigned char)(a);
+			match(TokenType::NUM);
+		}
+
+		
+		
 		//{, <标识符>＝<字符>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
@@ -306,8 +318,20 @@ TreeNode* constDefine() {
 
 			q->child[0] = newDecNode(DecKind::Const_DefK);
 			//保存字符数据
-			q->child[0]->attr.cval = g_token.value[0];
-			match(TokenType::LETTER);
+			//q->child[0]->attr.cval = g_token.value[0];
+			//match(TokenType::LETTER);
+
+			if (g_token.opType == TokenType::LETTER) {
+				p->child[0]->attr.cval = g_token.value[0];
+				match(TokenType::LETTER);
+			}
+			else {
+				int a = atoi(g_token.value);
+				a += 256;
+				a = (unsigned char)(a);
+				p->child[0]->attr.cval = (unsigned char)(a);
+				match(TokenType::NUM);
+			}
 
 			p = q;
 		}
