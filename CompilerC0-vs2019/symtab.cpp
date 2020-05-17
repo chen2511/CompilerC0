@@ -123,6 +123,26 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 	}
 }
 
+// 插入临时变量：变量名、isreg、地址
+void insertTempVar2SymTab(char* name)
+{
+	int h = hash(name);
+
+	Symbol* sym = new Symbol;
+	sym->name = name;
+	// 默认 false
+	sym->isreg = false;
+
+	// 函数表
+	sym->adress = g_symtab->next->varsize;
+	// 更新地址
+	g_symtab->next->varsize += 4;
+
+	// 插入函数表
+	sym->next = g_symtab->next->hashTable[h];
+	g_symtab->next->hashTable[h] = sym;
+}
+
 Symbol* lookUp_SymTab(char* name)
 {
 	int h = hash(name);

@@ -4,8 +4,8 @@
 
 // 寄存器与变量的映射队列
 std::list<RegInfo> regInfoList;
-// 剩余可用reg数量:t0-t9，每次函数调用前，应保存寄存器数据，此时重新赋值10
-static int emptyRegNum = 10;
+// 剩余可用reg数量:t0-t9，每次函数调用前，应保存寄存器数据，函数内部重新赋值10
+static int s_emptyRegNum = 10;
 // 当前分析到的四元式序号
 static int cur_4var = 0;
 // 是否已在寄存器中
@@ -14,13 +14,18 @@ static bool isInReg = false;
 static bool isGlobal = false;
 // 要写入内存的变量是否全局变量
 static bool p_isGlobal = false;
+// 函数返回类型
+static Type s_funcRetType;
 
-void dataasm();
+void data2asm();
 int getRegIndex(char* varname);
 void updateSymTab();
 void genasm();
 int checkRegInfoList(char* varname);
 int getAnEmptyReg(char* varname, Symbol* sb);
+void insertTempVar(int t);
+void function2asm();
+void ignoreVarDef();
 
 /*
 根据变量名，返回所在的寄存器号；
@@ -48,13 +53,13 @@ int checkRegInfoList(char* varname) {
 若无，FIFO原则，退出一个
 */
 int getAnEmptyReg(char* varname, Symbol* sb) {
-	if (emptyRegNum > 0) {					// 有空闲的寄存器：符号表isreg标志置为true，空闲寄存器数量-1，映射队列插入新元素
+	if (s_emptyRegNum > 0) {					// 有空闲的寄存器：符号表isreg标志置为true，空闲寄存器数量-1，映射队列插入新元素
 		if (sb) {
 			sb->isreg = true;
 		}
 
-		int index = 10 - emptyRegNum;
-		emptyRegNum--;
+		int index = 10 - s_emptyRegNum;
+		s_emptyRegNum--;
 
 		RegInfo nn = { index, varname };
 		regInfoList.push_back(nn);
@@ -155,20 +160,44 @@ void genasm()
 {
 	updateSymTab();
 	// 全局变量
-	dataasm();
-	// 开始处理函数
-	while (strcmp(quadvarlist[cur_4var].op, "Func") || strcmp(quadvarlist[cur_4var].op, "Main")) {
-		insertTempVar();
+	data2asm();
+	fprintf(ASM_FILE, ".text:\n");
+	fprintf(ASM_FILE, "\tjal\tmain\n");
+	fprintf(ASM_FILE, "#TODO\n");
+	// 开始处理函数：先处理栈、再处理局部变量、临时变量、最后逐步处理四元式
+	while (cur_4var < NXQ) {
+		if (!strcmp(quadvarlist[cur_4var].op, "Func")) {
+			// 要记录函数返回类型，便于截断数据
+			if (quadvarlist[cur_4var].var1[0] == 'i') {
+				s_funcRetType = Type::T_INTEGER;
+			}
+			else if (quadvarlist[cur_4var].var1[0] == 'c') {
+				s_funcRetType = Type::T_CHAR;
+			}
+			else {
+				s_funcRetType = Type::T_VOID;
+			}
+			fprintf(ASM_FILE, "%s:\n", quadvarlist[cur_4var].var3);
+		}
+		else if (!strcmp(quadvarlist[cur_4var].op, "Main")) {
+			fprintf(ASM_FILE, "main:\n");
+		}
+		else {						// 不应该进入此分支
+			printf("unexpected error in genasm()\n");
+		}
+		// 处理函数体
+		cur_4var++;
+		function2asm();
+
+		// 当前函数分析完成，进入下一个函数
+		g_symtab->next = g_symtab->next->next;
 	}
-
-
-
 }
 
 /*
 初始化 .data段	+ 全局变量和字符串
 */
-void dataasm() {
+void data2asm() {
 
 	fprintf(ASM_FILE, ".data:\n");
 
@@ -223,7 +252,57 @@ void dataasm() {
 }
 
 
-void insertTempVar() {
+void function2asm() {
+	s_emptyRegNum = 10;							// 寄存器清空，但寄存器写入内存由函数调用者实现
+	// 栈的变化
+	fprintf(ASM_FILE, "\tsw\t$fp, ($sp)\n");		// ($sp) = $fp
+	fprintf(ASM_FILE, "\tmove\t$fp, $sp\n");		// $fp = $sp
+	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, 8\n");	// $sp -= 8
+	fprintf(ASM_FILE, "\tsw\t$ra, 4($sp)\n");		// $ra
+
+
+	ignoreVarDef();
+
+	insertTempVar(cur_4var);
+
+	// 为函数参数、局部变量、临时变量分配空间
+	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, %d\n", g_symtab->next->varsize);
+
+	// 开始分析
+	while (strcmp(quadvarlist[cur_4var].op, "endf")) {
+		cur_4var++;
+	}
+
+	// 恢复状态
+	fprintf(ASM_FILE, "\tlw\t$ra, -4($fp)\n");	// 恢复$ra
+	fprintf(ASM_FILE, "\tmove\t$sp, $fp\n");		// $sp = $fp
+	fprintf(ASM_FILE, "\tlw\t$fp, ($fp)\n");		// $fp = ($fp)
+
+	cur_4var++;
+}
+
+// 跳过前面的变量定义，参数
+void ignoreVarDef() {
+	while (!strcmp(quadvarlist[cur_4var].op, "const")
+		|| !strcmp(quadvarlist[cur_4var].op, "int")
+		|| !strcmp(quadvarlist[cur_4var].op, "char")
+		|| !strcmp(quadvarlist[cur_4var].op, "intarray")
+		|| !strcmp(quadvarlist[cur_4var].op, "chararray")
+		|| !strcmp(quadvarlist[cur_4var].op, "para")
+		) {
+		cur_4var++;
+	}
+}
+
+// 遍历，将临时变量插入符号表
+void insertTempVar(int t) {
+	// 临时变量定义 只会出现在 var3的位置
+	while (strcmp(quadvarlist[t].op, "endf")) {
+		if (quadvarlist[t].var3[0] == '$') {
+			insertTempVar2SymTab(quadvarlist[t].var3);
+		}
+		t++;
+	}
 
 }
 

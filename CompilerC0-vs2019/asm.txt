@@ -12,3 +12,42 @@
 	$string0:	.asciiz	"aaaaaa"
 	$string1:	.asciiz	"aaaaaa"
 	$string2:	.asciiz	"aaaa12221"
+.text:
+	jal	main
+#TODO
+f_a:
+	sw	$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw	$ra, 4($sp)
+	subi	$sp, $sp, 24
+	lw	$ra, -4($fp)
+	move	$sp, $fp
+	lw	$fp, ($fp)
+f_b:
+	sw	$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw	$ra, 4($sp)
+	subi	$sp, $sp, 64
+	lw	$ra, -4($fp)
+	move	$sp, $fp
+	lw	$fp, ($fp)
+f_c:
+	sw	$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw	$ra, 4($sp)
+	subi	$sp, $sp, 36
+	lw	$ra, -4($fp)
+	move	$sp, $fp
+	lw	$fp, ($fp)
+main:
+	sw	$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw	$ra, 4($sp)
+	subi	$sp, $sp, 212
+	lw	$ra, -4($fp)
+	move	$sp, $fp
+	lw	$fp, ($fp)

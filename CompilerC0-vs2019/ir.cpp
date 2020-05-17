@@ -376,12 +376,14 @@ void IR_Analyze(TreeNode* tree)
 				}
 
 				IR_Analyze(tree->child[0]);
+				gen("endf", newempty(), newempty(), newempty());
 			}
 			break;
 			case DecKind::MainFunc_DecK:
 			{
 				gen("Main", newempty(), newempty(), newempty());
 				IR_Analyze(tree->child[0]);
+				gen("endf", newempty(), newempty(), newempty());
 			}
 			break;
 			default:

@@ -10,6 +10,9 @@ SymTab* initSimpleSymTable(char* name);
 // 返回是否插入成功，如空间不足、重复定义
 bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valuetype, int value, int vec = -1, FuncInfo* p = NULL);
 
+// 插入临时变量
+void insertTempVar2SymTab(char* name);
+
 // 返回符号节点指针、未定义返回空指针；
 Symbol* lookUp_SymTab(char* name);
 

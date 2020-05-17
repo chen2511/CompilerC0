@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
     IR_Analyze(synaxtree);
     IR_FILE = fopen("IR.txt", "w+");
     printIR();
+    fclose(IR_FILE);
 
     ASM_FILE = fopen("asm.txt", "w+");
     genasm();
