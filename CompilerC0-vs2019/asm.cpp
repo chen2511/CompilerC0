@@ -16,6 +16,8 @@ static bool isGlobal = false;
 static bool p_isGlobal = false;
 // 函数返回类型
 static Type s_funcRetType;
+// 函数名
+static char* s_funcName;
 
 void data2asm();
 int getRegIndex(char* varname);
@@ -25,7 +27,37 @@ int checkRegInfoList(char* varname);
 int getAnEmptyReg(char* varname, Symbol* sb);
 void insertTempVar(int t);
 void function2asm();
+void matchParaType();
 void ignoreVarDef();
+
+
+void add2asm();
+void sub2asm();
+void mul2asm();
+void div2asm();
+void callret2asm();
+void getarray2asm();
+void gre2asm();
+void geq2asm();
+void lss2asm();
+void leq2asm();
+void neq2asm();
+void eql2asm();
+void j2asm();
+void jnz2asm();
+void para2asm();
+void setarray2asm();
+void assign2asm();
+void lab2asm();
+void call2asm();
+void vpara2asm();
+void scanf2asm();
+void print2asm();
+void ret2asm();
+
+void saveReg();
+// 读取指定遍历到指定寄存器
+void mem2reg(char* varname, int reg);
 
 /*
 根据变量名，返回所在的寄存器号；
@@ -34,7 +66,8 @@ void ignoreVarDef();
 int checkRegInfoList(char* varname) {
 	std::list<RegInfo>::iterator iter = regInfoList.begin();
 	for (; iter != regInfoList.end(); ++iter) {
-		if ((*iter).varname == varname) {
+		if (!strcmp((*iter).varname, varname)) {
+			INFO("剩余寄存器：%d，已在寄存器：true，变量名：%s，寄存器序号：%d\n", s_emptyRegNum, varname, std::distance(regInfoList.begin(),iter));
 			break;
 		}
 	}
@@ -60,10 +93,11 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 
 		int index = 10 - s_emptyRegNum;
 		s_emptyRegNum--;
-
+		
 		RegInfo nn = { index, varname };
 		regInfoList.push_back(nn);
 
+		INFO("剩余寄存器：%d，变量名：%s，寄存器序号：%d\n", s_emptyRegNum, varname, index);
 		return index;
 	}
 	else {									// 没有空闲寄存器，需要清理出一个
@@ -82,13 +116,13 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 			}
 			else {								// 弹出的是变量：分为全局和局部（临时）
 				if (p_isGlobal) {
-					fprintf(ASM_FILE, "\tsw\t$t%d,$%s\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d,$%s\n",
 						nn.regindex,
 						nn.varname
 					);
 				}
 				else {
-					fprintf(ASM_FILE, "\tsw\t$t%d,%d($fp)\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d,%d($fp)\n",
 						nn.regindex,
 						sb_pop->adress + 8
 					);
@@ -103,6 +137,8 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 
 		RegInfo ttt = { nn.regindex, varname };
 		regInfoList.push_back(ttt);
+
+		INFO("剩余寄存器：%d，old变量名：%s，变量名：%s，寄存器序号：%d\n", s_emptyRegNum, nn.varname, varname, nn.regindex);
 
 		return nn.regindex;
 	}
@@ -161,9 +197,12 @@ void genasm()
 	updateSymTab();
 	// 全局变量
 	data2asm();
+
 	fprintf(ASM_FILE, ".text:\n");
-	fprintf(ASM_FILE, "\tjal\tmain\n");
-	fprintf(ASM_FILE, "#TODO\n");
+	fprintf(ASM_FILE, "\tjal\t\tmain\n");
+	//fprintf(ASM_FILE, "#TODO\n");
+	fprintf(ASM_FILE, "\tli\t\t$v0, 10\n");
+	fprintf(ASM_FILE, "\tsyscall\n");
 	// 开始处理函数：先处理栈、再处理局部变量、临时变量、最后逐步处理四元式
 	while (cur_4var < NXQ) {
 		if (!strcmp(quadvarlist[cur_4var].op, "Func")) {
@@ -177,12 +216,14 @@ void genasm()
 			else {
 				s_funcRetType = Type::T_VOID;
 			}
+			s_funcName = quadvarlist[cur_4var].var3;
 			fprintf(ASM_FILE, "%s:\n", quadvarlist[cur_4var].var3);
 		}
 		else if (!strcmp(quadvarlist[cur_4var].op, "Main")) {
+			s_funcName = (char*)"main";
 			fprintf(ASM_FILE, "main:\n");
 		}
-		else {						// 不应该进入此分支
+		else {						// 正常情况不应该进入此分支
 			printf("unexpected error in genasm()\n");
 		}
 		// 处理函数体
@@ -253,13 +294,17 @@ void data2asm() {
 
 
 void function2asm() {
-	s_emptyRegNum = 10;							// 寄存器清空，但寄存器写入内存由函数调用者实现
-	// 栈的变化
-	fprintf(ASM_FILE, "\tsw\t$fp, ($sp)\n");		// ($sp) = $fp
+	s_emptyRegNum = 10;								// 寄存器清空，但寄存器写入内存由函数调用者实现
+	regInfoList.clear();							// 清空队列
+	// 符号表不处理，因为连函数表都被抛弃了
+													// 栈的变化
+	fprintf(ASM_FILE, "\tsw\t\t$fp, ($sp)\n");		// ($sp) = $fp
 	fprintf(ASM_FILE, "\tmove\t$fp, $sp\n");		// $fp = $sp
-	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, 8\n");	// $sp -= 8
-	fprintf(ASM_FILE, "\tsw\t$ra, 4($sp)\n");		// $ra
+	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, 8\n");		// $sp -= 8
+	fprintf(ASM_FILE, "\tsw\t\t$ra, 4($sp)\n");		// $ra
 
+	// 有些参数类型需要转换
+	matchParaType();
 
 	ignoreVarDef();
 
@@ -270,14 +315,89 @@ void function2asm() {
 
 	// 开始分析
 	while (strcmp(quadvarlist[cur_4var].op, "endf")) {
+		if (0 == strcmp(quadvarlist[cur_4var].op, "+")) {
+			add2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "-")) {
+			sub2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "*")) {
+			mul2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "/")) {
+			div2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "callret")) {
+			callret2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "getarray")) {
+			getarray2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, ">")) {
+			gre2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, ">=")) {
+			geq2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "<")) {
+			lss2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "<=")) {
+			leq2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "==")) {
+			eql2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "!=")) {
+			neq2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "j")) {
+			j2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "jnz")) {
+			jnz2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "para")) {
+			para2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "setarray")) {
+			setarray2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "assign")) {
+			assign2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "lab")) {
+			lab2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "call")) {
+			call2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "vpara")) {
+			vpara2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "scanf")) {
+			scanf2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "print")) {
+			print2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "ret")) {
+			ret2asm();
+		}
 		cur_4var++;
 	}
 
-	// 恢复状态
-	fprintf(ASM_FILE, "\tlw\t$ra, -4($fp)\n");	// 恢复$ra
-	fprintf(ASM_FILE, "\tmove\t$sp, $fp\n");		// $sp = $fp
-	fprintf(ASM_FILE, "\tlw\t$fp, ($fp)\n");		// $fp = ($fp)
+	// 函数体结束，处理栈的变化等等
+	fprintf(ASM_FILE, "ret_%s:\n", s_funcName);
 
+	// 恢复状态
+	fprintf(ASM_FILE, "\tlw\t\t$ra, -4($fp)\n");	// 恢复$ra
+	fprintf(ASM_FILE, "\tmove\t$sp, $fp\n");		// $sp = $fp
+	fprintf(ASM_FILE, "\tlw\t\t$fp, ($fp)\n");		// $fp = ($fp)
+	
+	fprintf(ASM_FILE, "\tjr\t\t$ra\n");
+										
+	// endf
 	cur_4var++;
 }
 
@@ -288,10 +408,28 @@ void ignoreVarDef() {
 		|| !strcmp(quadvarlist[cur_4var].op, "char")
 		|| !strcmp(quadvarlist[cur_4var].op, "intarray")
 		|| !strcmp(quadvarlist[cur_4var].op, "chararray")
-		|| !strcmp(quadvarlist[cur_4var].op, "para")
+		//|| !strcmp(quadvarlist[cur_4var].op, "para")
 		) {
 		cur_4var++;
 	}
+}
+
+// 匹配参数类型: 有时候传入的实参是int型，形参是char，要转换
+void matchParaType() {
+	Symbol* sbf = lookUp_SymTab(s_funcName);
+
+	FuncInfo* pf = sbf->pfinfo;
+	fprintf(ASM_FILE, "\t#match para type\n");
+	for (int i = 0; !strcmp(quadvarlist[cur_4var].op, "para"); i++, cur_4var++) {
+		if (pf->paratable[i].ptype == Type::T_CHAR) {
+			// 转换
+			
+			fprintf(ASM_FILE, "\tlw\t\t$a0, -%d($fp)\n", 8 + 4 * i);
+			fprintf(ASM_FILE, "\tandi\t$a0, $a0, 0xff\n");
+			fprintf(ASM_FILE, "\tsw\t\t$a0, -%d($fp)\n", 8 + 4 * i);
+		}
+	}
+	fprintf(ASM_FILE, "\t#match finished\n");
 }
 
 // 遍历，将临时变量插入符号表
@@ -303,6 +441,258 @@ void insertTempVar(int t) {
 		}
 		t++;
 	}
+}
+
+
+/* 
+(+,id/num,id/num,id)
+id = id/num + id/num
+*/
+void add2asm()
+{
+	/*
+	getRegIndex应用举例： 有两种情况：数字或者标识符（数组存的是基地址）
+		数字：不查询寄存器是否已经存储，直接获得一个可用寄存器（可用减一 or 将一个寄存器送入内存）
+		标识符：先查看是否在寄存器，如果在，返回所在序号，更新队列
+				若不在，获得一个可用寄存器（可用减一 or 将一个寄存器送入内存）
+
+		mem2reg：获得了返回的寄存器序号、isInReg，isGlobal状态 之后，根据isInReg判断是否需要从内存读取，根据isGlobal觉得读取方法
+	*/
+	int r1, r2, r3;
+	//  var1
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	if (isdigit(quadvarlist[cur_4var].var1[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var1, r1);
+	}
+
+	// var2
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	if (isdigit(quadvarlist[cur_4var].var2[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var2, r2);
+	}
+	// var3 = var1 + var2
+	r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tadd\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
+}
+
+/*
+(-,id/num,id/num,id)
+id = id/num + id/num
+*/
+void sub2asm()
+{
+	int r1, r2, r3;
+	//  var1
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	if (isdigit(quadvarlist[cur_4var].var1[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var1, r1);
+	}
+
+	// var2
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	if (isdigit(quadvarlist[cur_4var].var2[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var2, r2);
+	}
+	// var3 = var1 + var2
+	r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tsub\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
+}
+
+
+/*
+(*,id/num,id/num,id)
+MIPS指令：mul	$s1, $s0, $s2 ==> s1 = s0 * s2 溢出不考虑
+*/
+void mul2asm()
+{
+	int r1, r2, r3;
+	//  var1
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	if (isdigit(quadvarlist[cur_4var].var1[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var1, r1);
+	}
+
+	// var2
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	if (isdigit(quadvarlist[cur_4var].var2[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var2, r2);
+	}
+	// var3 = var1 + var2
+	r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tmul\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
+}
+
+void div2asm()
+{
+	int r1, r2, r3;
+	//  var1
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	if (isdigit(quadvarlist[cur_4var].var1[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var1, r1);
+	}
+
+	// var2
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	if (isdigit(quadvarlist[cur_4var].var2[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
+	}
+	else {
+		mem2reg(quadvarlist[cur_4var].var2, r2);
+	}
+	// var3 = var1 + var2
+	r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tdiv\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
+}
+
+
+void callret2asm()
+{
+
+
 
 }
+
+void getarray2asm()
+{
+}
+
+void gre2asm()
+{
+}
+
+void geq2asm()
+{
+}
+
+void lss2asm()
+{
+}
+
+void leq2asm()
+{
+}
+
+void neq2asm()
+{
+}
+
+void eql2asm()
+{
+}
+
+void j2asm()
+{
+}
+
+void jnz2asm()
+{
+}
+
+void para2asm()
+{
+}
+
+void setarray2asm()
+{
+}
+
+void assign2asm()
+{
+}
+
+void lab2asm()
+{
+}
+
+void call2asm()
+{
+}
+
+// (vpara, , ,id/num)
+void vpara2asm()
+{
+	ASMINFO("\t#value Para:\n");
+	int cnt = 0;
+	while(!strcmp(quadvarlist[cur_4var].op, "vpara")) {
+		int addr = 8 + 4 * cnt;
+
+		// 先将数据读入寄存器
+		int rr = getRegIndex(quadvarlist[cur_4var].var3);
+		mem2reg(quadvarlist[cur_4var].var3, rr);
+		// 将寄存器的数据送入指定位置
+		fprintf(ASM_FILE, "\tsw\t\t$t%d, -%d($sp)\n", rr, addr);
+
+		cnt++;
+		cur_4var++;
+	}
+	ASMINFO("\t#End of value Para\n");
+}
+
+void scanf2asm()
+{
+}
+
+void print2asm()
+{
+}
+
+
+/*
+ret, , ,id/num
+ret, , ,
+*/
+void ret2asm()
+{
+	if (quadvarlist[cur_4var].var3[0] = ' ') {
+		
+	}
+	else {
+
+	}
+
+
+
+}
+
+
+void saveReg() {
+
+}
+
+// 从内存读入寄存器
+void mem2reg(char* varname, int reg) {
+	// 不在寄存器，需要读取
+	if (!isInReg) {
+		if (isGlobal) {						// 读取全局变量
+			fprintf(ASM_FILE, "\tlw\t\t$t%d, $%s\n", reg, varname);
+		}
+		else {								// 读取局部变量
+			int addr = lookUp_SymTab(varname)->adress;
+			fprintf(ASM_FILE, "\tlw\t\t$t%d, -%d($fp)\n", reg, addr);
+		}
+	}
+}
+
+
 

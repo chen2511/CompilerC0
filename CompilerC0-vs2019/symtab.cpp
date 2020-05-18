@@ -2,7 +2,7 @@
 
 
 static int g_adress = 0;
-static int f_adress = 0;
+static int f_adress = 8;
 
 #define SHIFT 4
 #define CHAR_SIZE 4
@@ -30,7 +30,7 @@ SymTab* initSimpleSymTable(char* name)
 		st->hashTable[i] = NULL;
 	}
 	st->varsize = 0;
-	f_adress = 0;		// 每次有一个新函数，函数表指针变化，相对地址
+	f_adress = 8;		// 每次有一个新函数，函数表指针变化，相对地址
 	
 	return st;
 }
@@ -127,6 +127,19 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 void insertTempVar2SymTab(char* name)
 {
 	int h = hash(name);
+
+	SymbolList list;
+	list = g_symtab->next->hashTable[h];
+
+	// 查找表中是否已有
+	// 为空，退出，没找到同名； 名字不一样继续找； 
+	while ((list != NULL) && (strcmp(name, list->name) != 0)) {
+		list = list->next;
+	}
+	// 修复bug，临时变量只有第一次出现才加入
+	if (NULL != list) {
+		return;
+	}
 
 	Symbol* sym = new Symbol;
 	sym->name = name;

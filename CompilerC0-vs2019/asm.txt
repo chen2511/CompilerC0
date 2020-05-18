@@ -1,53 +1,51 @@
 .data:
-	$gc_a:	.word	22
-	$gc_b:	.word	-22
-	$gc_c:	.word	0
-	$gc_d:	.word	120
-	$gc_e:	.word	205
-	$g_a:	.word
-	$g_b:	.word
-	$g_c:	.space	12
-	$g_d:	.space	20
-	$g_e:	.word
-	$string0:	.asciiz	"aaaaaa"
-	$string1:	.asciiz	"aaaaaa"
-	$string2:	.asciiz	"aaaa12221"
+	$string0:	.asciiz	"Please enter n: "
+	$string1:	.asciiz	"t(n) is: "
 .text:
-	jal	main
-#TODO
-f_a:
-	sw	$fp, ($sp)
+	jal		main
+	li		$v0, 10
+	syscall
+t:
+	sw		$fp, ($sp)
 	move	$fp, $sp
 	subi	$sp, $sp, 8
-	sw	$ra, 4($sp)
-	subi	$sp, $sp, 24
-	lw	$ra, -4($fp)
+	sw		$ra, 4($sp)
+	#match para type
+	#match finished
+	subi	$sp, $sp, 32
+	lw		$t0, -8($fp)
+	li		$t1, 1
+	sub		$t2, $t0, $t1
+	#value Para:
+	sw		$t2, -8($sp)
+	#End of value Para
+	li		$t3, 2
+	sub		$t4, $t0, $t3
+	#value Para:
+	sw		$t4, -8($sp)
+	#End of value Para
+	lw		$t5, -16($fp)
+	lw		$t6, -24($fp)
+	add		$t7, $t5, $t6
+ret_t:
+	lw		$ra, -4($fp)
 	move	$sp, $fp
-	lw	$fp, ($fp)
-f_b:
-	sw	$fp, ($sp)
-	move	$fp, $sp
-	subi	$sp, $sp, 8
-	sw	$ra, 4($sp)
-	subi	$sp, $sp, 64
-	lw	$ra, -4($fp)
-	move	$sp, $fp
-	lw	$fp, ($fp)
-f_c:
-	sw	$fp, ($sp)
-	move	$fp, $sp
-	subi	$sp, $sp, 8
-	sw	$ra, 4($sp)
-	subi	$sp, $sp, 36
-	lw	$ra, -4($fp)
-	move	$sp, $fp
-	lw	$fp, ($fp)
+	lw		$fp, ($fp)
+	jr		$ra
 main:
-	sw	$fp, ($sp)
+	sw		$fp, ($sp)
 	move	$fp, $sp
 	subi	$sp, $sp, 8
-	sw	$ra, 4($sp)
-	subi	$sp, $sp, 212
-	lw	$ra, -4($fp)
+	sw		$ra, 4($sp)
+	#match para type
+	#match finished
+	subi	$sp, $sp, 20
+	#value Para:
+	lw		$t0, -8($fp)
+	sw		$t0, -8($sp)
+	#End of value Para
+ret_main:
+	lw		$ra, -4($fp)
 	move	$sp, $fp
-	lw	$fp, ($fp)
+	lw		$fp, ($fp)
+	jr		$ra

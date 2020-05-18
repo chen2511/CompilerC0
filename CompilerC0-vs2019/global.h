@@ -12,6 +12,15 @@
 
 #define PRINT_AST_TOFILE true
 
+#define DEBUG_SWITCH
+#ifdef  DEBUG_SWITCH
+#define INFO(format, ...)       printf(format, ##__VA_ARGS__)
+#define ASMINFO(format, ...)    fprintf(ASM_FILE, format, ##__VA_ARGS__)
+#else
+#define INFO(info)              /* do nothing */
+#define ASMINFO(format, ...)    /* do nothing */
+#endif
+
 //枚举类型TokenType：
 typedef enum {
     //关键字：

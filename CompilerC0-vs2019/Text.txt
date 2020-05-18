@@ -8,6 +8,7 @@ int g_e;
 
 void f_a(){
 	g_b = -5 * ( gc_a + '5') + g_d[3] + 599;
+	return;
 }
 
 int f_b(int pa, char pb){
@@ -57,7 +58,7 @@ void main()
 
 	k = a * 55 * ( -1 + j[2] + g_a + k - 'g' ) + f_b(b, c);
 
-	f_c(g, h);
+	f_c(g + 1, h + 1);
 
 	scanf(g, h);
 	scanf(k);

@@ -71,5 +71,6 @@
     <Text Include="Output_ast.txt" />
     <Text Include="IR.txt" />
     <Text Include="asm.txt" />
+    <Text Include="Text02.txt" />
   </ItemGroup>
 </Project>
