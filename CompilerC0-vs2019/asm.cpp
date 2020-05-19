@@ -58,6 +58,7 @@ void ret2asm();
 void saveReg();
 // 读取指定遍历到指定寄存器
 void mem2reg(char* varname, int reg);
+void baseAddr2reg(char* varname, int reg);
 
 /*
 根据变量名，返回所在的寄存器号；
@@ -125,7 +126,7 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 					);
 				}
 				else {
-					fprintf(ASM_FILE, "\tsw\t\t$t%d,%d($fp)\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d,-%d($fp)\n",
 						nn.regindex,
 						sb_pop->adress + 8
 					);
@@ -466,26 +467,18 @@ void add2asm()
 		标识符：先查看是否在寄存器，如果在，返回所在序号，更新队列
 				若不在，获得一个可用寄存器（可用减一 or 将一个寄存器送入内存）
 
-		mem2reg：获得了返回的寄存器序号、isInReg，isGlobal状态 之后，根据isInReg判断是否需要从内存读取，根据isGlobal觉得读取方法
+		mem2reg：获得了返回的寄存器序号、isInReg，isGlobal状态 之后，数字直接读入寄存器；
+				变量：根据isInReg判断是否需要从内存读取，根据isGlobal觉得读取方法
 	*/
 	int r1, r2, r3;
 	//  var1
 	r1 = getRegIndex(quadvarlist[cur_4var].var1);
-	if (isdigit(quadvarlist[cur_4var].var1[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var1, r1);
-	}
+	mem2reg(quadvarlist[cur_4var].var1, r1);
 
 	// var2
 	r2 = getRegIndex(quadvarlist[cur_4var].var2);
-	if (isdigit(quadvarlist[cur_4var].var2[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var2, r2);
-	}
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
 	// var3 = var1 + var2
 	r3 = getRegIndex(quadvarlist[cur_4var].var3);
 	fprintf(ASM_FILE, "\tadd\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
@@ -500,22 +493,14 @@ void sub2asm()
 	int r1, r2, r3;
 	//  var1
 	r1 = getRegIndex(quadvarlist[cur_4var].var1);
-	if (isdigit(quadvarlist[cur_4var].var1[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var1, r1);
-	}
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
 
 	// var2
 	r2 = getRegIndex(quadvarlist[cur_4var].var2);
-	if (isdigit(quadvarlist[cur_4var].var2[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var2, r2);
-	}
-	// var3 = var1 + var2
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	// var3 = var1 - var2
 	r3 = getRegIndex(quadvarlist[cur_4var].var3);
 	fprintf(ASM_FILE, "\tsub\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
 }
@@ -530,21 +515,14 @@ void mul2asm()
 	int r1, r2, r3;
 	//  var1
 	r1 = getRegIndex(quadvarlist[cur_4var].var1);
-	if (isdigit(quadvarlist[cur_4var].var1[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var1, r1);
-	}
+
+	mem2reg(quadvarlist[cur_4var].var1, r1);
 
 	// var2
 	r2 = getRegIndex(quadvarlist[cur_4var].var2);
-	if (isdigit(quadvarlist[cur_4var].var2[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var2, r2);
-	}
+
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
 	// var3 = var1 + var2
 	r3 = getRegIndex(quadvarlist[cur_4var].var3);
 	fprintf(ASM_FILE, "\tmul\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
@@ -555,21 +533,14 @@ void div2asm()
 	int r1, r2, r3;
 	//  var1
 	r1 = getRegIndex(quadvarlist[cur_4var].var1);
-	if (isdigit(quadvarlist[cur_4var].var1[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r1, quadvarlist[cur_4var].var1);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var1, r1);
-	}
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
 
 	// var2
 	r2 = getRegIndex(quadvarlist[cur_4var].var2);
-	if (isdigit(quadvarlist[cur_4var].var2[0])) {
-		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", r2, quadvarlist[cur_4var].var2);
-	}
-	else {
-		mem2reg(quadvarlist[cur_4var].var2, r2);
-	}
+
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
 	// var3 = var1 + var2
 	r3 = getRegIndex(quadvarlist[cur_4var].var3);
 	fprintf(ASM_FILE, "\tdiv\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
@@ -584,12 +555,38 @@ void callret2asm()
 
 	fprintf(ASM_FILE, "\tjal\t\t%s\n", quadvarlist[cur_4var].var1);
 
-	fprintf(ASM_FILE, "\tmove\t$%d, $v0\n", getRegIndex(quadvarlist[cur_4var].var3));
+	fprintf(ASM_FILE, "\tmove\t$t%d, $v0\n", getRegIndex(quadvarlist[cur_4var].var3));
 
 }
 
+/*
+(getarray,id（数组名）,id/num（index）,id)
+*/
 void getarray2asm()
 {
+	// 数组名
+	int r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	// 由于全局数组和局部数组的地址增长方向不一样，要记录
+	bool isGlobArray = isGlobal;
+	// 因为这里要读取的时数组的基地址；而不是里面的值；不能用mem2reg
+	baseAddr2reg(quadvarlist[cur_4var].var1, r1);
+
+	int r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	// 计算index地址
+	fprintf(ASM_FILE, "\tmul\t\t$s0, $t%d, 4\n", r2);
+	if (isGlobArray) {
+		fprintf(ASM_FILE, "\tadd\t\t$s0, $t%d, $s0\n", r1);
+	}
+	else {
+		fprintf(ASM_FILE, "\tsub\t\t$s0, $t%d, $s0\n", r1);
+	}
+	
+
+	int r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tlw\t\t$t%d, ($s0)\n", r3);
+
 }
 
 void gre2asm()
@@ -624,24 +621,71 @@ void jnz2asm()
 {
 }
 
+// matchType已经完成了
 void para2asm()
 {
+	/* do nothing*/
 }
 
+
+/*
+(setarray,id / num,index,name)
+name[index] = id/num
+*/
 void setarray2asm()
 {
+	// 数组名
+	int r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	// 由于全局数组和局部数组的地址增长方向不一样，要记录
+	bool isGlobArray = isGlobal;
+	// 因为这里要读取的时数组的基地址；而不是里面的值；不能用mem2reg
+	baseAddr2reg(quadvarlist[cur_4var].var3, r3);
+
+	int r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	// 计算index地址
+	fprintf(ASM_FILE, "\tmul\t\t$s0, $t%d, 4\n", r2);
+	if (isGlobArray) {
+		fprintf(ASM_FILE, "\tadd\t\t$s0, $t%d, $s0\n", r3);
+	}
+	else {
+		fprintf(ASM_FILE, "\tsub\t\t$s0, $t%d, $s0\n", r3);
+	}
+
+
+	int r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+	fprintf(ASM_FILE, "\tsw\t\t$t%d, ($s0)\n", r1);
 }
 
+/*
+（assign，id/num，，name）
+*/
 void assign2asm()
 {
+	int r1 = getRegIndex(quadvarlist[cur_4var].var1);
+
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	int r3 = getRegIndex(quadvarlist[cur_4var].var3);
+
+	fprintf(ASM_FILE, "\tmove\t$t%d, $t%d\n", r1, r3);
+
 }
 
 void lab2asm()
 {
 }
 
+/*
+（callret,id（函数名）,  ,  ）
+*/
 void call2asm()
 {
+	saveReg();
+
+	fprintf(ASM_FILE, "\tjal\t\t%s\n", quadvarlist[cur_4var].var1);
 }
 
 // (vpara, , ,id/num)
@@ -711,13 +755,13 @@ void saveReg() {
 			}
 			else {								// 弹出的是变量：分为全局和局部（临时）
 				if (p_isGlobal) {
-					fprintf(ASM_FILE, "\tsw\t\t$t%d,$%s\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d, $%s\n",
 						nn.regindex,
 						nn.varname
 					);
 				}
 				else {
-					fprintf(ASM_FILE, "\tsw\t\t$t%d,%d($fp)\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d, -%d($fp)\n",
 						nn.regindex,
 						sb_pop->adress + 8
 					);
@@ -730,6 +774,12 @@ void saveReg() {
 
 // 从内存读入寄存器
 void mem2reg(char* varname, int reg) {
+	// 数字直接读入
+	if (isdigit(varname[0])) {
+		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", reg, varname);
+		return;
+	}
+	// 变量：
 	// 不在寄存器，需要读取
 	if (!isInReg) {
 		if (isGlobal) {						// 读取全局变量
@@ -742,5 +792,21 @@ void mem2reg(char* varname, int reg) {
 	}
 }
 
+// 数组的基地址读入内存
+void baseAddr2reg(char* varname, int reg) {
+	INFO_ASM("\t# Array BaseAddr\n");
+	if (!isInReg) {
+		if (isGlobal) {						// 全局变量 基地址
+			fprintf(ASM_FILE, "\tla\t\t$t%d, $%s\n", reg, varname);
+		}
+		else {
+			// 基地址
+			int addr = lookUp_SymTab(varname)->adress;
 
+			fprintf(ASM_FILE, "\tli\t\t$t%d, %d\n", reg, addr);
+			fprintf(ASM_FILE, "\tsub\t\t$t%d, $fp, $t%d\n", reg, reg);
+		}
+	}
+	INFO_ASM("\t# End of Array BaseAddr\n");
+}
 

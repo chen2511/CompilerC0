@@ -31,17 +31,25 @@ f_a:
 	mul		$t4, $t3, $t2
 	li		$t5, 0
 	sub		$t6, $t5, $t4
-	lw		$t7, -12($fp)
-	add		$t8, $t6, $t7
-	li		$t9, 599
+	# Array BaseAddr
+	la		$t7, $g_d
+	# End of Array BaseAddr
+	li		$t8, 3
+	mul		$s0, $t8, 4
+	add		$s0, $t7, $s0
+	lw		$t9, ($s0)
 	sw		$t0,$gc_a
-	add		$t0, $t8, $t9
-	sw		$t2,8($fp)
-	sw		$t4,12($fp)
-	sw		$t6,16($fp)
-	sw		$t7,20($fp)
-	sw		$t8,24($fp)
-	sw		$t0,28($fp)
+	add		$t0, $t6, $t9
+	li		$t1, 599
+	add		$t3, $t0, $t1
+	#Save RegFile
+	sw		$t2, -8($fp)
+	sw		$t4, -12($fp)
+	sw		$t6, -16($fp)
+	sw		$t9, -20($fp)
+	sw		$t0, -24($fp)
+	sw		$t3, -28($fp)
+	#End of Saving RegFile
 ret_f_a:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
@@ -61,9 +69,11 @@ f_b:
 	lw		$t0, -16($fp)
 	lw		$t1, -20($fp)
 	add		$t2, $t0, $t1
-	sw		$t0,24($fp)
-	sw		$t1,28($fp)
-	sw		$t2,72($fp)
+	#Save RegFile
+	sw		$t0, -24($fp)
+	sw		$t1, -28($fp)
+	sw		$t2, -72($fp)
+	#End of Saving RegFile
 ret_f_b:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
@@ -88,13 +98,15 @@ f_c:
 	add		$t8, $t0, $t7
 	li		$t9, 1
 	add		$t1, $t3, $t9
-	sw		$t2,32($fp)
-	sw		$t4,36($fp)
-	sw		$t6,40($fp)
-	sw		$t0,24($fp)
-	sw		$t8,44($fp)
-	sw		$t3,28($fp)
-	sw		$t1,48($fp)
+	#Save RegFile
+	sw		$t2, -32($fp)
+	sw		$t4, -36($fp)
+	sw		$t6, -40($fp)
+	sw		$t0, -24($fp)
+	sw		$t8, -44($fp)
+	sw		$t3, -28($fp)
+	sw		$t1, -48($fp)
+	#End of Saving RegFile
 ret_f_c:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
@@ -114,68 +126,91 @@ main:
 	li		$t3, 0
 	li		$t4, 1
 	sub		$t5, $t3, $t4
-	lw		$t6, -180($fp)
-	add		$t7, $t5, $t6
-	lw		$t8, $g_a
-	add		$t9, $t7, $t8
-	sw		$t0,16($fp)
-	lw		$t0, -164($fp)
+	# Array BaseAddr
+	li		$t6, 44
+	sub		$t6, $fp, $t6
+	# End of Array BaseAddr
+	li		$t7, 2
+	mul		$s0, $t7, 4
+	sub		$s0, $t6, $s0
+	lw		$t8, ($s0)
+	add		$t9, $t5, $t8
+	sw		$t0,-16($fp)
+	lw		$t0, $g_a
 	add		$t1, $t9, $t0
-	sw		$t2,180($fp)
-	li		$t2, 103
-	sub		$t3, $t1, $t2
-	lw		$t4, -172($fp)
-	sw		$t5,184($fp)
-	mul		$t5, $t4, $t3
-	sw		$t6,188($fp)
-	lw		$t6, -12($fp)
-	sw		$t6, -8($sp)
-	sw		$t7,192($fp)
-	lw		$t7, -16($fp)
-	sw		$t7, -12($sp)
-	sw		$t8,$g_a
-	sw		$t9,196($fp)
-	sw		$t0,172($fp)
-	sw		$t1,200($fp)
-	sw		$t4,180($fp)
-	sw		$t3,204($fp)
-	sw		$t5,208($fp)
-	sw		$t6,20($fp)
-	sw		$t7,24($fp)
+	sw		$t2,-180($fp)
+	lw		$t2, -164($fp)
+	add		$t3, $t1, $t2
+	li		$t4, 103
+	sub		$t6, $t3, $t4
+	lw		$t7, -172($fp)
+	sw		$t5,-184($fp)
+	mul		$t5, $t7, $t6
+	#value Para:
+	sw		$t8,-188($fp)
+	lw		$t8, -12($fp)
+	sw		$t8, -8($sp)
+	sw		$t9,-192($fp)
+	lw		$t9, -16($fp)
+	sw		$t9, -12($sp)
+	#End of value Para
+	#Save RegFile
+	sw		$t0, $g_a
+	sw		$t1, -196($fp)
+	sw		$t2, -172($fp)
+	sw		$t3, -200($fp)
+	sw		$t7, -180($fp)
+	sw		$t6, -204($fp)
+	sw		$t5, -208($fp)
+	sw		$t8, -20($fp)
+	sw		$t9, -24($fp)
+	#End of Saving RegFile
 	jal		f_b
-	lw		$t0, -200($fp)
-	lw		$t1, -204($fp)
-	add		$t2, $t0, $t1
+	move	$t0, $v0
+	lw		$t1, -200($fp)
+	add		$t2, $t1, $t0
 	lw		$t3, -32($fp)
 	li		$t4, 1
 	add		$t5, $t3, $t4
 	lw		$t6, -36($fp)
 	li		$t7, 1
 	add		$t8, $t6, $t7
+	#value Para:
 	sw		$t5, -8($sp)
 	sw		$t8, -12($sp)
-	lw		$t9, -12($fp)
-	sw		$t9, -8($sp)
-	sw		$t0,208($fp)
-	lw		$t0, -16($fp)
-	sw		$t0, -12($sp)
-	sw		$t1,212($fp)
+	#End of value Para
+	#Save RegFile
+	sw		$t1, -208($fp)
+	sw		$t0, -212($fp)
+	sw		$t2, -216($fp)
+	sw		$t3, -40($fp)
+	sw		$t6, -44($fp)
+	sw		$t5, -220($fp)
+	sw		$t8, -224($fp)
+	#End of Saving RegFile
+	jal		f_c
+	#value Para:
+	lw		$t0, -12($fp)
+	sw		$t0, -8($sp)
+	lw		$t1, -16($fp)
+	sw		$t1, -12($sp)
+	#End of value Para
+	#Save RegFile
+	sw		$t0, -20($fp)
+	sw		$t1, -24($fp)
+	#End of Saving RegFile
+	jal		f_b
+	li		$t0, 1
 	li		$t1, 1
-	sw		$t2,216($fp)
-	li		$t2, 1
-	sw		$t3,40($fp)
-	add		$t3, $t1, $t2
-	li		$t4, 6
-	sw		$t6,44($fp)
-	lw		$t6, -168($fp)
-	add		$t7, $t4, $t6
-	sw		$t5,220($fp)
-	sw		$t8,224($fp)
-	sw		$t9,20($fp)
-	sw		$t0,24($fp)
-	sw		$t3,228($fp)
-	sw		$t6,176($fp)
-	sw		$t7,232($fp)
+	add		$t2, $t0, $t1
+	li		$t3, 6
+	lw		$t4, -168($fp)
+	add		$t5, $t3, $t4
+	#Save RegFile
+	sw		$t2, -228($fp)
+	sw		$t4, -176($fp)
+	sw		$t5, -232($fp)
+	#End of Saving RegFile
 ret_main:
 	lw		$ra, -4($fp)
 	move	$sp, $fp

@@ -1066,7 +1066,7 @@ extern int NXQ;
 
 | op        | var1          | var2            | var3     |
 | --------- | ------------- | :-------------- | -------- |
-| +-*/      | id/num        | id/num          | id       |
+| +-*/      | id/num        | id/num          | result   |
 | callret   | id（函数名）  |                 | id(ret)  |
 | getarray  | id（数组名）  | id/num（index） | id       |
 | jop       | id            | id              | label    |
