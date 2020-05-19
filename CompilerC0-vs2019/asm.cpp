@@ -71,6 +71,9 @@ int checkRegInfoList(char* varname) {
 			break;
 		}
 	}
+	if (iter == regInfoList.end()) {
+		printf("unpected error in checkRegInfoList()\n");
+	}
 	RegInfo nn = (*iter);
 	regInfoList.push_back(nn);
 
@@ -388,6 +391,11 @@ void function2asm() {
 	}
 
 	// 函数体结束，处理栈的变化等等
+	// 这一步也很重要，寄存器的值不要忘了写回
+	saveReg();										// 全局变量需要保存、局部变量已经没有意义
+	//s_emptyRegNum = 10;								// 寄存器清空
+	//regInfoList.clear();							// 清空队列
+
 	fprintf(ASM_FILE, "ret_%s:\n", s_funcName);
 
 	// 恢复状态
@@ -399,6 +407,8 @@ void function2asm() {
 										
 	// endf
 	cur_4var++;
+
+
 }
 
 // 跳过前面的变量定义，参数
@@ -565,11 +575,16 @@ void div2asm()
 	fprintf(ASM_FILE, "\tdiv\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
 }
 
-
+/*
+callret,id（函数名）, ,id(ret)
+*/
 void callret2asm()
 {
+	saveReg();
 
+	fprintf(ASM_FILE, "\tjal\t\t%s\n", quadvarlist[cur_4var].var1);
 
+	fprintf(ASM_FILE, "\tmove\t$%d, $v0\n", getRegIndex(quadvarlist[cur_4var].var3));
 
 }
 
@@ -632,7 +647,7 @@ void call2asm()
 // (vpara, , ,id/num)
 void vpara2asm()
 {
-	ASMINFO("\t#value Para:\n");
+	INFO_ASM("\t#value Para:\n");
 	int cnt = 0;
 	while(!strcmp(quadvarlist[cur_4var].op, "vpara")) {
 		int addr = 8 + 4 * cnt;
@@ -646,7 +661,8 @@ void vpara2asm()
 		cnt++;
 		cur_4var++;
 	}
-	ASMINFO("\t#End of value Para\n");
+	cur_4var--;		// 不然会跳过函数调用
+	INFO_ASM("\t#End of value Para\n");
 }
 
 void scanf2asm()
@@ -664,7 +680,7 @@ ret, , ,
 */
 void ret2asm()
 {
-	if (quadvarlist[cur_4var].var3[0] = ' ') {
+	if (quadvarlist[cur_4var].var3[0] == ' ') {		// == 写成 =了 。。。。。查了几分钟把，还好找出来了
 		
 	}
 	else {
@@ -675,9 +691,41 @@ void ret2asm()
 
 }
 
-
+// 在函数调用前，将寄存器的值写入内存
 void saveReg() {
+	s_emptyRegNum = 10;
 
+	INFO_ASM("\t#Save RegFile\n");
+	while (regInfoList.size()) {
+		RegInfo nn = regInfoList.front();
+		regInfoList.pop_front();
+
+		if (isdigit(nn.varname[0])) {		// 弹出的是立即数，不用送至内存
+			continue;
+		}
+		else {
+			Symbol* sb_pop = lookUp_SymTab(nn.varname, p_isGlobal);
+			sb_pop->isreg = false;
+			if (sb_pop->vec >= 0) {				// 弹出的是数组的基地址，也不用送入内存
+				continue;
+			}
+			else {								// 弹出的是变量：分为全局和局部（临时）
+				if (p_isGlobal) {
+					fprintf(ASM_FILE, "\tsw\t\t$t%d,$%s\n",
+						nn.regindex,
+						nn.varname
+					);
+				}
+				else {
+					fprintf(ASM_FILE, "\tsw\t\t$t%d,%d($fp)\n",
+						nn.regindex,
+						sb_pop->adress + 8
+					);
+				}
+			}
+		}
+	}
+	INFO_ASM("\t#End of Saving RegFile\n");
 }
 
 // 从内存读入寄存器

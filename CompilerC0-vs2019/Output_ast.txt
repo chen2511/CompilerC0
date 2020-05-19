@@ -1,48 +1,205 @@
 
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_a		value:	22
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_b		value:	-22
+ID name:		gc_c		value:	0
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		gc_d		value:	x
+ID name:		gc_e		value:	Í
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_a
+ID name: g_b
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: g_c
+ID name: g_d
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_e
+
+
 >>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: t 
- Function Info: Return Type(VOID,INT,CHAR):1 
-		ParaTable(VOID,INT,CHAR): 1 k	
+ Function Name: f_a 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 
 
 Stmt Sequence>>>   
 
+Assign to: g_b
+ 0  -  5  *  gc_a  +  53  +  g_d  []  3  +  599 
+Ret Stmt:
+
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_b 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 1 pa	1 pa	
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	3
+ID name:		e		value:	Í
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
+
+
+Stmt Sequence>>>   
+
+Ret Stmt:
+ a  +  b 
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: f_c 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 1 pc	1 pc	
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+ID name: sum
+
+
+Stmt Sequence>>>   
+
+Assign to: i
+ 0 
+Assign to: sum
+ 0 
+While Stmt:
+ <  i  100 
+Stmt Sequence>>>   
+
 If :
- ==  k  0 
-Ret Stmt:
- 1 
-If :
- ==  k  1 
-Ret Stmt:
- 1 
-Ret Stmt:
- t  ()  k  -  1  +  t  ()  k  -  2 
+ &&  ==  i  0  <  sum  30 
+Stmt Sequence>>>   
+
+Assign to: sum
+ sum  +  i  *  2 
+<<<Stmt Sequence End  
+
+Stmt Sequence>>>   
+
+Assign to: sum
+ sum  +  1 
+<<<Stmt Sequence End  
+
+Assign to: i
+ i  +  1 
+<<<Stmt Sequence End  
+
+Assign to: sum
+ sum  +  1 
 <<<Stmt Sequence End  
 
 ***************************************************
 ************ Main Function Declaration ************
 ***************************************************
 
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	3
+ID name:		e		value:	Í
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
-ID name: n
-ID name: result
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
 
 
 Stmt Sequence>>>   
 
-Write Stmt:
-Write Str: Please enter n: 
+Assign to: k
+ a  *  55  *  0  -  1  +  j  []  2  +  g_a  +  k  -  103  +  f_b  ()  b 
+Call Stmt:  Function: f_c 
+Paras:  g  +  1  h  +  1 
 
 Read Stmt:
-Read ID: n
+Read ID: g
+Read ID: h
 
-Assign to: result
- t  ()  n 
-Write Stmt:
-Write Str: t(n) is: 
+Read Stmt:
+Read ID: k
+
+If :
+ ||  &&  &&  ||  bool(1)  8  ||  bool(0)  bool(1)  &&  <=  88  56  !=  c  22 
+Stmt Sequence>>>   
 
 Write Stmt:
- result 
+Write Str: aaaaaa
+
+<<<Stmt Sequence End  
+
+While Stmt:
+ bool(1) 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: aaaaaa
+
+<<<Stmt Sequence End  
+
+Call Stmt:  Function: f_b 
+Paras:  b  c 
+
+For Stmt:
+ ==  a  b 
+Assign to: l
+ 1  +  1 
+Assign to: j
+ 6  +  l  5 
+Assign to: i
+ 3 
+Write Stmt:
+Write Str: aaaa12221
+
+Write Stmt:
+ a 
 Ret Stmt:
 
 <<<Stmt Sequence End  

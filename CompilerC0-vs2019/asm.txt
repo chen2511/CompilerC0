@@ -1,33 +1,101 @@
 .data:
-	$string0:	.asciiz	"Please enter n: "
-	$string1:	.asciiz	"t(n) is: "
+	$gc_a:	.word	22
+	$gc_b:	.word	-22
+	$gc_c:	.word	0
+	$gc_d:	.word	120
+	$gc_e:	.word	205
+	$g_a:	.word
+	$g_b:	.word
+	$g_c:	.space	12
+	$g_d:	.space	20
+	$g_e:	.word
+	$string0:	.asciiz	"aaaaaa"
+	$string1:	.asciiz	"aaaaaa"
+	$string2:	.asciiz	"aaaa12221"
 .text:
 	jal		main
 	li		$v0, 10
 	syscall
-t:
+f_a:
 	sw		$fp, ($sp)
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
 	#match para type
 	#match finished
-	subi	$sp, $sp, 32
-	lw		$t0, -8($fp)
-	li		$t1, 1
-	sub		$t2, $t0, $t1
-	#value Para:
-	sw		$t2, -8($sp)
-	#End of value Para
-	li		$t3, 2
-	sub		$t4, $t0, $t3
-	#value Para:
-	sw		$t4, -8($sp)
-	#End of value Para
-	lw		$t5, -16($fp)
-	lw		$t6, -24($fp)
-	add		$t7, $t5, $t6
-ret_t:
+	subi	$sp, $sp, 24
+	lw		$t0, $gc_a
+	li		$t1, 53
+	add		$t2, $t0, $t1
+	li		$t3, 5
+	mul		$t4, $t3, $t2
+	li		$t5, 0
+	sub		$t6, $t5, $t4
+	lw		$t7, -12($fp)
+	add		$t8, $t6, $t7
+	li		$t9, 599
+	sw		$t0,$gc_a
+	add		$t0, $t8, $t9
+	sw		$t2,8($fp)
+	sw		$t4,12($fp)
+	sw		$t6,16($fp)
+	sw		$t7,20($fp)
+	sw		$t8,24($fp)
+	sw		$t0,28($fp)
+ret_f_a:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+f_b:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	#match para type
+	lw		$a0, -12($fp)
+	andi	$a0, $a0, 0xff
+	sw		$a0, -12($fp)
+	#match finished
+	subi	$sp, $sp, 68
+	lw		$t0, -16($fp)
+	lw		$t1, -20($fp)
+	add		$t2, $t0, $t1
+	sw		$t0,24($fp)
+	sw		$t1,28($fp)
+	sw		$t2,72($fp)
+ret_f_b:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+f_c:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	#match para type
+	#match finished
+	subi	$sp, $sp, 44
+	lw		$t0, -16($fp)
+	li		$t1, 2
+	mul		$t2, $t0, $t1
+	lw		$t3, -20($fp)
+	add		$t4, $t3, $t2
+	li		$t5, 1
+	add		$t6, $t3, $t5
+	li		$t7, 1
+	add		$t8, $t0, $t7
+	li		$t9, 1
+	add		$t1, $t3, $t9
+	sw		$t2,32($fp)
+	sw		$t4,36($fp)
+	sw		$t6,40($fp)
+	sw		$t0,24($fp)
+	sw		$t8,44($fp)
+	sw		$t3,28($fp)
+	sw		$t1,48($fp)
+ret_f_c:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
@@ -39,11 +107,75 @@ main:
 	sw		$ra, 4($sp)
 	#match para type
 	#match finished
-	subi	$sp, $sp, 20
-	#value Para:
+	subi	$sp, $sp, 228
 	lw		$t0, -8($fp)
-	sw		$t0, -8($sp)
-	#End of value Para
+	li		$t1, 55
+	mul		$t2, $t0, $t1
+	li		$t3, 0
+	li		$t4, 1
+	sub		$t5, $t3, $t4
+	lw		$t6, -180($fp)
+	add		$t7, $t5, $t6
+	lw		$t8, $g_a
+	add		$t9, $t7, $t8
+	sw		$t0,16($fp)
+	lw		$t0, -164($fp)
+	add		$t1, $t9, $t0
+	sw		$t2,180($fp)
+	li		$t2, 103
+	sub		$t3, $t1, $t2
+	lw		$t4, -172($fp)
+	sw		$t5,184($fp)
+	mul		$t5, $t4, $t3
+	sw		$t6,188($fp)
+	lw		$t6, -12($fp)
+	sw		$t6, -8($sp)
+	sw		$t7,192($fp)
+	lw		$t7, -16($fp)
+	sw		$t7, -12($sp)
+	sw		$t8,$g_a
+	sw		$t9,196($fp)
+	sw		$t0,172($fp)
+	sw		$t1,200($fp)
+	sw		$t4,180($fp)
+	sw		$t3,204($fp)
+	sw		$t5,208($fp)
+	sw		$t6,20($fp)
+	sw		$t7,24($fp)
+	jal		f_b
+	lw		$t0, -200($fp)
+	lw		$t1, -204($fp)
+	add		$t2, $t0, $t1
+	lw		$t3, -32($fp)
+	li		$t4, 1
+	add		$t5, $t3, $t4
+	lw		$t6, -36($fp)
+	li		$t7, 1
+	add		$t8, $t6, $t7
+	sw		$t5, -8($sp)
+	sw		$t8, -12($sp)
+	lw		$t9, -12($fp)
+	sw		$t9, -8($sp)
+	sw		$t0,208($fp)
+	lw		$t0, -16($fp)
+	sw		$t0, -12($sp)
+	sw		$t1,212($fp)
+	li		$t1, 1
+	sw		$t2,216($fp)
+	li		$t2, 1
+	sw		$t3,40($fp)
+	add		$t3, $t1, $t2
+	li		$t4, 6
+	sw		$t6,44($fp)
+	lw		$t6, -168($fp)
+	add		$t7, $t4, $t6
+	sw		$t5,220($fp)
+	sw		$t8,224($fp)
+	sw		$t9,20($fp)
+	sw		$t0,24($fp)
+	sw		$t3,228($fp)
+	sw		$t6,176($fp)
+	sw		$t7,232($fp)
 ret_main:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
