@@ -414,7 +414,9 @@ TreeNode* varDeclaration() {
 
 
 		if (b_functionDeclaration) {							// 有返回值函数定义：退出
-			return nullptr;
+			// bug修复：之前声明之后是一个void函数，退出，不走这个出口
+			//return nullptr;
+			return t;
 		}
 		else {
 			// 进入变量定义

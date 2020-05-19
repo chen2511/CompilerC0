@@ -126,9 +126,9 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 					);
 				}
 				else {
-					fprintf(ASM_FILE, "\tsw\t\t$t%d,-%d($fp)\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d, -%d($fp)\n",
 						nn.regindex,
-						sb_pop->adress + 8
+						sb_pop->adress
 					);
 				}
 				//return nn.regindex;
@@ -164,6 +164,10 @@ int getRegIndex(char* varname) {
 	}
 	// 变量
 	Symbol* sb = lookUp_SymTab(varname, isGlobal);
+	if (!sb) {
+		printf("unexpect error: cannot find symbol\n");
+		exit(-1);
+	}
 
 	if (sb->isreg) {						// 已经在寄存器堆中
 		isInReg = true;
@@ -250,29 +254,29 @@ void data2asm() {
 	while (strcmp("Func", quadvarlist[cur_4var].op)) {
 		if (!strcmp("const", quadvarlist[cur_4var].op)) {
 			// 无论是int 还是 char 都是存储数值；这里的数值在之前已经全部确定了，溢出的char值，取模
-			fprintf(ASM_FILE, "\t$%s:\t.word\t%s\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.word\t%s\n",
 				quadvarlist[cur_4var].var3,
 				quadvarlist[cur_4var].var2
 			);
 		}
 		else if (!strcmp("int", quadvarlist[cur_4var].op)) {
-			fprintf(ASM_FILE, "\t$%s:\t.word\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.word\n",
 				quadvarlist[cur_4var].var3
 			);
 		}
 		else if (!strcmp("char", quadvarlist[cur_4var].op)) {	// 事实上这里，char分配的空间也是4
-			fprintf(ASM_FILE, "\t$%s:\t.word\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.word\n",
 				quadvarlist[cur_4var].var3
 			);
 		}
 		else if (!strcmp("intarray", quadvarlist[cur_4var].op)) {
-			fprintf(ASM_FILE, "\t$%s:\t.space\t%d\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.space\t%d\n",
 				quadvarlist[cur_4var].var3,
 				atoi(quadvarlist[cur_4var].var1) * 4
 			);
 		}
 		else if (!strcmp("chararray", quadvarlist[cur_4var].op)) {
-			fprintf(ASM_FILE, "\t$%s:\t.space\t%d\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.space\t%d\n",
 				quadvarlist[cur_4var].var3,
 				atoi(quadvarlist[cur_4var].var1) * 4
 			);
@@ -315,7 +319,7 @@ void function2asm() {
 	insertTempVar(cur_4var);
 
 	// 为函数参数、局部变量、临时变量分配空间
-	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, %d\n", g_symtab->next->varsize);
+	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, %d\n", g_symtab->next->varsize - 8);
 
 	// 开始分析
 	while (strcmp(quadvarlist[cur_4var].op, "endf")) {
@@ -670,7 +674,7 @@ void assign2asm()
 
 	int r3 = getRegIndex(quadvarlist[cur_4var].var3);
 
-	fprintf(ASM_FILE, "\tmove\t$t%d, $t%d\n", r1, r3);
+	fprintf(ASM_FILE, "\tmove\t$t%d, $t%d\n", r3, r1);
 
 }
 
@@ -763,7 +767,7 @@ void saveReg() {
 				else {
 					fprintf(ASM_FILE, "\tsw\t\t$t%d, -%d($fp)\n",
 						nn.regindex,
-						sb_pop->adress + 8
+						sb_pop->adress
 					);
 				}
 			}
@@ -803,8 +807,8 @@ void baseAddr2reg(char* varname, int reg) {
 			// 基地址
 			int addr = lookUp_SymTab(varname)->adress;
 
-			fprintf(ASM_FILE, "\tli\t\t$t%d, %d\n", reg, addr);
-			fprintf(ASM_FILE, "\tsub\t\t$t%d, $fp, $t%d\n", reg, reg);
+			//fprintf(ASM_FILE, "\tli\t\t$t%d, %d\n", reg, addr);
+			fprintf(ASM_FILE, "\tsubi\t$t%d, $fp, %d\n", reg, addr);
 		}
 	}
 	INFO_ASM("\t# End of Array BaseAddr\n");
