@@ -19,12 +19,14 @@ t:
 	mul		$t2, $t0, $t1
 	li		$t3, 4
 	add		$t4, $t2, $t3
+	move	$v0, $t4
+	j		ret_t
+ret_t:
 	#Save RegFile
 	sw		$t0, -8($fp)
 	sw		$t2, -12($fp)
 	sw		$t4, -16($fp)
 	#End of Saving RegFile
-ret_t:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
@@ -36,63 +38,35 @@ main:
 	sw		$ra, 4($sp)
 	#match para type
 	#match finished
-	subi	$sp, $sp, 32
-	li		$t0, 1
-	move	$t1, $t0
-	li		$t2, 2
-	move	$t3, $t2
-	# Array BaseAddr
-	subi	$t4, $fp, 16
-	# End of Array BaseAddr
-	li		$t5, 2
-	mul		$s0, $t5, 4
-	sub		$s0, $t4, $s0
-	li		$t6, 64
-	sw		$t6, ($s0)
-	# Array BaseAddr
-	# End of Array BaseAddr
-	li		$t7, 2
-	mul		$s0, $t7, 4
-	sub		$s0, $t4, $s0
-	lw		$t8, ($s0)
-	# Array BaseAddr
-	# End of Array BaseAddr
-	li		$t9, 1
-	mul		$s0, $t9, 4
-	sub		$s0, $t4, $s0
-	sw		$t8, ($s0)
-	# Array BaseAddr
-	# End of Array BaseAddr
-	li		$t0, 1
-	mul		$s0, $t0, 4
-	sub		$s0, $t4, $s0
-	sw		$t1, -8($fp)
-	lw		$t1, ($s0)
-	# Array BaseAddr
-	la		$t2, $g_a
-	# End of Array BaseAddr
-	sw		$t3, -12($fp)
-	li		$t3, 0
-	mul		$s0, $t3, 4
-	add		$s0, $t2, $s0
-	sw		$t1, ($s0)
+	subi	$sp, $sp, 12
+	la		$a0, $string0
+	li		$v0, 4
+	syscall
+	li		$v0	5
+	syscall
+	sw		$v0, -8($fp)
 	#value Para:
-	lw		$t5, -8($fp)
-	sw		$t5, -8($sp)
+	lw		$t0, -8($fp)
+	sw		$t0, -8($sp)
 	#End of value Para
 	#Save RegFile
-	sw		$t8, -28($fp)
-	sw		$t1, -32($fp)
-	sw		$t5, -8($fp)
+	sw		$t0, -8($fp)
 	#End of Saving RegFile
 	jal		t
 	move	$t0, $v0
 	move	$t1, $t0
+	la		$a0, $string1
+	li		$v0, 4
+	syscall
+	move	$a0, $t1
+	li		$v0, 1
+	syscall
+	j		ret_main
+ret_main:
 	#Save RegFile
-	sw		$t0, -36($fp)
+	sw		$t0, -16($fp)
 	sw		$t1, -12($fp)
 	#End of Saving RegFile
-ret_main:
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)

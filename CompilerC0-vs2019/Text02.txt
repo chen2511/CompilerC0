@@ -5,13 +5,8 @@ int t(int k) {
   }   
 void main(){  
    int n,result;  
-   int a[3];
    printf("Please enter n: ");
-   n = 1;
-   result = 2;
-   a[2] = 64;
-   a[1] = a[2];
-   g_a[0] = a[1];
+   scanf(n);
    result=t(n);  
 
    printf("t(n) is: ");  

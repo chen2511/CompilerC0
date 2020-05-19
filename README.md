@@ -1210,7 +1210,7 @@ int getRegIndex(char* varname)
 
 1、类型转换：
 
-赋值语句：
+赋值语句：类型转换
 
 函数调用：在函数体内转换
 

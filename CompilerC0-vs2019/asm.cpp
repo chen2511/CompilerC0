@@ -230,6 +230,7 @@ void genasm()
 		else if (!strcmp(quadvarlist[cur_4var].op, "Main")) {
 			s_funcName = (char*)"main";
 			fprintf(ASM_FILE, "main:\n");
+			s_funcRetType = Type::T_VOID;
 		}
 		else {						// 正常情况不应该进入此分支
 			printf("unexpected error in genasm()\n");
@@ -397,11 +398,11 @@ void function2asm() {
 
 	// 函数体结束，处理栈的变化等等
 	// 这一步也很重要，寄存器的值不要忘了写回
+	fprintf(ASM_FILE, "ret_%s:\n", s_funcName);
+
 	saveReg();										// 全局变量需要保存、局部变量已经没有意义
 	//s_emptyRegNum = 10;								// 寄存器清空
 	//regInfoList.clear();							// 清空队列
-
-	fprintf(ASM_FILE, "ret_%s:\n", s_funcName);
 
 	// 恢复状态
 	fprintf(ASM_FILE, "\tlw\t\t$ra, -4($fp)\n");	// 恢复$ra
@@ -657,9 +658,15 @@ void setarray2asm()
 		fprintf(ASM_FILE, "\tsub\t\t$s0, $t%d, $s0\n", r3);
 	}
 
-
 	int r1 = getRegIndex(quadvarlist[cur_4var].var1);
 	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	// check type
+	Type real_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
+	if (Type::T_CHAR == real_type) {
+		fprintf(ASM_FILE, "\tandi\t$t%d, $t%d, 0xff", r1, r1);
+	}
+
 	fprintf(ASM_FILE, "\tsw\t\t$t%d, ($s0)\n", r1);
 }
 
@@ -676,6 +683,11 @@ void assign2asm()
 
 	fprintf(ASM_FILE, "\tmove\t$t%d, $t%d\n", r3, r1);
 
+	// check type
+	Type real_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
+	if (Type::T_CHAR == real_type) {
+		fprintf(ASM_FILE, "\tandi\t$t%d, $t%d, 0xff", r3, r3);
+	}
 }
 
 void lab2asm()
@@ -713,12 +725,66 @@ void vpara2asm()
 	INFO_ASM("\t#End of value Para\n");
 }
 
+/*
+(scanf,  ,  ,name)
+*/
 void scanf2asm()
 {
+	Symbol* sb = lookUp_SymTab(quadvarlist[cur_4var].var3, isGlobal);
+
+	if (Type::T_INTEGER == sb->valueType) {			// 数字
+		fprintf(ASM_FILE, "\tli\t\t$v0\t5\n");
+		fprintf(ASM_FILE, "\tsyscall\n");
+		if (isGlobal) {
+			fprintf(ASM_FILE, "\tla\t\t$s0, $%s\n", sb->name);
+			fprintf(ASM_FILE, "\tsw\t\t$v0, ($s0)\n");
+		}
+		else {
+			int addr = sb->adress;
+			fprintf(ASM_FILE, "\tsw\t\t$v0, -%d($fp)\n", addr);
+		}
+	}
+	else {											// 字符
+		fprintf(ASM_FILE, "\tli\t\t$v0\t12\n");
+		fprintf(ASM_FILE, "\tsyscall\n");
+		if (isGlobal) {
+			fprintf(ASM_FILE, "\tla\t\t$s0, $%s\n", sb->name);
+			fprintf(ASM_FILE, "\tsw\t\t$v0, ($s0)\n");
+		}
+		else {
+			int addr = sb->adress;
+			fprintf(ASM_FILE, "\tsw\t\t$v0, -%d($fp)\n");
+		}
+	}
 }
 
+/*
+(print,str_index, , )
+(print,  ,id/num, int/char)
+这里有点问题， 最后int/char没用；通过id/num来判断的
+*/
 void print2asm()
 {
+	if (quadvarlist[cur_4var].var3[0] == ' ') {
+		fprintf(ASM_FILE, "\tla\t\t$a0, $string%s\n", quadvarlist[cur_4var].var1);
+		fprintf(ASM_FILE, "\tli\t\t$v0, 4\n");
+		fprintf(ASM_FILE, "\tsyscall\n");
+	}
+	else {
+		int r2 = getRegIndex(quadvarlist[cur_4var].var2);
+		mem2reg(quadvarlist[cur_4var].var2, r2);
+
+		if (Type::T_INTEGER == lookUp_SymTab(quadvarlist[cur_4var].var2)->valueType) {
+			fprintf(ASM_FILE, "\tmove\t$a0, $t%d\n", r2);
+			fprintf(ASM_FILE, "\tli\t\t$v0, 1\n");
+			fprintf(ASM_FILE, "\tsyscall\n");
+		}
+		else {
+			fprintf(ASM_FILE, "\tmove\t$a0, $t%d\n", r2);
+			fprintf(ASM_FILE, "\tli\t\t$v0, 11\n");
+			fprintf(ASM_FILE, "\tsyscall\n");
+		}
+	}
 }
 
 
@@ -728,15 +794,36 @@ ret, , ,
 */
 void ret2asm()
 {
+	
 	if (quadvarlist[cur_4var].var3[0] == ' ') {		// == 写成 =了 。。。。。查了几分钟把，还好找出来了
-		
+		/* do nothing */
+		if (Type::T_VOID != s_funcRetType) {
+			printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
+		}
 	}
 	else {
+		// 保存返回值
+		int r3 = getRegIndex(quadvarlist[cur_4var].var3);
+		mem2reg(quadvarlist[cur_4var].var3, r3);
+		fprintf(ASM_FILE, "\tmove\t$v0, $t%d\n", r3);
+
+		// 判断返回类型
+		//Type real_ret_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
+		if (Type::T_VOID == s_funcRetType) {
+			// void : error
+			printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
+		}
+		else if (Type::T_CHAR == s_funcRetType) {
+			// char: andi 0xff
+			fprintf(ASM_FILE, "\tandi\t$v0, $v0, 0xff\n");
+		}
+		else {
+			/* int: do nothing */
+		}
 
 	}
 
-
-
+	fprintf(ASM_FILE, "\tj\t\tret_%s\n", s_funcName);
 }
 
 // 在函数调用前，将寄存器的值写入内存

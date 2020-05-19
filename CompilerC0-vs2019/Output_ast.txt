@@ -24,25 +24,15 @@ Type: 1	(VOID,INT,CHAR)	list:
 ID name: n
 ID name: result
 
-Type: 1	(VOID,INT,CHAR)	list: 
-ID name: a
-
 
 Stmt Sequence>>>   
 
 Write Stmt:
 Write Str: Please enter n: 
 
-Assign to: n
- 1 
-Assign to: result
- 2 
-Assign to: a
- 64  2 
-Assign to: a
- a  []  2  1 
-Assign to: g_a
- a  []  1  0 
+Read Stmt:
+Read ID: n
+
 Assign to: result
  t  ()  n 
 Write Stmt:
