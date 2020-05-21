@@ -595,36 +595,99 @@ void getarray2asm()
 
 }
 
+/*
+(jop, id, id, label)
+*/
 void gre2asm()
 {
+	int r1, r2;
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	fprintf(ASM_FILE, "\tbgt\t\t$t%d, $t%d, %s\n", r1, r2, quadvarlist[cur_4var].var3);
 }
 
 void geq2asm()
 {
+	int r1, r2;
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	fprintf(ASM_FILE, "\tbge\t\t$t%d, $t%d, %s\n", r1, r2, quadvarlist[cur_4var].var3);
 }
 
 void lss2asm()
 {
+	int r1, r2;
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	fprintf(ASM_FILE, "\tblt\t\t$t%d, $t%d, %s\n", r1, r2, quadvarlist[cur_4var].var3);
 }
 
 void leq2asm()
 {
+	int r1, r2;
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	fprintf(ASM_FILE, "\tble\t\t$t%d, $t%d, %s\n", r1, r2, quadvarlist[cur_4var].var3);
 }
 
 void neq2asm()
 {
+	int r1, r2;
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	fprintf(ASM_FILE, "\tbne\t\t$t%d, $t%d, %s\n", r1, r2, quadvarlist[cur_4var].var3);
 }
 
 void eql2asm()
 {
+	int r1, r2;
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	r2 = getRegIndex(quadvarlist[cur_4var].var2);
+	mem2reg(quadvarlist[cur_4var].var2, r2);
+
+	fprintf(ASM_FILE, "\tbeq\t\t$t%d, $t%d, %s\n", r1, r2, quadvarlist[cur_4var].var3);
 }
 
+/*
+(j,  ,  ,label)
+*/
 void j2asm()
 {
+	fprintf(ASM_FILE, "\tj\t\t%s\n", quadvarlist[cur_4var].var3);
 }
 
+/*
+(jnz,id/num, ,label)
+*/
 void jnz2asm()
 {
+	int r1 = getRegIndex(quadvarlist[cur_4var].var1);
+
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	fprintf(ASM_FILE, "\tbnez\t$t%d, %s\n", r1, quadvarlist[cur_4var].var3);
 }
 
 // matchType已经完成了
@@ -691,8 +754,10 @@ void assign2asm()
 	}
 }
 
+
 void lab2asm()
 {
+	fprintf(ASM_FILE, "%s:\n", quadvarlist[cur_4var].var3);
 }
 
 /*
@@ -728,6 +793,7 @@ void vpara2asm()
 
 /*
 (scanf,  ,  ,name)
+输入整形和字符
 */
 void scanf2asm()
 {
@@ -754,7 +820,7 @@ void scanf2asm()
 		}
 		else {
 			int addr = sb->adress;
-			fprintf(ASM_FILE, "\tsw\t\t$v0, -%d($fp)\n");
+			fprintf(ASM_FILE, "\tsw\t\t$v0, -%d($fp)\n", addr);
 		}
 	}
 }
@@ -763,6 +829,8 @@ void scanf2asm()
 (print,str_index, , )
 (print,  ,id/num, int/char)
 这里有点问题， 最后int/char没用；通过id/num来判断的
+
+打印整形， 字符， 数字
 */
 void print2asm()
 {
