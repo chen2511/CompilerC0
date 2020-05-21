@@ -1,32 +1,56 @@
 .data:
-	$g_a:		.space	12
-	$string0:	.asciiz	"Please enter n: "
-	$string1:	.asciiz	"t(n) is: "
+	$gc_a:		.word	22
+	$gc_b:		.word	-22
+	$gc_c:		.word	0
+	$gc_d:		.word	120
+	$gc_e:		.word	205
+	$g_a:		.word
+	$g_b:		.word
+	$g_c:		.space	12
+	$g_d:		.space	20
+	$g_e:		.word
+	$string0:	.asciiz	"aaaa12221"
 .text:
 	jal		main
 	li		$v0, 10
 	syscall
-t:
+f_a:
 	sw		$fp, ($sp)
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	#match para type
-	#match finished
-	subi	$sp, $sp, 12
-	lw		$t0, -8($fp)
-	li		$t1, 3
-	mul		$t2, $t0, $t1
-	li		$t3, 4
-	add		$t4, $t2, $t3
-	move	$v0, $t4
-	j		ret_t
-ret_t:
-	#Save RegFile
-	sw		$t0, -8($fp)
+	subi	$sp, $sp, 32
+	lw		$t0, $gc_a
+	li		$t1, 53
+	add		$t2, $t0, $t1
+	li		$t3, 5
+	mul		$t4, $t3, $t2
+	li		$t5, 0
+	sub		$t6, $t5, $t4
+	la		$t7, $g_d
+	li		$t8, 3
+	mul		$s0, $t8, 4
+	add		$s0, $t7, $s0
+	lw		$t9, ($s0)
+	sw		$t0,$gc_a
+	add		$t0, $t6, $t9
+	li		$t1, 599
+	add		$t3, $t0, $t1
 	sw		$t2, -12($fp)
+	lw		$t2, -8($fp)
+	add		$t5, $t3, $t2
 	sw		$t4, -16($fp)
-	#End of Saving RegFile
+	move	$t4, $t5
+	move	$v0, $t4
+	j		ret_f_a
+ret_f_a:
+	sw		$t6, -20($fp)
+	sw		$t9, -24($fp)
+	sw		$t0, -28($fp)
+	sw		$t3, -32($fp)
+	sw		$t2, -8($fp)
+	sw		$t5, -36($fp)
+	sw		$t4, $g_b
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
@@ -36,37 +60,71 @@ main:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	#match para type
-	#match finished
-	subi	$sp, $sp, 12
+	subi	$sp, $sp, 204
+	lw		$t0, -8($fp)
+	li		$t1, 55
+	mul		$t2, $t0, $t1
+	li		$t3, 0
+	li		$t4, 1
+	sub		$t5, $t3, $t4
+	subi	$t6, $fp, 44
+	li		$t7, 2
+	mul		$s0, $t7, 4
+	sub		$s0, $t6, $s0
+	lw		$t8, ($s0)
+	add		$t9, $t5, $t8
+	sw		$t0, -8($fp)
+	lw		$t0, $g_a
+	add		$t1, $t9, $t0
+	sw		$t2, -172($fp)
+	lw		$t2, -164($fp)
+	add		$t3, $t1, $t2
+	li		$t4, 103
+	sub		$t6, $t3, $t4
+	lw		$t7, -172($fp)
+	sw		$t5, -176($fp)
+	mul		$t5, $t7, $t6
+	sw		$t8, -180($fp)
+	lw		$t8, -12($fp)
+	sw		$t8, -8($sp)
+	sw		$t9, -184($fp)
+	sw		$t0, $g_a
+	sw		$t1, -188($fp)
+	sw		$t2, -164($fp)
+	sw		$t3, -192($fp)
+	sw		$t7, -172($fp)
+	sw		$t6, -196($fp)
+	sw		$t5, -200($fp)
+	sw		$t8, -12($fp)
+	jal		f_a
+	move	$t0, $v0
+	lw		$t1, -200($fp)
+	add		$t2, $t1, $t0
+	move	$t3, $t2
+	andi	$t3, $t3, 0xff
+	li		$v0	5
+	syscall
+	sw		$v0, -32($fp)
+	li		$v0	5
+	syscall
+	sw		$v0, -36($fp)
+	li		$v0	12
+	syscall
+	sw		$v0, -11533356($fp)
 	la		$a0, $string0
 	li		$v0, 4
 	syscall
-	li		$v0	5
-	syscall
-	sw		$v0, -8($fp)
-	#value Para:
-	lw		$t0, -8($fp)
-	sw		$t0, -8($sp)
-	#End of value Para
-	#Save RegFile
-	sw		$t0, -8($fp)
-	#End of Saving RegFile
-	jal		t
-	move	$t0, $v0
-	move	$t1, $t0
-	la		$a0, $string1
-	li		$v0, 4
-	syscall
-	move	$a0, $t1
+	lw		$t4, -8($fp)
+	move	$a0, $t4
 	li		$v0, 1
 	syscall
 	j		ret_main
 ret_main:
-	#Save RegFile
-	sw		$t0, -16($fp)
-	sw		$t1, -12($fp)
-	#End of Saving RegFile
+	sw		$t1, -200($fp)
+	sw		$t0, -204($fp)
+	sw		$t2, -208($fp)
+	sw		$t3, -164($fp)
+	sw		$t4, -8($fp)
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)

@@ -72,5 +72,6 @@
     <Text Include="IR.txt" />
     <Text Include="asm.txt" />
     <Text Include="Text02.txt" />
+    <Text Include="Text01.txt" />
   </ItemGroup>
 </Project>

@@ -435,7 +435,8 @@ void matchParaType() {
 	Symbol* sbf = lookUp_SymTab(s_funcName);
 
 	FuncInfo* pf = sbf->pfinfo;
-	fprintf(ASM_FILE, "\t#match para type\n");
+	INFO_ASM("\t#match para type\n");
+	
 	for (int i = 0; !strcmp(quadvarlist[cur_4var].op, "para"); i++, cur_4var++) {
 		if (pf->paratable[i].ptype == Type::T_CHAR) {
 			// 转换
@@ -445,7 +446,7 @@ void matchParaType() {
 			fprintf(ASM_FILE, "\tsw\t\t$a0, -%d($fp)\n", 8 + 4 * i);
 		}
 	}
-	fprintf(ASM_FILE, "\t#match finished\n");
+	INFO_ASM("\t#match finished\n");
 }
 
 // 遍历，将临时变量插入符号表
@@ -664,7 +665,7 @@ void setarray2asm()
 	// check type
 	Type real_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
 	if (Type::T_CHAR == real_type) {
-		fprintf(ASM_FILE, "\tandi\t$t%d, $t%d, 0xff", r1, r1);
+		fprintf(ASM_FILE, "\tandi\t$t%d, $t%d, 0xff\n", r1, r1);
 	}
 
 	fprintf(ASM_FILE, "\tsw\t\t$t%d, ($s0)\n", r1);
@@ -686,7 +687,7 @@ void assign2asm()
 	// check type
 	Type real_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
 	if (Type::T_CHAR == real_type) {
-		fprintf(ASM_FILE, "\tandi\t$t%d, $t%d, 0xff", r3, r3);
+		fprintf(ASM_FILE, "\tandi\t$t%d, $t%d, 0xff\n", r3, r3);
 	}
 }
 

@@ -1,45 +1,90 @@
 
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_a		value:	22
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		gc_b		value:	-22
+ID name:		gc_c		value:	0
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		gc_d		value:	x
+ID name:		gc_e		value:	Í
+
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
 ID name: g_a
+ID name: g_b
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: g_c
+ID name: g_d
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_e
 
 
 >>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: t 
+ Function Name: f_a 
  Function Info: Return Type(VOID,INT,CHAR):1 
-		ParaTable(VOID,INT,CHAR): 1 k	
+		ParaTable(VOID,INT,CHAR): 1 a	
 
 Stmt Sequence>>>   
 
+Assign to: g_b
+ 0  -  5  *  gc_a  +  53  +  g_d  []  3  +  599  +  a 
 Ret Stmt:
- k  *  3  +  4 
+ g_b 
 <<<Stmt Sequence End  
 
 ***************************************************
 ************ Main Function Declaration ************
 ***************************************************
 
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+ID name:		b		value:	2
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		c		value:	2
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		d		value:	3
+ID name:		e		value:	Í
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name:		f		value:	4
+
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
-ID name: n
-ID name: result
+ID name: g
+ID name: h
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: j
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: k
+ID name: l
 
 
 Stmt Sequence>>>   
 
-Write Stmt:
-Write Str: Please enter n: 
+Assign to: k
+ a  *  55  *  0  -  1  +  j  []  2  +  g_a  +  k  -  103  +  f_a  ()  b 
+Read Stmt:
+Read ID: g
+Read ID: h
 
 Read Stmt:
-Read ID: n
-
-Assign to: result
- t  ()  n 
-Write Stmt:
-Write Str: t(n) is: 
+Read ID: k
 
 Write Stmt:
- result 
+Write Str: aaaa12221
+
+Write Stmt:
+ a 
 Ret Stmt:
 
 <<<Stmt Sequence End  

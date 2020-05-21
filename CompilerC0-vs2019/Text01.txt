@@ -1,0 +1,38 @@
+const int gc_a = 22;
+const int gc_b = -22, gc_c = 0;
+const char gc_d = 254, gc_e = 'x';
+
+int g_a, g_b;
+char g_c[3], g_d[5];
+int g_e;
+
+int f_a(int a){
+	g_b = -5 * ( gc_a + '5') + g_d[3] + 599 + a;
+	return (g_b);
+}
+
+void main()
+{
+	const int a = 1, b = 2;
+	const int c = 2;
+	const char d = '2', e = '3';
+	const char f = '4';
+
+
+	int g,h;
+	int i;
+	char j[30];
+	char k,l;
+
+
+	k = a * 55 * ( -1 + j[2] + g_a + k - 'g' ) + f_a(b);
+
+	scanf(g, h);
+	scanf(k);
+	
+
+	printf("aaaa12221");
+	printf(a);
+
+	return ;
+}
