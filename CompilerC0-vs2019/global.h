@@ -14,8 +14,8 @@
 
 #define DEBUG_SWITCH
 #ifdef  DEBUG_SWITCH
-#define INFO(format, ...)       printf(format, ##__VA_ARGS__)
-#define INFO_ASM(format, ...)    fprintf(ASM_FILE, format, ##__VA_ARGS__)
+#define INFO(format, ...)           printf(format, ##__VA_ARGS__)
+#define INFO_ASM(format, ...)       fprintf(ASM_FILE, format, ##__VA_ARGS__)
 #else
 #define INFO(info)              /* do nothing */
 #define INFO_ASM(format, ...)    /* do nothing */

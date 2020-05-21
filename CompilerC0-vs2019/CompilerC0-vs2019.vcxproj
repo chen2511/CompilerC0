@@ -158,12 +158,12 @@
     <ClInclude Include="symtab.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="asm.txt" />
-    <Text Include="IR.txt" />
-    <Text Include="Output_ast.txt" />
-    <Text Include="Text.txt" />
-    <Text Include="Text01.txt" />
-    <Text Include="Text02.txt" />
+    <Text Include="Input\Text.txt" />
+    <Text Include="Input\Text01.txt" />
+    <Text Include="Input\Text02.txt" />
+    <Text Include="Output\asm.txt" />
+    <Text Include="Output\Ast.txt" />
+    <Text Include="Output\IR.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
