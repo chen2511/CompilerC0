@@ -2,8 +2,8 @@
 	$gc_a:		.word	22
 	$gc_b:		.word	-22
 	$gc_c:		.word	0
-	$gc_d:		.word	120
-	$gc_e:		.word	205
+	$gc_d:		.word	254
+	$gc_e:		.word	120
 	$g_a:		.word
 	$g_b:		.word
 	$g_c:		.space	12
@@ -19,6 +19,8 @@ f_a:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
+	#match para type
+	#match finished
 	subi	$sp, $sp, 32
 	lw		$t0, $gc_a
 	li		$t1, 53
@@ -27,7 +29,9 @@ f_a:
 	mul		$t4, $t3, $t2
 	li		$t5, 0
 	sub		$t6, $t5, $t4
+	# Array BaseAddr
 	la		$t7, $g_d
+	# End of Array BaseAddr
 	li		$t8, 3
 	mul		$s0, $t8, 4
 	add		$s0, $t7, $s0
@@ -44,6 +48,7 @@ f_a:
 	move	$v0, $t4
 	j		ret_f_a
 ret_f_a:
+	#Save RegFile
 	sw		$t6, -20($fp)
 	sw		$t9, -24($fp)
 	sw		$t0, -28($fp)
@@ -51,6 +56,7 @@ ret_f_a:
 	sw		$t2, -8($fp)
 	sw		$t5, -36($fp)
 	sw		$t4, $g_b
+	#End of Saving RegFile
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
@@ -60,6 +66,8 @@ main:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
+	#match para type
+	#match finished
 	subi	$sp, $sp, 204
 	lw		$t0, -8($fp)
 	li		$t1, 55
@@ -67,7 +75,9 @@ main:
 	li		$t3, 0
 	li		$t4, 1
 	sub		$t5, $t3, $t4
+	# Array BaseAddr
 	subi	$t6, $fp, 44
+	# End of Array BaseAddr
 	li		$t7, 2
 	mul		$s0, $t7, 4
 	sub		$s0, $t6, $s0
@@ -84,9 +94,12 @@ main:
 	lw		$t7, -172($fp)
 	sw		$t5, -176($fp)
 	mul		$t5, $t7, $t6
+	#value Para:
 	sw		$t8, -180($fp)
 	lw		$t8, -12($fp)
 	sw		$t8, -8($sp)
+	#End of value Para
+	#Save RegFile
 	sw		$t9, -184($fp)
 	sw		$t0, $g_a
 	sw		$t1, -188($fp)
@@ -96,6 +109,7 @@ main:
 	sw		$t6, -196($fp)
 	sw		$t5, -200($fp)
 	sw		$t8, -12($fp)
+	#End of Saving RegFile
 	jal		f_a
 	move	$t0, $v0
 	lw		$t1, -200($fp)
@@ -110,7 +124,7 @@ main:
 	sw		$v0, -36($fp)
 	li		$v0	12
 	syscall
-	sw		$v0, -11533356($fp)
+	sw		$v0, -7534992($fp)
 	la		$a0, $string0
 	li		$v0, 4
 	syscall
@@ -120,11 +134,13 @@ main:
 	syscall
 	j		ret_main
 ret_main:
+	#Save RegFile
 	sw		$t1, -200($fp)
 	sw		$t0, -204($fp)
 	sw		$t2, -208($fp)
 	sw		$t3, -164($fp)
 	sw		$t4, -8($fp)
+	#End of Saving RegFile
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)

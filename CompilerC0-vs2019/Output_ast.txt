@@ -7,8 +7,8 @@ Type: 1	(VOID,INT,CHAR)	list:
 ID name:		gc_b		value:	-22
 ID name:		gc_c		value:	0
 Type: 2	(VOID,INT,CHAR)	list: 
-ID name:		gc_d		value:	x
-ID name:		gc_e		value:	Í
+ID name:		gc_d		value:	þ
+ID name:		gc_e		value:	x
 
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
@@ -48,8 +48,8 @@ ID name:		b		value:	2
 Type: 1	(VOID,INT,CHAR)	list: 
 ID name:		c		value:	2
 Type: 2	(VOID,INT,CHAR)	list: 
-ID name:		d		value:	3
-ID name:		e		value:	Í
+ID name:		d		value:	2
+ID name:		e		value:	3
 Type: 2	(VOID,INT,CHAR)	list: 
 ID name:		f		value:	4
 
