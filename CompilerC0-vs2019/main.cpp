@@ -21,7 +21,7 @@ SymTab* g_symtab;
 
 int main(int argc, char* argv[])
 {
-    sourceFile = fopen("Text02.txt", "r");
+    sourceFile = fopen("./Input/Text02.txt", "r");
     if (NULL == sourceFile) {
         cout << "source file open failed!\n";
     }
@@ -36,11 +36,11 @@ int main(int argc, char* argv[])
 
     
     IR_Analyze(synaxtree);
-    IR_FILE = fopen("IR.txt", "w+");
+    IR_FILE = fopen("./Output/IR.txt", "w+");
     printIR();
     fclose(IR_FILE);
 
-    ASM_FILE = fopen("asm.txt", "w+");
+    ASM_FILE = fopen("./Output/asm.txt", "w+");
     genasm();
 
 
