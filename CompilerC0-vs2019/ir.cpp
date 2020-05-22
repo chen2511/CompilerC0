@@ -373,8 +373,9 @@ void IR_Analyze(TreeNode* tree)
 			break;
 			case DecKind::Func_DecK:					// 函数定义
 			{
+				// 此处bug： tree->type  >> tree->pfinfo->rettype
 				gen("Func", 
-					(tree->pfinfo->rettype == Type::T_INTEGER) ? (char*)"int" : (tree->type == Type::T_CHAR) ? (char*)"char" : (char*)"void",
+					(tree->pfinfo->rettype == Type::T_INTEGER) ? (char*)"int" : (tree->pfinfo->rettype == Type::T_CHAR) ? (char*)"char" : (char*)"void",
 					newempty(),
 					tree->attr.name
 				);

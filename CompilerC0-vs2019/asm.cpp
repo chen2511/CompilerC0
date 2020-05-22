@@ -887,20 +887,36 @@ void ret2asm()
 		mem2reg(quadvarlist[cur_4var].var3, r3);
 		fprintf(ASM_FILE, "\tmove\t$v0, $t%d\n", r3);
 
-		// 判断返回类型
-		Type real_ret_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
-		if (Type::T_VOID == real_ret_type) {
-			// void : error
-			printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
-		}
-		else if (Type::T_CHAR == real_ret_type) {
-			// char: andi 0xff
-			fprintf(ASM_FILE, "\tandi\t$v0, $v0, 0xff\n");
-		}
-		else {
-			/* int: do nothing */
-		}
 
+		// 判断返回类型
+		if (isdigit(quadvarlist[cur_4var].var3[0])) {			// 返回的是数字
+			if (Type::T_VOID == s_funcRetType) {
+				// void : error
+				printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
+			}
+			else if (Type::T_CHAR == s_funcRetType) {
+				// char: andi 0xff
+				fprintf(ASM_FILE, "\tandi\t$v0, $v0, 0xff\n");
+			}
+			else {
+				/* int: do nothing */
+			}
+		}
+		else {													// 标识符
+			Type real_ret_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
+			// 上面一句似乎没用？
+			if (Type::T_VOID == s_funcRetType) {
+				// void : error
+				printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
+			}
+			else if (Type::T_CHAR == s_funcRetType) {
+				// char: andi 0xff
+				fprintf(ASM_FILE, "\tandi\t$v0, $v0, 0xff\n");
+			}
+			else {
+				/* int: do nothing */
+			}
+		}
 	}
 
 	fprintf(ASM_FILE, "\tj\t\tret_%s\n", s_funcName);

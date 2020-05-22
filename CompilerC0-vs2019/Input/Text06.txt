@@ -1,0 +1,41 @@
+int g_a;
+char g_b;
+
+int pi(){
+	return (3);
+}
+
+void main(){
+	int c;
+	int d;
+	int e;
+	int f;
+	int g[3];
+
+	c = 3;
+	d = 4;
+	e = 5;
+	f = 6;
+	g[0] = 7;
+	g[1] = 8;
+	g[2] = 9;
+
+	printf("c + d = ");
+	printf(c + d);
+
+	printf("\ne - c = ");
+	printf(e - c);
+
+	printf("\nd * f = ");
+	printf(d * f);
+
+	printf("\ng[2] / c = ");
+	printf(g[2] / c);
+
+	printf("\npi() = ");
+	printf(pi());
+
+	printf("\n complex = ");
+	printf(-3 + c - d * e / f + g[0]);
+	
+}

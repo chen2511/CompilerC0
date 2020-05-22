@@ -1,69 +1,21 @@
 
->>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: p1 
- Function Info: Return Type(VOID,INT,CHAR):0 
-		ParaTable(VOID,INT,CHAR): 
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_a
 
-Stmt Sequence>>>   
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: g_b
 
-Write Stmt:
-Write Str: call p1\n
-
-<<<Stmt Sequence End  
 
 >>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: p2 
- Function Info: Return Type(VOID,INT,CHAR):0 
-		ParaTable(VOID,INT,CHAR): 1 a	
-
-Stmt Sequence>>>   
-
-Write Stmt:
-Write Str: call p2\n
-
-Write Stmt:
- a 
-<<<Stmt Sequence End  
-
->>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: p3 
+ Function Name: pi 
  Function Info: Return Type(VOID,INT,CHAR):1 
-		ParaTable(VOID,INT,CHAR): 1 a	
-
-Stmt Sequence>>>   
-
-Write Stmt:
-Write Str: call p3\n
-
-Ret Stmt:
- a  +  1 
-<<<Stmt Sequence End  
-
->>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: p4 
- Function Info: Return Type(VOID,INT,CHAR):1 
-		ParaTable(VOID,INT,CHAR): 2 a	
-
-Stmt Sequence>>>   
-
-Write Stmt:
-Write Str: call p4\n
-
-Write Stmt:
- a 
-Ret Stmt:
- a 
-<<<Stmt Sequence End  
-
->>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
- Function Name: p5 
- Function Info: Return Type(VOID,INT,CHAR):2 
 		ParaTable(VOID,INT,CHAR): 
 
 Stmt Sequence>>>   
 
 Ret Stmt:
- 256  +  97 
+ 3 
 <<<Stmt Sequence End  
 
 ***************************************************
@@ -72,25 +24,65 @@ Ret Stmt:
 
 ------------ Var Declaration ------------
 Type: 1	(VOID,INT,CHAR)	list: 
-ID name: a
+ID name: c
 
-Type: 2	(VOID,INT,CHAR)	list: 
-ID name: b
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: d
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: e
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: f
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g
 
 
 Stmt Sequence>>>   
 
-Call Stmt:  Function: p1 
-Paras: 
+Assign to: c
+ 3 
+Assign to: d
+ 4 
+Assign to: e
+ 5 
+Assign to: f
+ 6 
+Assign to: g
+ 7  0 
+Assign to: g
+ 8  1 
+Assign to: g
+ 9  2 
+Write Stmt:
+Write Str: c + d = 
 
-Call Stmt:  Function: p2 
-Paras:  2 
+Write Stmt:
+ c  +  d 
+Write Stmt:
+Write Str: \ne - c = 
 
-Assign to: a
- p3  ()  3 
-Call Stmt:  Function: p4 
-Paras:  61  +  256 
+Write Stmt:
+ e  -  c 
+Write Stmt:
+Write Str: \nd * f = 
 
-Assign to: b
- p5  () 
+Write Stmt:
+ d  *  f 
+Write Stmt:
+Write Str: \ng[2] / c = 
+
+Write Stmt:
+ g  []  2  /  c 
+Write Stmt:
+Write Str: \npi() = 
+
+Write Stmt:
+ pi  () 
+Write Stmt:
+Write Str: \n complex = 
+
+Write Stmt:
+ 0  -  3  +  c  -  d  *  e  /  f  +  g  []  0 
 <<<Stmt Sequence End  
