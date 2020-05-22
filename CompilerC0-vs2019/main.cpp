@@ -21,7 +21,7 @@ SymTab* g_symtab;
 
 int main(int argc, char* argv[])
 {
-    sourceFile = fopen("./Input/Text02.txt", "r");
+    sourceFile = fopen("./Input/Text05.txt", "r");
     if (NULL == sourceFile) {
         cout << "source file open failed!\n";
     }

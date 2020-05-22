@@ -1,49 +1,101 @@
 .data:
-	$n:		.word
+	$string0:	.asciiz	"call p1"
+	$string1:	.asciiz	"call p2"
+	$string2:	.asciiz	"call p3"
+	$string3:	.asciiz	"call p4"
 .text:
 	jal		main
 	li		$v0, 10
 	syscall
-factor:
+p1:
 	sw		$fp, ($sp)
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	#match para type
-	#match finished
-	subi	$sp, $sp, 16
+	subi	$sp, $sp, -8
+	la		$a0, $string0
+	li		$v0, 4
+	syscall
+ret_p1:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p2:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 4
+	la		$a0, $string1
+	li		$v0, 4
+	syscall
 	lw		$t0, -8($fp)
-	li		$t1, 0
-	beq		$t0, $t1, Label_0
-	j		Label_1
-Label_0:
-	li		$t2, 1
-	move	$v0, $t2
-	j		ret_factor
-	j		Label_2
-Label_1:
-Label_2:
-	li		$t3, 1
-	sub		$t4, $t0, $t3
-	#value Para:
-	sw		$t4, -8($sp)
-	#End of value Para
-	#Save RegFile
+	move	$a0, $t0
+	li		$v0, 1
+	syscall
+ret_p2:
 	sw		$t0, -8($fp)
-	sw		$t4, -12($fp)
-	#End of Saving RegFile
-	jal		factor
-	move	$t0, $v0
-	lw		$t1, -8($fp)
-	mul		$t2, $t1, $t0
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p3:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 8
+	la		$a0, $string2
+	li		$v0, 4
+	syscall
+	lw		$t0, -8($fp)
+	li		$t1, 1
+	add		$t2, $t0, $t1
 	move	$v0, $t2
-	j		ret_factor
-ret_factor:
-	#Save RegFile
-	sw		$t1, -8($fp)
-	sw		$t0, -16($fp)
-	sw		$t2, -20($fp)
-	#End of Saving RegFile
+	j		ret_p3
+ret_p3:
+	sw		$t0, -8($fp)
+	sw		$t2, -12($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p4:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	lw		$a0, -8($fp)
+	andi	$a0, $a0, 0xff
+	sw		$a0, -8($fp)
+	subi	$sp, $sp, 4
+	la		$a0, $string3
+	li		$v0, 4
+	syscall
+	lw		$t0, -8($fp)
+	move	$a0, $t0
+	li		$v0, 11
+	syscall
+ret_p4:
+	sw		$t0, -8($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p5:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, -4
+	li		$t0, 256
+	li		$t1, 97
+	add		$t2, $t0, $t1
+	move	$v0, $t2
+	j		ret_p5
+ret_p5:
+	sw		$t2, -0($fp)
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
@@ -53,32 +105,28 @@ main:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	#match para type
-	#match finished
-	subi	$sp, $sp, 8
-	li		$v0	5
-	syscall
-	la		$s0, $n
-	sw		$v0, ($s0)
-	#value Para:
-	lw		$t0, $n
+	subi	$sp, $sp, 16
+	jal		p1
+	li		$t0, 2
 	sw		$t0, -8($sp)
-	#End of value Para
-	#Save RegFile
-	sw		$t0, $n
-	#End of Saving RegFile
-	jal		factor
+	jal		p2
+	li		$t0, 3
+	sw		$t0, -8($sp)
+	jal		p3
 	move	$t0, $v0
 	move	$t1, $t0
-	move	$a0, $t1
-	li		$v0, 1
-	syscall
-	j		ret_main
-ret_main:
-	#Save RegFile
-	sw		$t0, -12($fp)
+	li		$t2, 2
+	sw		$t2, -8($sp)
+	sw		$t0, -16($fp)
 	sw		$t1, -8($fp)
-	#End of Saving RegFile
+	jal		p4
+	jal		p5
+	move	$t0, $v0
+	move	$t1, $t0
+	andi	$t1, $t1, 0xff
+ret_main:
+	sw		$t0, -20($fp)
+	sw		$t1, -12($fp)
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)

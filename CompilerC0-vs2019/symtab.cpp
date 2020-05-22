@@ -146,6 +146,8 @@ void insertTempVar2SymTab(char* name)
 	// 默认 false
 	sym->isreg = false;
 
+	sym->valueType = Type::T_INTEGER;
+
 	// 函数表
 	sym->adress = g_symtab->next->varsize;
 	// 更新地址

@@ -1106,6 +1106,8 @@ extern int NXQ;
 ### 5.0 理论基础
 
 >   https://firmianay.gitbooks.io/ctf-all-in-one/doc/1.5.2_assembly.html#36-mips%E6%B1%87%E7%BC%96%E5%9F%BA%E7%A1%80
+>
+>   https://www.cnblogs.com/thoupin/p/4018455.html
 
 两种格式用于寻址：
 
@@ -1214,7 +1216,7 @@ int getRegIndex(char* varname)
 
 函数调用：在函数体内转换
 
-输入语句：系统调用控制
+输入语句：查符号表确定类型，系统调用控制
 
 返回语句：返回前类型转换
 
@@ -1268,11 +1270,32 @@ updateST:
 
 >   按照几大类测试：算术表达式、函数调用、语句、布尔表达式
 
+Text03：输入输出
 
+>   输出的地方检查出bug，四元式生成不对，类型不匹配
+>
+>   .data：分配方式错误
 
+Text04：赋值语句：整形、字符，语句右边不考虑（由固定函数加载，单独测试）
 
+>   全局变量：pass
+>
+>   局部变量：pass
+>
+>   全局数组：pass
+>
+>   局部数组：pass
+>
+>   下标运算：有立即数，变量（这里的变量包含表达式，因为运算结果就是临时变量）
+>
+>   pass
 
+Text05：函数调用、返回语句
 
-
-
-
+>   call：
+>
+>   callret：
+>
+>   ret：有返回值时要检查类型
+>
+>   实参类型检查：

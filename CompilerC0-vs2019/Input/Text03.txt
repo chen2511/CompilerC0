@@ -1,0 +1,22 @@
+int g_a;
+char g_b;
+
+void main(){
+	int a;
+	char b;
+
+	printf("Pleace input g_a:");
+	scanf(g_a);
+
+	printf("Pleace input g_b:");
+	scanf(g_b);
+
+	printf("Pleace input a, b:");
+	scanf(a, b);
+
+	printf(g_a + a);
+	printf(g_b);
+	printf(b);
+
+	printf(11);
+}

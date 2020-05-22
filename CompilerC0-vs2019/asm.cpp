@@ -120,7 +120,7 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 			}
 			else {								// 弹出的是变量：分为全局和局部（临时）
 				if (p_isGlobal) {
-					fprintf(ASM_FILE, "\tsw\t\t$t%d,$%s\n",
+					fprintf(ASM_FILE, "\tsw\t\t$t%d, $%s\n",
 						nn.regindex,
 						nn.varname
 					);
@@ -253,6 +253,9 @@ void data2asm() {
 
 	// 全局变量
 	while (strcmp("Func", quadvarlist[cur_4var].op)) {
+		if (!strcmp("Main", quadvarlist[cur_4var].op)) {
+			break;
+		}
 		if (!strcmp("const", quadvarlist[cur_4var].op)) {
 			// 无论是int 还是 char 都是存储数值；这里的数值在之前已经全部确定了，溢出的char值，取模
 			fprintf(ASM_FILE, "\t$%s:\t\t.word\t%s\n",
@@ -261,12 +264,12 @@ void data2asm() {
 			);
 		}
 		else if (!strcmp("int", quadvarlist[cur_4var].op)) {
-			fprintf(ASM_FILE, "\t$%s:\t\t.word\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.space\t4\n",
 				quadvarlist[cur_4var].var3
 			);
 		}
 		else if (!strcmp("char", quadvarlist[cur_4var].op)) {	// 事实上这里，char分配的空间也是4
-			fprintf(ASM_FILE, "\t$%s:\t\t.word\n",
+			fprintf(ASM_FILE, "\t$%s:\t\t.space\t4\n",
 				quadvarlist[cur_4var].var3
 			);
 		}
@@ -800,7 +803,7 @@ void scanf2asm()
 	Symbol* sb = lookUp_SymTab(quadvarlist[cur_4var].var3, isGlobal);
 
 	if (Type::T_INTEGER == sb->valueType) {			// 数字
-		fprintf(ASM_FILE, "\tli\t\t$v0\t5\n");
+		fprintf(ASM_FILE, "\tli\t\t$v0, 5\n");
 		fprintf(ASM_FILE, "\tsyscall\n");
 		if (isGlobal) {
 			fprintf(ASM_FILE, "\tla\t\t$s0, $%s\n", sb->name);
@@ -812,7 +815,7 @@ void scanf2asm()
 		}
 	}
 	else {											// 字符
-		fprintf(ASM_FILE, "\tli\t\t$v0\t12\n");
+		fprintf(ASM_FILE, "\tli\t\t$v0, 12\n");
 		fprintf(ASM_FILE, "\tsyscall\n");
 		if (isGlobal) {
 			fprintf(ASM_FILE, "\tla\t\t$s0, $%s\n", sb->name);
@@ -842,6 +845,14 @@ void print2asm()
 	else {
 		int r2 = getRegIndex(quadvarlist[cur_4var].var2);
 		mem2reg(quadvarlist[cur_4var].var2, r2);
+
+		if (isdigit(quadvarlist[cur_4var].var2[0])) {
+			fprintf(ASM_FILE, "\tmove\t$a0, $t%d\n", r2);
+			fprintf(ASM_FILE, "\tli\t\t$v0, 1\n");
+			fprintf(ASM_FILE, "\tsyscall\n");
+
+			return;
+		}
 
 		if (Type::T_INTEGER == lookUp_SymTab(quadvarlist[cur_4var].var2)->valueType) {
 			fprintf(ASM_FILE, "\tmove\t$a0, $t%d\n", r2);
@@ -877,12 +888,12 @@ void ret2asm()
 		fprintf(ASM_FILE, "\tmove\t$v0, $t%d\n", r3);
 
 		// 判断返回类型
-		//Type real_ret_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
-		if (Type::T_VOID == s_funcRetType) {
+		Type real_ret_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
+		if (Type::T_VOID == real_ret_type) {
 			// void : error
 			printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
 		}
-		else if (Type::T_CHAR == s_funcRetType) {
+		else if (Type::T_CHAR == real_ret_type) {
 			// char: andi 0xff
 			fprintf(ASM_FILE, "\tandi\t$v0, $v0, 0xff\n");
 		}

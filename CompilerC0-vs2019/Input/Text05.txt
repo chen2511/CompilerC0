@@ -1,0 +1,33 @@
+void p1(){
+	printf("call p1");
+}
+
+void p2(int a){
+	printf("call p2");
+	printf(a);
+}
+
+int p3(int a){
+	printf("call p3");
+	return (a+1);
+}
+
+int p4(char a){
+	printf("call p4");
+	printf(a);
+}
+
+char p5(){
+	return (256 + 'a');
+}
+
+
+void main(){
+	int a;
+	char b;
+	p1();
+	p2(2);
+	a = p3(3);
+	p4(2);
+	b = p5();
+}

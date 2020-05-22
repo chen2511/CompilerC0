@@ -12,7 +12,7 @@
 
 #define PRINT_AST_TOFILE true
 
-#define DEBUG_SWITCH
+//#define DEBUG_SWITCH
 #ifdef  DEBUG_SWITCH
 #define INFO(format, ...)           printf(format, ##__VA_ARGS__)
 #define INFO_ASM(format, ...)       fprintf(ASM_FILE, format, ##__VA_ARGS__)

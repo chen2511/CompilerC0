@@ -1,4 +1,5 @@
 #include "ir.h"
+#include "symtab.h"
 
 // 下一个四元式的地址
 int NXQ = 0;
@@ -145,6 +146,12 @@ char* newlabel() {
 }
 
 void IR_Exp(TreeNode* tree) {
+	/*
+		bug: printf需要确定类型，默认int
+	*/
+	tree->type = Type::T_INTEGER;
+
+
 	if (ExpKind::Num_ExpK == tree->kind.exp) {
 		// int 或者 char
 		char* num = (char*)malloc(20);
@@ -159,6 +166,12 @@ void IR_Exp(TreeNode* tree) {
 	}
 	else if (ExpKind::Iden_ExpK == tree->kind.exp) {
 		tree->place = tree->attr.name;
+		/*
+			bug: printf需要确定类型
+		*/
+		Symbol* sb = lookUp_SymTab(tree->attr.name);
+		tree->type = sb->valueType;
+
 	}
 	else {				//ExpKind::Op_ExpK
 		// 只有Op的位置才会生成四元式；都是计算中间变量
@@ -512,7 +525,7 @@ void IR_Analyze(TreeNode* tree)
 				else {								// 没有Str
 					if (NULL != tree->child[1]) {		// 有Exp
 						IR_Exp(tree->child[1]);
-						gen("print", newempty(), tree->child[1]->place, (tree->type == Type::T_INTEGER) ? (char*)"int" : (char*)"char");
+						gen("print", newempty(), tree->child[1]->place, (tree->child[1]->type == Type::T_INTEGER) ? (char*)"int" : (char*)"char");
 					}
 				}
 			}

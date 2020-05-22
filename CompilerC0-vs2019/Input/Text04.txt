@@ -1,0 +1,26 @@
+int g_a;
+char g_b;
+
+int ga_c[3];
+char ga_d[3];
+
+void main(){
+	int a;
+	char b;
+	int c[3];
+	char d[3];
+
+	g_a = 259;
+	g_b = 259;
+
+	a = 1;
+	b = 259;
+
+	ga_c[0] = 259;
+	ga_d[0] = 259;
+
+	c[a] = 65;
+	d[0] = 259;
+
+
+}
