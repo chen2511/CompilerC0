@@ -1,0 +1,30 @@
+int a;
+int b;
+
+void main(){
+	printf("Input a: \n");
+	scanf(a);
+	printf("Input b: \n");
+	scanf(b);
+
+	if(a > b){
+		printf("a > b \n");
+	}else{
+		printf("a < b \n");
+	}
+
+	if(a > 0 && b > 0){
+		printf("a, b >0 \n");
+	}
+
+	while(a > 0){
+		printf("a > 0\n");
+		a = a - 1;
+	}
+
+	for(b = 3; b > 0; b = b - 1){
+		printf("b > 0\n");
+	}
+
+}
+

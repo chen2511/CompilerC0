@@ -165,6 +165,7 @@
     <Text Include="Input\Text04.txt" />
     <Text Include="Input\Text05.txt" />
     <Text Include="Input\Text06.txt" />
+    <Text Include="Input\Text07.txt" />
     <Text Include="Output\asm.txt" />
     <Text Include="Output\Ast.txt" />
     <Text Include="Output\IR.txt" />

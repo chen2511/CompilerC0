@@ -1,153 +1,98 @@
 .data:
-	$g_a:		.space	4
-	$g_b:		.space	4
-	$string0:	.asciiz	"c + d = "
-	$string1:	.asciiz	"\ne - c = "
-	$string2:	.asciiz	"\nd * f = "
-	$string3:	.asciiz	"\ng[2] / c = "
-	$string4:	.asciiz	"\npi() = "
-	$string5:	.asciiz	"\n complex = "
+	$a:		.space	4
+	$b:		.space	4
+	$string0:	.asciiz	"Input a: \n"
+	$string1:	.asciiz	"Input b: \n"
+	$string2:	.asciiz	"a > b \n"
+	$string3:	.asciiz	"a < b \n"
+	$string4:	.asciiz	"a, b >0 \n"
+	$string5:	.asciiz	"a > 0\n"
+	$string6:	.asciiz	"b > 0\n"
 .text:
 	jal		main
 	li		$v0, 10
 	syscall
-pi:
-	sw		$fp, ($sp)
-	move	$fp, $sp
-	subi	$sp, $sp, 8
-	sw		$ra, 4($sp)
-	subi	$sp, $sp, 0
-	li		$t0, 3
-	move	$v0, $t0
-	j		ret_pi
-ret_pi:
-	lw		$ra, -4($fp)
-	move	$sp, $fp
-	lw		$fp, ($fp)
-	jr		$ra
 main:
 	sw		$fp, ($sp)
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	subi	$sp, $sp, 80
-	li		$t0, 3
-	move	$t1, $t0
-	li		$t2, 4
-	move	$t3, $t2
-	li		$t4, 5
-	move	$t5, $t4
-	li		$t6, 6
-	move	$t7, $t6
-	subi	$t8, $fp, 24
-	li		$t9, 0
-	mul		$s0, $t9, 4
-	sub		$s0, $t8, $s0
-	li		$t0, 7
-	sw		$t0, ($s0)
-	sw		$t1, -8($fp)
-	li		$t1, 1
-	mul		$s0, $t1, 4
-	sub		$s0, $t8, $s0
-	li		$t2, 8
-	sw		$t2, ($s0)
-	sw		$t3, -12($fp)
-	li		$t3, 2
-	mul		$s0, $t3, 4
-	sub		$s0, $t8, $s0
-	li		$t4, 9
-	sw		$t4, ($s0)
+	subi	$sp, $sp, 8
 	la		$a0, $string0
 	li		$v0, 4
 	syscall
-	sw		$t5, -16($fp)
-	lw		$t5, -8($fp)
-	lw		$t6, -12($fp)
-	sw		$t7, -20($fp)
-	add		$t7, $t5, $t6
-	move	$a0, $t7
-	li		$v0, 1
+	li		$v0, 5
 	syscall
+	la		$s0, $a
+	sw		$v0, ($s0)
 	la		$a0, $string1
 	li		$v0, 4
 	syscall
-	lw		$t9, -16($fp)
-	sub		$t0, $t9, $t5
-	move	$a0, $t0
-	li		$v0, 1
+	li		$v0, 5
 	syscall
+	la		$s0, $b
+	sw		$v0, ($s0)
+	lw		$t0, $a
+	lw		$t1, $b
+	bgt		$t0, $t1, Label_0
+	j		Label_1
+Label_0:
 	la		$a0, $string2
 	li		$v0, 4
 	syscall
-	lw		$t1, -20($fp)
-	mul		$t2, $t6, $t1
-	move	$a0, $t2
-	li		$v0, 1
-	syscall
+	j		Label_2
+Label_1:
 	la		$a0, $string3
 	li		$v0, 4
 	syscall
-	li		$t3, 2
-	mul		$s0, $t3, 4
-	sub		$s0, $t8, $s0
-	lw		$t4, ($s0)
-	sw		$t7, -36($fp)
-	div		$t7, $t4, $t5
-	move	$a0, $t7
-	li		$v0, 1
-	syscall
+Label_2:
+	li		$t2, 0
+	bgt		$t0, $t2, Label_3
+	j		Label_5
+Label_3:
+	li		$t3, 0
+	bgt		$t1, $t3, Label_4
+	j		Label_5
+Label_4:
 	la		$a0, $string4
 	li		$v0, 4
 	syscall
-	sw		$t9, -16($fp)
-	sw		$t0, -40($fp)
-	sw		$t6, -12($fp)
-	sw		$t1, -20($fp)
-	sw		$t2, -44($fp)
-	sw		$t4, -48($fp)
-	sw		$t5, -8($fp)
-	sw		$t7, -52($fp)
-	jal		pi
-	move	$t0, $v0
-	move	$a0, $t0
-	li		$v0, 1
-	syscall
+	j		Label_6
+Label_5:
+Label_6:
+Label_7:
+	li		$t4, 0
+	bgt		$t0, $t4, Label_8
+	j		Label_9
+Label_8:
 	la		$a0, $string5
 	li		$v0, 4
 	syscall
-	li		$t1, 0
-	li		$t2, 3
-	sub		$t3, $t1, $t2
-	lw		$t4, -8($fp)
-	add		$t5, $t3, $t4
-	lw		$t6, -12($fp)
-	lw		$t7, -16($fp)
-	mul		$t8, $t6, $t7
-	lw		$t9, -20($fp)
-	sw		$t0, -56($fp)
-	div		$t0, $t8, $t9
-	sub		$t1, $t5, $t0
-	subi	$t2, $fp, 24
-	sw		$t3, -60($fp)
-	li		$t3, 0
-	mul		$s0, $t3, 4
-	sub		$s0, $t2, $s0
-	sw		$t4, -8($fp)
-	lw		$t4, ($s0)
-	sw		$t6, -12($fp)
-	add		$t6, $t1, $t4
-	move	$a0, $t6
-	li		$v0, 1
+	li		$t5, 1
+	sub		$t6, $t0, $t5
+	move	$t0, $t6
+	j		Label_7
+Label_9:
+	li		$t7, 3
+	move	$t1, $t7
+Label_10:
+	li		$t8, 0
+	bgt		$t1, $t8, Label_11
+	j		Label_12
+Label_11:
+	la		$a0, $string6
+	li		$v0, 4
 	syscall
+	li		$t9, 1
+	sub		$t2, $t1, $t9
+	move	$t1, $t2
+	j		Label_10
+Label_12:
 ret_main:
-	sw		$t7, -16($fp)
-	sw		$t8, -68($fp)
-	sw		$t9, -20($fp)
-	sw		$t5, -64($fp)
-	sw		$t0, -72($fp)
-	sw		$t1, -76($fp)
-	sw		$t4, -80($fp)
-	sw		$t6, -84($fp)
+	sw		$t6, -8($fp)
+	sw		$t0, $a
+	sw		$t2, -12($fp)
+	sw		$t1, $b
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
