@@ -29,7 +29,8 @@ SymTab* initSimpleSymTable(char* name)
 	for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
 		st->hashTable[i] = NULL;
 	}
-	st->varsize = 0;
+	// bug：应该从8开始，不然有的函数
+	st->varsize = 8;
 	f_adress = 8;		// 每次有一个新函数，函数表指针变化，相对地址
 	
 	return st;

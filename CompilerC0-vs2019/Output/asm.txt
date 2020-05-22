@@ -1,8 +1,8 @@
 .data:
-	$string0:	.asciiz	"call p1"
-	$string1:	.asciiz	"call p2"
-	$string2:	.asciiz	"call p3"
-	$string3:	.asciiz	"call p4"
+	$string0:	.asciiz	"call p1\n"
+	$string1:	.asciiz	"call p2\n"
+	$string2:	.asciiz	"call p3\n"
+	$string3:	.asciiz	"call p4\n"
 .text:
 	jal		main
 	li		$v0, 10
@@ -12,7 +12,7 @@ p1:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	subi	$sp, $sp, -8
+	subi	$sp, $sp, 0
 	la		$a0, $string0
 	li		$v0, 4
 	syscall
@@ -77,6 +77,9 @@ p4:
 	move	$a0, $t0
 	li		$v0, 11
 	syscall
+	move	$v0, $t0
+	andi	$v0, $v0, 0xff
+	j		ret_p4
 ret_p4:
 	sw		$t0, -8($fp)
 	lw		$ra, -4($fp)
@@ -88,14 +91,14 @@ p5:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	subi	$sp, $sp, -4
+	subi	$sp, $sp, 4
 	li		$t0, 256
 	li		$t1, 97
 	add		$t2, $t0, $t1
 	move	$v0, $t2
 	j		ret_p5
 ret_p5:
-	sw		$t2, -0($fp)
+	sw		$t2, -8($fp)
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)
@@ -105,7 +108,7 @@ main:
 	move	$fp, $sp
 	subi	$sp, $sp, 8
 	sw		$ra, 4($sp)
-	subi	$sp, $sp, 16
+	subi	$sp, $sp, 20
 	jal		p1
 	li		$t0, 2
 	sw		$t0, -8($sp)
@@ -115,17 +118,20 @@ main:
 	jal		p3
 	move	$t0, $v0
 	move	$t1, $t0
-	li		$t2, 2
-	sw		$t2, -8($sp)
+	li		$t2, 61
+	li		$t3, 256
+	add		$t4, $t2, $t3
+	sw		$t4, -8($sp)
 	sw		$t0, -16($fp)
 	sw		$t1, -8($fp)
+	sw		$t4, -20($fp)
 	jal		p4
 	jal		p5
 	move	$t0, $v0
 	move	$t1, $t0
 	andi	$t1, $t1, 0xff
 ret_main:
-	sw		$t0, -20($fp)
+	sw		$t0, -24($fp)
 	sw		$t1, -12($fp)
 	lw		$ra, -4($fp)
 	move	$sp, $fp

@@ -7,7 +7,7 @@
 Stmt Sequence>>>   
 
 Write Stmt:
-Write Str: call p1
+Write Str: call p1\n
 
 <<<Stmt Sequence End  
 
@@ -19,7 +19,7 @@ Write Str: call p1
 Stmt Sequence>>>   
 
 Write Stmt:
-Write Str: call p2
+Write Str: call p2\n
 
 Write Stmt:
  a 
@@ -33,7 +33,7 @@ Write Stmt:
 Stmt Sequence>>>   
 
 Write Stmt:
-Write Str: call p3
+Write Str: call p3\n
 
 Ret Stmt:
  a  +  1 
@@ -47,9 +47,11 @@ Ret Stmt:
 Stmt Sequence>>>   
 
 Write Stmt:
-Write Str: call p4
+Write Str: call p4\n
 
 Write Stmt:
+ a 
+Ret Stmt:
  a 
 <<<Stmt Sequence End  
 
@@ -87,7 +89,7 @@ Paras:  2
 Assign to: a
  p3  ()  3 
 Call Stmt:  Function: p4 
-Paras:  2 
+Paras:  61  +  256 
 
 Assign to: b
  p5  () 

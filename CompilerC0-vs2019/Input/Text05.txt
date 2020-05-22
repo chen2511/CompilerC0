@@ -1,20 +1,21 @@
 void p1(){
-	printf("call p1");
+	printf("call p1\n");
 }
 
 void p2(int a){
-	printf("call p2");
+	printf("call p2\n");
 	printf(a);
 }
 
 int p3(int a){
-	printf("call p3");
+	printf("call p3\n");
 	return (a+1);
 }
 
 int p4(char a){
-	printf("call p4");
+	printf("call p4\n");
 	printf(a);
+	return (a);
 }
 
 char p5(){
@@ -28,6 +29,6 @@ void main(){
 	p1();
 	p2(2);
 	a = p3(3);
-	p4(2);
+	p4(61 + 256);
 	b = p5();
 }
