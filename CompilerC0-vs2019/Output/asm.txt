@@ -5,9 +5,10 @@
 	$string1:	.asciiz	"Input b: \n"
 	$string2:	.asciiz	"a > b \n"
 	$string3:	.asciiz	"a < b \n"
-	$string4:	.asciiz	"a, b >0 \n"
-	$string5:	.asciiz	"a > 0\n"
-	$string6:	.asciiz	"b > 0\n"
+	$string4:	.asciiz	"a == b\n"
+	$string5:	.asciiz	"a, b >0 \n"
+	$string6:	.asciiz	"a > 0\n"
+	$string7:	.asciiz	"b > 0\n"
 .text:
 	jal		main
 	li		$v0, 10
@@ -42,52 +43,67 @@ Label_0:
 	syscall
 	j		Label_2
 Label_1:
+	blt		$t0, $t1, Label_3
+	j		Label_4
+Label_3:
 	la		$a0, $string3
 	li		$v0, 4
 	syscall
-Label_2:
-	li		$t2, 0
-	bgt		$t0, $t2, Label_3
-	j		Label_5
-Label_3:
-	li		$t3, 0
-	bgt		$t1, $t3, Label_4
 	j		Label_5
 Label_4:
+	beq		$t0, $t1, Label_6
+	j		Label_7
+Label_6:
 	la		$a0, $string4
 	li		$v0, 4
 	syscall
-	j		Label_6
-Label_5:
-Label_6:
+	j		Label_8
 Label_7:
-	li		$t4, 0
-	bgt		$t0, $t4, Label_8
-	j		Label_9
 Label_8:
+Label_5:
+Label_2:
+	li		$t2, 0
+	bgt		$t0, $t2, Label_9
+	j		Label_11
+Label_9:
+	li		$t3, 0
+	bgt		$t1, $t3, Label_10
+	j		Label_11
+Label_10:
 	la		$a0, $string5
+	li		$v0, 4
+	syscall
+	j		Label_12
+Label_11:
+Label_12:
+Label_13:
+	li		$t4, 0
+	bgt		$t0, $t4, Label_14
+	j		Label_15
+Label_14:
+	la		$a0, $string6
 	li		$v0, 4
 	syscall
 	li		$t5, 1
 	sub		$t6, $t0, $t5
 	move	$t0, $t6
-	j		Label_7
-Label_9:
+	j		Label_13
+Label_15:
 	li		$t7, 3
 	move	$t1, $t7
-Label_10:
+Label_16:
 	li		$t8, 0
-	bgt		$t1, $t8, Label_11
-	j		Label_12
-Label_11:
-	la		$a0, $string6
+	bgt		$t1, $t8, Label_17
+	j		Label_18
+Label_17:
+	la		$a0, $string7
 	li		$v0, 4
 	syscall
 	li		$t9, 1
 	sub		$t2, $t1, $t9
 	move	$t1, $t2
-	j		Label_10
-Label_12:
+	j		Label_16
+Label_18:
 ret_main:
 	sw		$t6, -8($fp)
 	sw		$t0, $a

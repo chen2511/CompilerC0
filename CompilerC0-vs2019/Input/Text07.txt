@@ -9,12 +9,15 @@ void main(){
 
 	if(a > b){
 		printf("a > b \n");
-	}else{
+	}else if(a < b){
 		printf("a < b \n");
+	}else if(a == b){
+		printf("a == b\n");
 	}
 
+
 	if(a > 0 && b > 0){
-		printf("a, b >0 \n");
+		printf("a & b >0 \n");
 	}
 
 	while(a > 0){

@@ -34,10 +34,21 @@ Write Str: a > b \n
 
 <<<Stmt Sequence End  
 
+If :
+ <  a  b 
 Stmt Sequence>>>   
 
 Write Stmt:
 Write Str: a < b \n
+
+<<<Stmt Sequence End  
+
+If :
+ ==  a  b 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: a == b\n
 
 <<<Stmt Sequence End  
 
