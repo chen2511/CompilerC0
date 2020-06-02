@@ -5,6 +5,7 @@
 #include "symtab.h"
 #include "ir.h"
 #include "asm.h"
+#include "opt.h"
 
 using namespace std;
 #pragma warning(disable:4996)
@@ -21,7 +22,7 @@ SymTab* g_symtab;
 
 int main(int argc, char* argv[])
 {
-    sourceFile = fopen("./Input/Text07.txt", "r");
+    sourceFile = fopen("./Input/Text08.txt", "r");
     if (NULL == sourceFile) {
         cout << "source file open failed!\n";
     }
@@ -34,14 +35,24 @@ int main(int argc, char* argv[])
     g_symtab = initSimpleSymTable((char*)("Global"));
     semanticAnalyze(synaxtree);
 
-    
+    // 生成四元式
     IR_Analyze(synaxtree);
     IR_FILE = fopen("./Output/IR.txt", "w+");
+
+    // 优化
+    if (OPTIMIZE_SWITCH) {
+        optimize();
+    }
+
+    // 输出四元式
     printIR();
     fclose(IR_FILE);
 
+    // 生成汇编代码
     ASM_FILE = fopen("./Output/asm.txt", "w+");
     genasm();
+
+    
 
 
     return 0;

@@ -1,0 +1,17 @@
+void main(){
+	int a, b;
+	int c, d;
+	a = 1 + 2;
+	b = 5 - 3;
+	c = 6 * 2;
+	d = 6 / 2;
+
+	printf("a=");
+	printf(a);
+	printf("\nb=");
+	printf(b);
+	printf("\nc=");
+	printf(c);
+	printf("\nd=");
+	printf(d);
+}

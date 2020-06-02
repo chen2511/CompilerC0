@@ -11,6 +11,7 @@
 #define RESERVEDWORD_NUM 14
 
 #define PRINT_AST_TOFILE true
+#define OPTIMIZE_SWITCH true
 
 //#define DEBUG_SWITCH
 #ifdef  DEBUG_SWITCH

@@ -169,8 +169,8 @@ void IR_Exp(TreeNode* tree) {
 		/*
 			bug: printf需要确定类型
 		*/
-		Symbol* sb = lookUp_SymTab(tree->attr.name);
-		tree->type = sb->valueType;
+		/*Symbol* sb = lookUp_SymTab(tree->attr.name);
+		tree->type = sb->valueType;*/
 
 	}
 	else {				//ExpKind::Op_ExpK

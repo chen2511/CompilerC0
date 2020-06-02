@@ -142,6 +142,7 @@
     <ClCompile Include="ast.cpp" />
     <ClCompile Include="ir.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="opt.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="scan.cpp" />
     <ClCompile Include="semantic.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="ast.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="ir.h" />
+    <ClInclude Include="opt.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="scan.h" />
     <ClInclude Include="semantic.h" />
@@ -166,6 +168,7 @@
     <Text Include="Input\Text05.txt" />
     <Text Include="Input\Text06.txt" />
     <Text Include="Input\Text07.txt" />
+    <Text Include="Input\Text08.txt" />
     <Text Include="Output\asm.txt" />
     <Text Include="Output\Ast.txt" />
     <Text Include="Output\IR.txt" />

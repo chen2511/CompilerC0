@@ -38,7 +38,11 @@ void semanticExp(TreeNode* tree) {
 			printf("Error in line %d : 标识符是数组，需要进行下标运算：%s\n", tree->lineno, tree->attr.name);
 			return;
 		}
-
+		/*
+			bug: printf需要确定类型
+			从ir移到语义分析处理
+		*/
+		tree->type = lookup->valueType;
 	}
 	else {				//ExpKind::Op_ExpK
 		if (tree->attr.op == TokenType::CALL) {				// 函数调用 要检查：函数是否声明，以及参数个数是否匹配，是否有返回值

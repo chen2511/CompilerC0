@@ -14,7 +14,7 @@ static bool b_mainFunction = false;
 static int flashBackIndex;
 static int flashBackLineNum;
 
-static void match(TokenType expectToken);
+static bool match(TokenType expectToken);
 
 //为每一个非终结符创建一个函数
 TreeNode* program();
@@ -78,12 +78,14 @@ TreeNode* parser() {
 
 // 匹配 期待的 token；否则报错
 // 读取下一个token
-static void match(TokenType expectToken) {
-	if (expectToken == g_token.opType) {
+static bool match(TokenType expectToken) {
+	if (expectToken == g_token.opType) {	// 与预期相同，跳过token， true
 		getNextToken();
+		return true;
 	}
-	else {
+	else {								// 提示错误，但在这里不跳读
 		printf("match error in line %d :\t\texpect Token %d, but %d value: %s \n", g_lineNumber, expectToken, g_token.opType, g_token.value);
+		return false;
 	}
 }
 

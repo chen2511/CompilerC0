@@ -853,7 +853,8 @@ void print2asm()
 
 			return;
 		}
-
+		// 标识符分为 整形和字符，通过查找符号表确定
+		// 事实上这里有个bug：ir中始终显示的是 int型；暂未解决；因为用下面的方法确定类型，不影响结果
 		if (Type::T_INTEGER == lookUp_SymTab(quadvarlist[cur_4var].var2)->valueType) {
 			fprintf(ASM_FILE, "\tmove\t$a0, $t%d\n", r2);
 			fprintf(ASM_FILE, "\tli\t\t$v0, 1\n");

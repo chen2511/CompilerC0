@@ -10,6 +10,10 @@ void IR_Exp(TreeNode* tree);
 
 void printIR();
 
+char* newitoa(int a);
+
+char* newempty();
+
 #endif // !IR_H
 
 
