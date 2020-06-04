@@ -69,7 +69,7 @@ TreeNode* parser() {
 	}
 
 	if (PRINT_AST_TOFILE) {
-		AST_File = fopen("./Output/Ast.txt", "w+");
+		
 		printAST(synaxTree);
 	}
 

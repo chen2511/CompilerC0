@@ -11,7 +11,9 @@
 #define RESERVEDWORD_NUM 14
 
 #define PRINT_AST_TOFILE true
+
 #define OPTIMIZE_SWITCH true
+//#define OPTIMIZE_SWITCH false
 
 //#define DEBUG_SWITCH
 #ifdef  DEBUG_SWITCH
@@ -49,6 +51,7 @@ extern FILE* sourceFile;
 extern FILE* AST_File;
 extern FILE* IR_FILE;
 extern FILE* ASM_FILE;
+
 //行号
 extern int g_lineNumber;
 //在buf中的指针；

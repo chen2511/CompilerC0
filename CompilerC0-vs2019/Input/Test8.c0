@@ -1,0 +1,38 @@
+void main(){
+	int a, b;
+	int c, d;
+	a = -1 + 10;
+	b = 25 - 3;
+	c = b * 4;
+	d = b / 4;
+
+	
+
+	printf("a=");
+	printf(a);
+	printf("\nb=");
+	printf(b);
+	printf("\nc=");
+	printf(c);
+	printf("\nd=");
+	printf(d);
+
+	a = c * d + d * c;
+	b = c * d + c * d;
+	c = c * d + c * d;
+	d = c * d + c * d;
+
+	printf("a=");
+	printf(a);
+	printf("\nb=");
+	printf(b);
+	printf("\nc=");
+	printf(c);
+	printf("\nd=");
+	printf(d);
+	
+	d = c * d + c * d;
+
+	a = c * d;
+	b = c * d;
+}

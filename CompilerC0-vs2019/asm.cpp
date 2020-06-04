@@ -34,6 +34,8 @@ void ignoreVarDef();
 void add2asm();
 void sub2asm();
 void mul2asm();
+void sll2asm();
+void sra2asm();
 void div2asm();
 void callret2asm();
 void getarray2asm();
@@ -109,7 +111,7 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 		RegInfo nn = regInfoList.front();
 		regInfoList.pop_front();
 
-		if (isdigit(nn.varname[0])) {		// 弹出的是立即数，不用送至内存
+		if (isdigit(nn.varname[0]) || '-' == nn.varname[0]) {		// 弹出的是立即数，不用送至内存
 			//return nn.regindex;
 		}
 		else {
@@ -159,7 +161,8 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 	此外还需维护两个全局变量: 表示是否在寄存器中（用于该函数体外），是否全局变量（.data段全局变量可以通过变量名直接获取、存储）
 */
 int getRegIndex(char* varname) {
-	if (isdigit(varname[0])) {			// 立即数，不查询是否在寄存器，直接获取一个
+	// bug 开始是负号 遗漏了
+	if (isdigit(varname[0]) || varname[0] == '-') {			// 立即数，不查询是否在寄存器，直接获取一个
 		return getAnEmptyReg(varname, NULL);
 	}
 	// 变量
@@ -396,6 +399,12 @@ void function2asm() {
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "ret")) {
 			ret2asm();
 		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "sll")) {
+			sll2asm();
+		}
+		else if (0 == strcmp(quadvarlist[cur_4var].op, "sra")) {
+			sra2asm();
+		}
 		cur_4var++;
 	}
 
@@ -535,6 +544,41 @@ void mul2asm()
 	// var3 = var1 + var2
 	r3 = getRegIndex(quadvarlist[cur_4var].var3);
 	fprintf(ASM_FILE, "\tmul\t\t$t%d, $t%d, $t%d\n", r3, r1, r2);
+}
+
+void sll2asm() {
+	int r1, r2, r3;
+	//  var1
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	// var2
+	/*r2 = getRegIndex(quadvarlist[cur_4var].var2);
+
+	mem2reg(quadvarlist[cur_4var].var2, r2);*/
+
+	// var3 = var1 + var2
+	r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tsll\t\t$t%d, $t%d, %d\n", r3, r1, atoi(quadvarlist[cur_4var].var2));
+}
+
+void sra2asm() {
+	int r1, r2, r3;
+	//  var1
+	r1 = getRegIndex(quadvarlist[cur_4var].var1);
+
+	mem2reg(quadvarlist[cur_4var].var1, r1);
+
+	// var2
+	/*r2 = getRegIndex(quadvarlist[cur_4var].var2);
+
+	mem2reg(quadvarlist[cur_4var].var2, r2);*/
+
+	// var3 = var1 + var2
+	r3 = getRegIndex(quadvarlist[cur_4var].var3);
+	fprintf(ASM_FILE, "\tsra\t\t$t%d, $t%d, %d\n", r3, r1, atoi(quadvarlist[cur_4var].var2));
+
 }
 
 void div2asm()
@@ -963,7 +1007,7 @@ void saveReg() {
 // 从内存读入寄存器
 void mem2reg(char* varname, int reg) {
 	// 数字直接读入
-	if (isdigit(varname[0])) {
+	if (isdigit(varname[0]) || '-' == varname[0]) {
 		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", reg, varname);
 		return;
 	}

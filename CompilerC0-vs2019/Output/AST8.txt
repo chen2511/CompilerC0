@@ -16,13 +16,13 @@ ID name: d
 Stmt Sequence>>>   
 
 Assign to: a
- 1  +  2 
+ 0  -  1  +  10 
 Assign to: b
- 5  -  3 
+ 25  -  3 
 Assign to: c
- 6  *  2 
+ b  *  4 
 Assign to: d
- 6  /  2 
+ b  /  4 
 Write Stmt:
 Write Str: a=
 
@@ -43,4 +43,38 @@ Write Str: \nd=
 
 Write Stmt:
  d 
+Assign to: a
+ c  *  d  +  d  *  c 
+Assign to: b
+ c  *  d  +  c  *  d 
+Assign to: c
+ c  *  d  +  c  *  d 
+Assign to: d
+ c  *  d  +  c  *  d 
+Write Stmt:
+Write Str: a=
+
+Write Stmt:
+ a 
+Write Stmt:
+Write Str: \nb=
+
+Write Stmt:
+ b 
+Write Stmt:
+Write Str: \nc=
+
+Write Stmt:
+ c 
+Write Stmt:
+Write Str: \nd=
+
+Write Stmt:
+ d 
+Assign to: d
+ c  *  d  +  c  *  d 
+Assign to: a
+ c  *  d 
+Assign to: b
+ c  *  d 
 <<<Stmt Sequence End  

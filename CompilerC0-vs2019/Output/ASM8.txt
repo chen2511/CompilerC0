@@ -1,0 +1,118 @@
+.data:
+	$string0:	.asciiz	"a="
+	$string1:	.asciiz	"\nb="
+	$string2:	.asciiz	"\nc="
+	$string3:	.asciiz	"\nd="
+	$string4:	.asciiz	"a="
+	$string5:	.asciiz	"\nb="
+	$string6:	.asciiz	"\nc="
+	$string7:	.asciiz	"\nd="
+.text:
+	jal		main
+	li		$v0, 10
+	syscall
+main:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 104
+	li		$t0, -1
+	move	$t1, $t0
+	li		$t2, 10
+	add		$t3, $t1, $t2
+	move	$t4, $t3
+	li		$t5, 22
+	move	$t6, $t5
+	move	$t7, $t6
+	sll		$t8, $t7, 2
+	move	$t9, $t8
+	sra		$t0, $t7, 2
+	sw		$t1, -24($fp)
+	move	$t1, $t0
+	la		$a0, $string0
+	li		$v0, 4
+	syscall
+	move	$a0, $t4
+	li		$v0, 1
+	syscall
+	la		$a0, $string1
+	li		$v0, 4
+	syscall
+	move	$a0, $t7
+	li		$v0, 1
+	syscall
+	la		$a0, $string2
+	li		$v0, 4
+	syscall
+	move	$a0, $t9
+	li		$v0, 1
+	syscall
+	la		$a0, $string3
+	li		$v0, 4
+	syscall
+	move	$a0, $t1
+	li		$v0, 1
+	syscall
+	mul		$t2, $t9, $t1
+	sw		$t3, -28($fp)
+	add		$t3, $t2, $t2
+	move	$t4, $t3
+	add		$t5, $t2, $t2
+	move	$t7, $t5
+	sw		$t6, -32($fp)
+	add		$t6, $t2, $t2
+	move	$t9, $t6
+	sw		$t8, -36($fp)
+	mul		$t8, $t9, $t1
+	sw		$t0, -40($fp)
+	add		$t0, $t8, $t8
+	move	$t1, $t0
+	la		$a0, $string4
+	li		$v0, 4
+	syscall
+	move	$a0, $t4
+	li		$v0, 1
+	syscall
+	la		$a0, $string5
+	li		$v0, 4
+	syscall
+	move	$a0, $t7
+	li		$v0, 1
+	syscall
+	la		$a0, $string6
+	li		$v0, 4
+	syscall
+	move	$a0, $t9
+	li		$v0, 1
+	syscall
+	la		$a0, $string7
+	li		$v0, 4
+	syscall
+	move	$a0, $t1
+	li		$v0, 1
+	syscall
+	sw		$t3, -52($fp)
+	mul		$t3, $t9, $t1
+	sw		$t5, -64($fp)
+	add		$t5, $t3, $t3
+	move	$t1, $t5
+	sw		$t2, -44($fp)
+	mul		$t2, $t9, $t1
+	move	$t4, $t2
+	move	$t7, $t2
+ret_main:
+	sw		$t6, -76($fp)
+	sw		$t8, -80($fp)
+	sw		$t0, -88($fp)
+	sw		$t3, -92($fp)
+	sw		$t5, -100($fp)
+	sw		$t9, -16($fp)
+	sw		$t1, -20($fp)
+	sw		$t4, -8($fp)
+	sw		$t2, -104($fp)
+	sw		$t7, -12($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra

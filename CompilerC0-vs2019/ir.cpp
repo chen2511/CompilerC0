@@ -60,7 +60,7 @@ int merge(int p1, int p2) {
 }
 
 void printIR() {
-	for (int i = 0; i < NXQ - 1; i++) {
+	for (int i = 0; i < NXQ; i++) {
 		fprintf(IR_FILE, "%d:(%s,%s,%s,%s)\n", i, quadvarlist[i].op, quadvarlist[i].var1, quadvarlist[i].var2, quadvarlist[i].var3);
 	}
 }

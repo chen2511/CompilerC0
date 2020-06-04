@@ -20,9 +20,35 @@ _tToken g_token;
 
 SymTab* g_symtab;
 
+
+string sourcefilename = "./Input/Test";
+string asmfilename = "./Output/ASM";
+string astfilename = "./Output/AST";
+string irfilename = "./Output/IR";
+
+void processFileName(int index) {
+    char num[5];
+    itoa(index, num, 10);
+
+    sourcefilename += num;
+    sourcefilename += ".c0";
+
+    asmfilename += num;
+    asmfilename += ".txt";
+
+    astfilename += num;
+    astfilename += ".txt";
+
+    irfilename += num;
+    irfilename += ".txt";
+}
+
 int main(int argc, char* argv[])
 {
-    sourceFile = fopen("./Input/Text08.txt", "r");
+    processFileName(8);
+        
+    sourceFile = fopen(sourcefilename.c_str(), "r");
+    AST_File = fopen(astfilename.c_str(), "w+");
     if (NULL == sourceFile) {
         cout << "source file open failed!\n";
     }
@@ -37,7 +63,7 @@ int main(int argc, char* argv[])
 
     // 生成四元式
     IR_Analyze(synaxtree);
-    IR_FILE = fopen("./Output/IR.txt", "w+");
+    IR_FILE = fopen(irfilename.c_str(), "w+");
 
     // 优化
     if (OPTIMIZE_SWITCH) {
@@ -49,7 +75,7 @@ int main(int argc, char* argv[])
     fclose(IR_FILE);
 
     // 生成汇编代码
-    ASM_FILE = fopen("./Output/asm.txt", "w+");
+    ASM_FILE = fopen(asmfilename.c_str(), "w+");
     genasm();
 
     
