@@ -45,7 +45,7 @@ void processFileName(int index) {
 
 int main(int argc, char* argv[])
 {
-    processFileName(8);
+    processFileName(2);
         
     sourceFile = fopen(sourcefilename.c_str(), "r");
     AST_File = fopen(astfilename.c_str(), "w+");

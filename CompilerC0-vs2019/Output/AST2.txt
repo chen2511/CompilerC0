@@ -1,0 +1,46 @@
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: n
+
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: factor 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 1 n	
+
+Stmt Sequence>>>   
+
+If :
+ ==  n  0 
+Stmt Sequence>>>   
+
+Ret Stmt:
+ 1 
+<<<Stmt Sequence End  
+
+Ret Stmt:
+ n  *  factor  ()  n  -  1 
+<<<Stmt Sequence End  
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: s
+
+
+Stmt Sequence>>>   
+
+Read Stmt:
+Read ID: n
+
+Assign to: s
+ factor  ()  n 
+Write Stmt:
+ s 
+Ret Stmt:
+
+<<<Stmt Sequence End  
