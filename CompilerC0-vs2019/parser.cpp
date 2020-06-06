@@ -6,6 +6,7 @@
 #include "parser.h"
 #include "scan.h"
 #include "ast.h"
+#include "errorprocess.h"
 
 using namespace std;
 
@@ -84,7 +85,6 @@ static bool match(TokenType expectToken) {
 		return true;
 	}
 	else {								// 提示错误，但在这里不跳读
-		g_errorNum++;
 		printf("match error in line %d :\t\texpect Token %d, but %d value: %s \n", g_lineNumber, expectToken, g_token.opType, g_token.value);
 		return false;
 	}
@@ -229,7 +229,12 @@ TreeNode* constDeclaration() {
 	TreeNode* p = constDefine();
 	t->child[0] = p;
 
-	match(TokenType::SEMICOLON);
+	if (!match(TokenType::SEMICOLON)) {
+		errorProcess(ErrorType::LACK_SEMI_CST);
+
+		p->error = true;
+	}
+	
 
 	// 多个const 行
 	while (TokenType::CONST == g_token.opType) {
@@ -239,7 +244,11 @@ TreeNode* constDeclaration() {
 		p->sibling = q;
 		p = q;
 
-		match(TokenType::SEMICOLON);
+		if (!match(TokenType::SEMICOLON)) {
+			errorProcess(ErrorType::LACK_SEMI_CST);
+
+			q->error = true;
+		}
 	}
 
 	return t;
@@ -255,28 +264,52 @@ TreeNode* constDefine() {
 		t->child[0] = p;
 		match(TokenType::INT);
 		
+		
 		// 保存标识符
 		p->attr.name = copyString(g_token.value);
-		match(TokenType::IDEN);
-		
-		match(TokenType::ASSIGN);
-		
+		if (!match(TokenType::IDEN)) 
+		{
+			errorProcess(ErrorType::LACK_ID_CST);
+			t->error = true;
+			return t;
+		}
+
+		if (!match(TokenType::ASSIGN))
+		{
+			errorProcess(ErrorType::LACK_ASSIGN_CST);
+			t->error = true;
+			return t;
+		}
+
 		//保存整形数据
 		p->child[0] = signedNum();
+
 		// {, <标识符>＝<整数>}
-		while (TokenType::COMMA == g_token.opType) {
+		while (TokenType::COMMA == g_token.opType) 
+		{
 			match(TokenType::COMMA);
 
 			TreeNode* q = newDecNode(DecKind::Const_DefK);
 			p->sibling = q;
 			q->attr.name = copyString(g_token.value);
-			match(TokenType::IDEN);
+			if (!match(TokenType::IDEN))
+			{
+				errorProcess(ErrorType::LACK_ID_CST);
+				t->error = true;
+				return t;
+			}
 
-			match(TokenType::ASSIGN);
-			
+			if (!match(TokenType::ASSIGN))
+			{
+				errorProcess(ErrorType::LACK_ASSIGN_CST);
+				t->error = true;
+				return t;
+			}
+
 			q->child[0] = signedNum();
 			p = q;
 		}
+		
 	}
 	//char
 	else if (TokenType::CHAR == g_token.opType) {
@@ -288,9 +321,19 @@ TreeNode* constDefine() {
 
 		// 保存标识符
 		p->attr.name = copyString(g_token.value);
-		match(TokenType::IDEN);
+		if (!match(TokenType::IDEN))
+		{
+			errorProcess(ErrorType::LACK_ID_CST);
+			t->error = true;
+			return t;
+		}
 
-		match(TokenType::ASSIGN);
+		if (!match(TokenType::ASSIGN))
+		{
+			errorProcess(ErrorType::LACK_ASSIGN_CST);
+			t->error = true;
+			return t;
+		}
 
 		p->child[0] = newDecNode(DecKind::Const_DefK);
 		//保存字符数据
@@ -316,8 +359,19 @@ TreeNode* constDefine() {
 			p->sibling = q;
 			q->attr.name = copyString(g_token.value);
 
-			match(TokenType::IDEN);
-			match(TokenType::ASSIGN);
+			if (!match(TokenType::IDEN))
+			{
+				errorProcess(ErrorType::LACK_ID_CST);
+				t->error = true;
+				return t;
+			}
+
+			if (!match(TokenType::ASSIGN))
+			{
+				errorProcess(ErrorType::LACK_ASSIGN_CST);
+				t->error = true;
+				return t;
+			}
 
 			q->child[0] = newDecNode(DecKind::Const_DefK);
 			//保存字符数据
@@ -341,6 +395,9 @@ TreeNode* constDefine() {
 	}
 	else {
 		printf("error in constDefine() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+		errorProcess(ErrorType::LACK_TYPE_CST);
+		t->error = true;
+		return t;
 	}
 
 	return t;
@@ -380,7 +437,11 @@ TreeNode* varDeclaration() {
 	TreeNode* p = varDefine();
 	t->child[0] = p;
 
-	match(TokenType::SEMICOLON);
+	if (!match(TokenType::SEMICOLON))
+	{
+		errorProcess(ErrorType::LACK_XXX_VARDEF);
+		p->error = true;
+	}
 
 	// 变量定义判断 重复；一旦开始函数定义，立即退出，不能继续变量定义
 	//循环终止条件：不是int、char （无返定义和主函数）或者 开始函数定义
@@ -426,7 +487,11 @@ TreeNode* varDeclaration() {
 			TreeNode* q = varDefine();
 			p->sibling = q;
 			p = q;
-			match(TokenType::SEMICOLON);
+			if (!match(TokenType::SEMICOLON))
+			{
+				errorProcess(ErrorType::LACK_XXX_VARDEF);
+				p->error = true;
+			}
 		}
 	}
 
@@ -438,13 +503,25 @@ TreeNode* varDefine() {
 	TreeNode* t = newDecNode(DecKind::Var_DefK);
 
 	Type _vartype = typeID();
+	if (Type::T_ERROR == _vartype)
+	{
+		//printf("error in varDefine() :in line %d ,tokenType %d value: %s; expected type desc\n", g_lineNumber, g_token.opType, g_token.value);
+		errorProcess(ErrorType::LACK_XXX_VARDEF);
+		t->error = true;
+		return t;
+	}
 	t->type = _vartype;
 
 	TreeNode* p = newDecNode(DecKind::Var_DefK);
 	t->child[0] = p;
 
 	p->attr.name = copyString(g_token.value);
-	match(TokenType::IDEN);
+	if (!match(TokenType::IDEN))
+	{
+		errorProcess(ErrorType::LACK_XXX_VARDEF);
+		t->error = true;
+		return t;
+	}
 
 	if (TokenType::LBRACKET == g_token.opType) {			//数组定义
 		match(TokenType::LBRACKET);
@@ -454,8 +531,20 @@ TreeNode* varDefine() {
 			if ('0' == g_token.value[0])
 				printf("error in varDefine() :in line %d ,tokenType %d value: %s ;array size is 0 \n", g_lineNumber, g_token.opType, g_token.value);
 		}
-		match(TokenType::NUM);
-		match(TokenType::RBRACKET);
+
+		if (!match(TokenType::NUM))
+		{
+			errorProcess(ErrorType::LACK_XXX_VARDEF);
+			t->error = true;
+			return t;
+		}
+		if (!match(TokenType::RBRACKET))
+		{
+			errorProcess(ErrorType::LACK_XXX_VARDEF);
+			t->error = true;
+			return t;
+		}
+
 	}
 	while (TokenType::COMMA == g_token.opType) {			//重复定义
 		match(TokenType::COMMA);
@@ -463,7 +552,12 @@ TreeNode* varDefine() {
 		TreeNode* q = newDecNode(DecKind::Var_DefK);
 		q->attr.name = copyString(g_token.value);
 
-		match(TokenType::IDEN);
+		if (!match(TokenType::IDEN))
+		{
+			errorProcess(ErrorType::LACK_XXX_VARDEF);
+			t->error = true;
+			return t;
+		}
 		if (TokenType::LBRACKET == g_token.opType) {
 			match(TokenType::LBRACKET);
 			if (TokenType::NUM == g_token.opType) {
@@ -471,8 +565,18 @@ TreeNode* varDefine() {
 				if ("0" == g_token.value)
 					printf("error in varDefine() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 			}
-			match(TokenType::NUM);
-			match(TokenType::RBRACKET);
+			if (!match(TokenType::NUM))
+			{
+				errorProcess(ErrorType::LACK_XXX_VARDEF);
+				t->error = true;
+				return t;
+			}
+			if (!match(TokenType::RBRACKET))
+			{
+				errorProcess(ErrorType::LACK_XXX_VARDEF);
+				t->error = true;
+				return t;
+			}
 		}
 		p->sibling = q;
 		p = q;
@@ -493,6 +597,7 @@ Type typeID() {
 	}
 	else {
 		printf("error in typeID() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+		return Type::T_ERROR;
 	}
 }
 
@@ -503,6 +608,15 @@ TreeNode* functionDefinitionWithReturn() {
 	TreeNode* t = newDecNode(DecKind::Func_DecK);
 
 	Type rettype = typeID();
+
+	if (Type::T_ERROR == rettype)
+	{
+		//printf("error in varDefine() :in line %d ,tokenType %d value: %s; expected type desc\n", g_lineNumber, g_token.opType, g_token.value);
+		errorProcess(ErrorType::LACK_TYPE_FUN);
+		t->error = true;
+		return t;
+	}
+
 
 	t->attr.name = copyString(g_token.value);
 	t->pfinfo = new FuncInfo;

@@ -42,6 +42,9 @@
     <ClCompile Include="opt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="errorprocess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scan.h">
@@ -69,6 +72,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="opt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="errorprocess.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

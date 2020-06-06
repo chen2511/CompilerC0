@@ -26,6 +26,8 @@ TreeNode* newDecNode(DecKind kind) {
 	t->vec = -1;
 	t->pfinfo = NULL;
 
+	t->error = false;
+
 	return t;
 }
 
@@ -47,6 +49,8 @@ TreeNode* newStmtNode(StmtKind kind) {
 	t->vec = -1;
 	t->pfinfo = NULL;
 
+
+	t->error = false;
 	return t;
 }
 
@@ -68,6 +72,8 @@ TreeNode* newExpNode(ExpKind kind) {
 	t->vec = -1;
 	t->pfinfo = NULL;
 
+
+	t->error = false;
 	return t;
 }
 
@@ -89,6 +95,7 @@ TreeNode* newBoolExpNode(BoolExpKind kind) {
 	t->vec = -1;
 	t->pfinfo = NULL;
 
+	t->error = false;
 	return t;
 }
 

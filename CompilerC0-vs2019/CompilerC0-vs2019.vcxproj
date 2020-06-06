@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="asm.cpp" />
     <ClCompile Include="ast.cpp" />
+    <ClCompile Include="errorprocess.cpp" />
     <ClCompile Include="ir.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="opt.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="asm.h" />
     <ClInclude Include="ast.h" />
+    <ClInclude Include="errorprocess.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="ir.h" />
     <ClInclude Include="opt.h" />

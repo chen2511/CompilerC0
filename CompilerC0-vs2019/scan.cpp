@@ -65,6 +65,11 @@ void getNextToken() {
 
     while (STATE_DONE != state) {
         ch = getNextChar();
+        if (EOF == ch) {
+            g_token.opType = END;
+            return;
+        }
+
         switch (state)
         {
         case STATE_START: {      /////////////////////¿ªÊ¼×´Ì¬

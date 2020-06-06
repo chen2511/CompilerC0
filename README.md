@@ -1330,7 +1330,7 @@ updateST:
 
 ## 七、错误处理
 
-### 1、错误识别
+### 7.1、错误识别
 
 ``` c++
 // 匹配 期待的 token；否则报错
@@ -1350,11 +1350,39 @@ static bool match(TokenType expectToken) {
 
 
 
-### 2、跳读到可以正确分析的位置
+### 7.2、跳读到可以正确分析的位置
 
 直到识别到某些token才停止；
 
+```c++
+typedef enum {
+    LACK_SEMI_CST,              // 常量定义没有分号，跳出当前，直到再次遇到常量定义、变量定义、语句
+    LACK_TYPE_CST,              // 没有类型
+    LACK_ID_CST,                // 没有标识符
+    LACK_ASSIGN_CST,            // 没有赋值符号
+
+    LACK_XXX_VARDEF,            // 变量定义出错，直接抛弃当前语句
+
+    LACK_TYPE_FUN,              // 函数类型未说明
+    LACK_IDEN_FUN,              // 函数名未说明   ， 
+    LACK_KUOHAO_FUN,            // 函数括号丢失   ， 跳过当前函数
+
+    SENTENCE_ERROR
+}ErrorType;
+```
+
+
+
+
+
+### 7.3 语法树错误屏蔽
+
 语法树标识错误，语义分析时跳过。
+
+```c++
+    // 错误处理
+    bool error;
+```
 
 
 

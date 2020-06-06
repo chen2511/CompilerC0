@@ -122,6 +122,15 @@ void semanticAnalyze(TreeNode* tree)
 	SymTab* tmp;
 	Symbol* lookup;
 	while (NULL != tree) {
+		// 语义分析阶段就不分析语法有错误的语句，也就是说当前节点不分析，但是兄弟节点可以继续分析
+		if (tree->error == true) {
+			tree = tree->sibling;
+
+			continue;
+		}
+
+
+
 		if (NodeKind::DecK == tree->nodekind) {
 			switch (tree->kind.dec)
 			{

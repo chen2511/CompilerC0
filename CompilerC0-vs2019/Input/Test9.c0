@@ -1,0 +1,9 @@
+const int a = 1;
+int a[3;
+int b;
+
+
+void main(){
+	printf("aaa\n");
+
+}

@@ -1,0 +1,17 @@
+.data:
+.text:
+	jal		main
+	li		$v0, 10
+	syscall
+main:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 0
+	jal		void
+ret_main:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra

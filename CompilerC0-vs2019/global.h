@@ -37,7 +37,8 @@ typedef enum {
     ASSIGN, COMMA, SEMICOLON,                   //31-33: =  ,  ;
     LBRACE, RBRACE, LBRACKET, RBRACKET,         //34-37:{ } [ ]
     LPARENTHES, RPARENTHES,                     //38-39:( )      
-    CALL, ARRAYAT                               // 在表达式中额外的操作：函数调用、数组，但不会在语法分析阶段出现
+    CALL, ARRAYAT,                              // 在表达式中额外的操作：函数调用、数组，但不会在语法分析阶段出现
+    END                                         // 文件结束                                               
 }TokenType;
 
 //Token:枚举类型TokenType、值string value
@@ -105,7 +106,7 @@ typedef enum {
 
 // 类型信息： 可以是定义时 保存的类型信息；也可以用于 检验表达式中类型是否匹配
 typedef enum {
-    T_VOID, T_INTEGER, T_CHAR
+    T_VOID, T_INTEGER, T_CHAR, T_ERROR
 }Type;
 
 // 函数信息：返回类型和参数表；也可以链接到符号表中
@@ -148,6 +149,9 @@ typedef struct TreeNode {
     // 转化成IR中用到
     char* place;
     int TC, FC;
+
+    // 错误处理
+    bool error;
 
 }TreeNode;
 
@@ -210,13 +214,18 @@ typedef struct {
 
 
 typedef enum {
-    LACK_SEMI_CST,
-    LACK_TYPE_CST,
-    LACK_ID_CST,
-    LACK_ASSIGN_CST,
+    LACK_SEMI_CST,              // 常量定义没有分号，跳出当前，直到再次遇到常量定义、变量定义、语句
+    LACK_TYPE_CST,              // 没有类型
+    LACK_ID_CST,                // 没有标识符
+    LACK_ASSIGN_CST,            // 没有赋值符号
 
-    LACK_XXX_VARDEF,
-    LACK_TYPE_FUN,
+    LACK_XXX_VARDEF,            // 变量定义出错，直接抛弃当前语句
+
+    LACK_TYPE_FUN,              // 函数类型未说明
+    LACK_IDEN_FUN,              // 函数名未说明   ， 
+    LACK_KUOHAO_FUN,            // 函数括号丢失   ， 跳过当前函数
+
+    SENTENCE_ERROR
 }ErrorType;
 
 
