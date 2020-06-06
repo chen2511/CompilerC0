@@ -84,6 +84,7 @@ static bool match(TokenType expectToken) {
 		return true;
 	}
 	else {								// 提示错误，但在这里不跳读
+		g_errorNum++;
 		printf("match error in line %d :\t\texpect Token %d, but %d value: %s \n", g_lineNumber, expectToken, g_token.opType, g_token.value);
 		return false;
 	}

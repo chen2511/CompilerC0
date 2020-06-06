@@ -59,6 +59,8 @@ extern int g_lexBegin;
 //forward 指向下一个将要读取的字符；lexBegin表示该token开始的位置
 extern int g_forward;
 
+extern int g_errorNum;
+
 //token
 extern _tToken g_token;
 //是否到达文件末尾
@@ -205,6 +207,26 @@ typedef struct {
     int regindex;
     char* varname;
 }RegInfo;
+
+
+typedef enum {
+    LACK_SEMI_CST,
+    LACK_TYPE_CST,
+    LACK_ID_CST,
+    LACK_ASSIGN_CST,
+
+    LACK_XXX_VARDEF,
+    LACK_TYPE_FUN,
+}ErrorType;
+
+
+
+
+
+
+
+
+
 
 
 

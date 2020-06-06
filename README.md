@@ -1330,13 +1330,31 @@ updateST:
 
 ## 七、错误处理
 
-错误识别
+### 1、错误识别
+
+``` c++
+// 匹配 期待的 token；否则报错
+// 读取下一个token
+static bool match(TokenType expectToken) {
+	if (expectToken == g_token.opType) {	// 与预期相同，跳过token， true
+		getNextToken();
+		return true;
+	}
+	else {								// 提示错误，但在这里不跳读
+		g_errorNum++;
+		printf("match error in line %d :\t\texpect Token %d, but %d value: %s \n", g_lineNumber, expectToken, g_token.opType, g_token.value);
+		return false;
+	}
+}
+```
 
 
 
-跳读到可以正确分析的位置
+### 2、跳读到可以正确分析的位置
 
+直到识别到某些token才停止；
 
+语法树标识错误，语义分析时跳过。
 
 
 

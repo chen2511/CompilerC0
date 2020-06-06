@@ -16,6 +16,7 @@ FILE* IR_FILE;
 FILE* ASM_FILE;
 
 int g_lineNumber = 0;
+int g_errorNum = 0;
 _tToken g_token;
 
 SymTab* g_symtab;
@@ -56,10 +57,22 @@ int main(int argc, char* argv[])
         cout << "source file open successfully!\n";
     }
 
+    // 语法分析，生成抽象语法树
     TreeNode* synaxtree = parser();
 
+    //// 有错误，不继续编译，退出
+    //if (g_errorNum) {
+    //    exit(-1);
+    //}
+
+    // 语义分析、构造符号表
     g_symtab = initSimpleSymTable((char*)("Global"));
     semanticAnalyze(synaxtree);
+
+    // 有错误，不继续编译，退出
+    if (g_errorNum) {
+        exit(-1);
+    }
 
     // 生成四元式
     IR_Analyze(synaxtree);
