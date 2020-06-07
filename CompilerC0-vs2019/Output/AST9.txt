@@ -1,0 +1,24 @@
+
+------------ Const Declaration ------------
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name:		a		value:	1
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: a
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: b
+
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: aaa\n
+
+<<<Stmt Sequence End  

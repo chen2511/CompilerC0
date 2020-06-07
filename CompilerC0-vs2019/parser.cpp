@@ -621,16 +621,45 @@ TreeNode* functionDefinitionWithReturn() {
 	t->attr.name = copyString(g_token.value);
 	t->pfinfo = new FuncInfo;
 	t->pfinfo->rettype = rettype;
-	match(TokenType::IDEN);
+	if (!match(TokenType::IDEN)) 
+	{
+		errorProcess(ErrorType::LACK_IDEN_FUN);
+		t->error = true;
+		return t;
+	}
 
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+
 	paraTable(t->pfinfo);
-	match(TokenType::RPARENTHES);
-	match(TokenType::LBRACE);
+
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+
+	if (!match(TokenType::LBRACE))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+
 
 	t->child[0] = complexStatement();
 
-	match(TokenType::RBRACE);
+	if (!match(TokenType::RBRACE))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
 
 	return t;
 }
@@ -661,15 +690,42 @@ TreeNode* functionDefinitionWithoutReturn() {
 	t->pfinfo->rettype = Type::T_VOID;
 
 	t->attr.name = copyString(g_token.value);
-	match(TokenType::IDEN);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::IDEN))
+	{
+		errorProcess(ErrorType::LACK_IDEN_FUN);
+		t->error = true;
+		return t;
+	}
+
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
 	paraTable(t->pfinfo);
-	match(TokenType::RPARENTHES);
-	match(TokenType::LBRACE);
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+
+	if (!match(TokenType::LBRACE))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
 
 	t->child[0] = complexStatement();
 
-	match(TokenType::RBRACE);
+	if (!match(TokenType::RBRACE))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
 
 	return t;
 }
@@ -761,13 +817,35 @@ TreeNode* mainFunction() {
 
 	match(TokenType::VOID);
 	match(TokenType::MAIN);
-	match(TokenType::LPARENTHES);
-	match(TokenType::RPARENTHES);
-	match(TokenType::LBRACE);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+	
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+	if (!match(TokenType::LBRACE))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
+
 
 	t->child[0] = complexStatement();
 
-	match(TokenType::RBRACE);
+	if (!match(TokenType::RBRACE))
+	{
+		errorProcess(ErrorType::LACK_KUOHAO_FUN);
+		t->error = true;
+		return t;
+	}
 
 	return t;
 
