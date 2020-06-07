@@ -70,7 +70,7 @@ void errorProcess(ErrorType e)
 			&& g_token.opType != TokenType::WHILE && g_token.opType != TokenType::FOR
 			&& g_token.opType != TokenType::IDEN && g_token.opType != TokenType::RETURN
 			&& g_token.opType != TokenType::SCANF && g_token.opType != TokenType::PRINTF
-			&& g_token.opType != TokenType::LBRACE && g_token.opType != TokenType::RBRACE
+			/*&& g_token.opType != TokenType::LBRACE */&& g_token.opType != TokenType::RBRACE
 			)
 		{
 			if (g_token.opType == TokenType::END)

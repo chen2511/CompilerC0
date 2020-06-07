@@ -882,6 +882,8 @@ TreeNode* statementSequence() {
 	}
 	else {		// 既不是语句也不是 }
 		printf("error in statementSequence() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+
+		errorProcess(ErrorType::SENTENCE_ERROR);
 	}
 
 	return t;
@@ -916,7 +918,13 @@ TreeNode* statement() {
 		//‘{ ’<语句列>‘ }’
 		match(TokenType::LBRACE);
 		t = statementSequence();
-		match(TokenType::RBRACE);
+
+		if (!match(TokenType::RBRACE))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			t->error = true;
+			return t;
+		}
 	}
 	else if (TokenType::IDEN == g_token.opType) {
 		// <有返回值的函数调用语句>;
@@ -950,28 +958,54 @@ TreeNode* statement() {
 			// 反正这里的函数调用都是 不利用其 返回值， 等价于无返回值的调用
 			t = callWithoutReturn();
 		}
-		match(TokenType::SEMICOLON);
+		if (!match(TokenType::SEMICOLON))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			// 少分号当前语句不算错
+			return t;
+		}
 
 	}
 	else if (TokenType::SCANF == g_token.opType) {
 		// <读语句>;
 		t = scanfStatement();
-		match(TokenType::SEMICOLON);
+		if (!match(TokenType::SEMICOLON))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			// 少分号当前语句不算错
+			return t;
+		}
 
 	}
 	else if (TokenType::PRINTF == g_token.opType) {
 		// <写语句>;
 		t = printfStatement();
-		match(TokenType::SEMICOLON);
+		if (!match(TokenType::SEMICOLON))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			// 少分号当前语句不算错
+			return t;
+		}
 	}
 	else if (TokenType::RETURN == g_token.opType) {
 		// <返回语句>;
 		t = returnStatement();
-		match(TokenType::SEMICOLON);
+		if (!match(TokenType::SEMICOLON))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			// 少分号当前语句不算错
+			return t;
+		}
 	}
 	else {
 		// error
 		printf("error in statement() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
+		if (!match(TokenType::SEMICOLON))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			// 少分号当前语句不算错
+			return t;
+		}
 	}
 	return t;
 }
@@ -987,9 +1021,19 @@ TreeNode* assignStatement() {
 	if (TokenType::LBRACKET == g_token.opType) {		//	赋值给数组
 		match(TokenType::LBRACKET);
 		t->child[1] = exp();							// 第二个孩子是 Index
-		match(TokenType::RBRACKET);
+		if (!match(TokenType::RBRACKET))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			t->error = true;
+			return t;
+		}
 	}
-	match(TokenType::ASSIGN);
+	if (!match(TokenType::ASSIGN))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	t->child[0] = exp();								// 第一个孩子，是右端的表达式
 
 	return t;
@@ -1002,9 +1046,22 @@ TreeNode* ifStatement() {
 	// 有三个孩子， bool表达式、then语句、else语句
 
 	match(TokenType::IF);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[0] = boolExp();				// 布尔表达式
-	match(TokenType::RPARENTHES);
+
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[1] = statement();				// then语句
 
 	if (TokenType::ELSE == g_token.opType) {
@@ -1023,9 +1080,21 @@ for循环中的三个表达式：初始化表达式、循环变量测试表达式、循环变量修正表达式
 TreeNode* whileLoopStatement() {
 	TreeNode* t = newStmtNode(StmtKind::While_StmtK);
 	match(TokenType::WHILE);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[0] = boolExp();
-	match(TokenType::RPARENTHES);
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[1] = statement();
 	return t;
 }
@@ -1036,13 +1105,36 @@ TreeNode* forLoopStatement() {
 	TreeNode* p = NULL;
 
 	match(TokenType::FOR);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[1] = assignStatement();
-	match(TokenType::SEMICOLON);
+	if (!match(TokenType::SEMICOLON))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[0] = boolExp();
-	match(TokenType::SEMICOLON);
+	if (!match(TokenType::SEMICOLON))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	p = assignStatement();
-	match(TokenType::RPARENTHES);
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	t->child[2] = statement();
 	if (NULL == t->child[2]) {		// for循环是空语句
 		t->child[2] = p;					// 把for循环末尾的赋值语句直接填充
@@ -1065,11 +1157,22 @@ TreeNode* callWithReturn() {
 	t->child[0]->attr.name = copyString(g_token.value);
 
 	match(TokenType::IDEN);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	if (TokenType::RPARENTHES != g_token.opType) {
 		t->child[1] = valueParaTable();
 	}
-	match(TokenType::RPARENTHES);
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	return t;
 }
 
@@ -1081,11 +1184,21 @@ TreeNode* callWithoutReturn() {
 	t->attr.name = copyString(g_token.value);
 	match(TokenType::IDEN);
 
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	if (TokenType::RPARENTHES != g_token.opType) {
 		t->child[0] = valueParaTable();
 	}
-	match(TokenType::RPARENTHES);
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	return t;
 }
 
@@ -1117,22 +1230,43 @@ TreeNode* scanfStatement() {
 	TreeNode* p = NULL;
 	TreeNode* q = NULL;
 	match(TokenType::SCANF);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 
 	p = newStmtNode(StmtKind::Read_StmtK_Idlist);
 	p->attr.name = copyString(g_token.value);
 	t->child[0] = p;
 
-	match(TokenType::IDEN);
+	if (!match(TokenType::IDEN))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	while (TokenType::COMMA == g_token.opType) {
 		match(TokenType::COMMA);
 		q = newStmtNode(StmtKind::Read_StmtK_Idlist);
 		q->attr.name = copyString(g_token.value);
 		p->sibling = q;
 		p = q;
-		match(TokenType::IDEN);
+		if (!match(TokenType::IDEN))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			t->error = true;
+			return t;
+		}
 	}
-	match(TokenType::RPARENTHES);
+
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	return t;
 }
 
@@ -1145,7 +1279,12 @@ TreeNode* scanfStatement() {
 TreeNode* printfStatement() {
 	TreeNode* t = newStmtNode(StmtKind::Write_StmtK);
 	match(TokenType::PRINTF);
-	match(TokenType::LPARENTHES);
+	if (!match(TokenType::LPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
 	if (TokenType::STRING == g_token.opType) {
 		t->child[0] = newStmtNode(StmtKind::Write_StmtK_Str);
 		t->child[0]->attr.str = copyString(g_token.value);
@@ -1159,7 +1298,13 @@ TreeNode* printfStatement() {
 	else {
 		t->child[1] = exp();
 	}
-	match(TokenType::RPARENTHES);
+	if (!match(TokenType::RPARENTHES))
+	{
+		errorProcess(ErrorType::SENTENCE_ERROR);
+		t->error = true;
+		return t;
+	}
+
 	return t;
 }
 
@@ -1170,7 +1315,12 @@ TreeNode* returnStatement() {
 	if (TokenType::LPARENTHES == g_token.opType) {
 		match(TokenType::LPARENTHES);
 		t->child[0] = exp();
-		match(TokenType::RPARENTHES);
+		if (!match(TokenType::RPARENTHES))
+		{
+			errorProcess(ErrorType::SENTENCE_ERROR);
+			t->error = true;
+			return t;
+		}
 	}
 	return t;
 }
