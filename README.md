@@ -1322,9 +1322,56 @@ updateST:
 
 ## 六、优化
 
+### 6.1 常量合并
+
+常量计算改为赋值
 
 
 
+### 6.2 强度削弱
+
+乘法和除法改为移位
+
+
+
+### 6.3 删除公共子表达式
+
+检查当前基本块中（+-*/， assign），是否有相同操作，操作数；若相同，则删除重复计算、替换中间变量；
+
+注意检查操作数是否被改变
+
+
+
+### 6.4 寄存器分配
+
+#### 6.4.1 基本思想：
+
+FIFO原则
+
+#### 6.4.2 实现
+
+寄存器分配器，返回一个可用的寄存器
+
+```c++
+/*
+用途：管理寄存器堆。当需要加载操作数时（立即数、变量值、数组基地址），查看是否已在寄存器，或加载到哪个寄存器。
+输入：变量名
+输出：该变量可以存入的寄存器index，或者是已经存在的寄存器序号, isInReg, isGlobal
+首先查找符号表中该变量是否在寄存器中，
+	如果在：返回序号，维护寄存器状态列表（对于全局、局部、临时变量都表示值是否在寄存器，数组表示基地址是否在）
+	不在：查看是否有空寄存器，若无，FIFO原则维护寄存器堆
+
+	此外还需维护两个全局变量: 表示是否在寄存器中（用于该函数体外），是否全局变量（.data段全局变量可以通过变量名直接获取、存储）
+*/
+int getRegIndex(char* varname)
+```
+
+之后再调入寄存器
+
+```c++
+// 从内存读入寄存器
+void mem2reg(char* varname, int reg)
+```
 
 
 
@@ -1369,6 +1416,92 @@ typedef enum {
 
     SENTENCE_ERROR
 }ErrorType;
+```
+
+大致思想：
+
+常量定义、变量定义、函数定义：跳过当前定义
+
+语句：跳过当前语句
+
+```c++
+switch (e)
+	{
+	case ErrorType::LACK_SEMI_CST:
+	case ErrorType::LACK_TYPE_CST: 
+	case ErrorType::LACK_ID_CST:
+	case ErrorType::LACK_ASSIGN_CST: {
+		while (g_token.opType != TokenType::CONST && g_token.opType != TokenType::INT && g_token.opType != TokenType::CHAR
+			&& g_token.opType != TokenType::VOID && g_token.opType != TokenType::IF
+			&& g_token.opType != TokenType::WHILE && g_token.opType != TokenType::FOR
+			&& g_token.opType != TokenType::IDEN && g_token.opType != TokenType::RETURN
+			&& g_token.opType != TokenType::SCANF && g_token.opType != TokenType::PRINTF
+			&& g_token.opType != TokenType::LBRACE && g_token.opType != TokenType::RBRACE
+			)
+		{
+			if (g_token.opType == TokenType::END) 
+			{
+				exit(0);
+			}
+			getNextToken();
+		}
+		break;
+	}
+	// 以上都是常量定义阶段的错误
+	// 变量定义错误：
+	case ErrorType::LACK_XXX_VARDEF: {
+		while (g_token.opType != TokenType::INT && g_token.opType != TokenType::CHAR
+			&& g_token.opType != TokenType::VOID && g_token.opType != TokenType::IF
+			&& g_token.opType != TokenType::WHILE && g_token.opType != TokenType::FOR
+			&& g_token.opType != TokenType::IDEN && g_token.opType != TokenType::RETURN
+			&& g_token.opType != TokenType::SCANF && g_token.opType != TokenType::PRINTF
+			&& g_token.opType != TokenType::LBRACE && g_token.opType != TokenType::RBRACE
+			)
+		{
+			if (g_token.opType == TokenType::END)
+			{
+				exit(0);
+			}
+			getNextToken();
+		}
+		break;
+	}
+	// 函数定义错误
+	case ErrorType::LACK_TYPE_FUN:
+	case ErrorType::LACK_IDEN_FUN: 
+	case ErrorType::LACK_KUOHAO_FUN: {
+
+		while (g_token.opType != TokenType::INT && g_token.opType != TokenType::CHAR
+			&& g_token.opType != TokenType::VOID
+			)
+		{
+			if (g_token.opType == TokenType::END)
+			{
+				exit(0);
+			}
+			getNextToken();
+		}
+
+
+		break;
+	}
+	// 语句错误
+	case ErrorType::SENTENCE_ERROR: {
+		while (g_token.opType != TokenType::IF
+			&& g_token.opType != TokenType::WHILE && g_token.opType != TokenType::FOR
+			&& g_token.opType != TokenType::IDEN && g_token.opType != TokenType::RETURN
+			&& g_token.opType != TokenType::SCANF && g_token.opType != TokenType::PRINTF
+			/*&& g_token.opType != TokenType::LBRACE */&& g_token.opType != TokenType::RBRACE
+			)
+		{
+			if (g_token.opType == TokenType::END)
+			{
+				exit(0);
+			}
+			getNextToken();
+		}
+		break;
+	}
 ```
 
 
