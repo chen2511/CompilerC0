@@ -1,0 +1,72 @@
+.data:
+.text:
+	jal		main
+	li		$v0, 10
+	syscall
+max:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 8
+	lw		$t0, -8($fp)
+	lw		$t1, -12($fp)
+	bgt		$t0, $t1, Label_0
+	j		Label_1
+Label_0:
+	move	$v0, $t0
+	j		ret_max
+	j		Label_2
+Label_1:
+	move	$v0, $t1
+	j		ret_max
+Label_2:
+ret_max:
+	sw		$t0, -8($fp)
+	sw		$t1, -12($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+main:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 24
+	li		$v0, 5
+	syscall
+	sw		$v0, -8($fp)
+	li		$v0, 5
+	syscall
+	sw		$v0, -12($fp)
+	li		$v0, 5
+	syscall
+	sw		$v0, -16($fp)
+	lw		$t0, -12($fp)
+	sw		$t0, -8($sp)
+	lw		$t1, -16($fp)
+	sw		$t1, -12($sp)
+	sw		$t0, -12($fp)
+	sw		$t1, -16($fp)
+	jal		max
+	move	$t0, $v0
+	lw		$t1, -8($fp)
+	sw		$t1, -8($sp)
+	sw		$t0, -12($sp)
+	sw		$t1, -8($fp)
+	sw		$t0, -24($fp)
+	jal		max
+	move	$t0, $v0
+	move	$t1, $t0
+	move	$a0, $t1
+	li		$v0, 1
+	syscall
+	j		ret_main
+ret_main:
+	sw		$t0, -28($fp)
+	sw		$t1, -20($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra

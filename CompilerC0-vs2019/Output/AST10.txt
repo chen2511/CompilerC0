@@ -1,0 +1,56 @@
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: max 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 1 x	1 x	
+
+Stmt Sequence>>>   
+
+If :
+ >  x  y 
+Stmt Sequence>>>   
+
+Ret Stmt:
+ x 
+<<<Stmt Sequence End  
+
+Stmt Sequence>>>   
+
+Ret Stmt:
+ y 
+<<<Stmt Sequence End  
+
+<<<Stmt Sequence End  
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: a
+ID name: b
+ID name: c
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: m
+
+
+Stmt Sequence>>>   
+
+Read Stmt:
+Read ID: a
+
+Read Stmt:
+Read ID: b
+
+Read Stmt:
+Read ID: c
+
+Assign to: m
+ max  ()  a 
+Write Stmt:
+ m 
+Ret Stmt:
+
+<<<Stmt Sequence End  

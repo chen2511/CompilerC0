@@ -1,0 +1,104 @@
+.data:
+	$string0:	.asciiz	"How many num are there: "
+	$string1:	.asciiz	"\nPlease input the first num: "
+	$string2:	.asciiz	"\nThe min num is: "
+	$string3:	.asciiz	"\nThe max num is: "
+	$string4:	.asciiz	"\n The next input is: "
+	$string5:	.asciiz	"\nThe min num is: "
+	$string6:	.asciiz	"\nThe max num is: "
+.text:
+	jal		main
+	li		$v0, 10
+	syscall
+main:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 24
+	la		$a0, $string0
+	li		$v0, 4
+	syscall
+	li		$v0, 5
+	syscall
+	sw		$v0, -8($fp)
+	la		$a0, $string1
+	li		$v0, 4
+	syscall
+	li		$v0, 5
+	syscall
+	sw		$v0, -24($fp)
+	lw		$t0, -24($fp)
+	move	$t1, $t0
+	move	$t2, $t0
+	la		$a0, $string2
+	li		$v0, 4
+	syscall
+	move	$a0, $t1
+	li		$v0, 1
+	syscall
+	la		$a0, $string3
+	li		$v0, 4
+	syscall
+	move	$a0, $t2
+	li		$v0, 1
+	syscall
+	li		$t3, 2
+	move	$t4, $t3
+Label_0:
+	lw		$t5, -8($fp)
+	ble		$t4, $t5, Label_1
+	j		Label_2
+Label_1:
+	li		$v0, 5
+	syscall
+	sw		$v0, -24($fp)
+	move	$t0, $v0
+	la		$a0, $string4
+	li		$v0, 4
+	syscall
+	move	$a0, $t0
+	li		$v0, 1
+	syscall
+	blt		$t0, $t1, Label_3
+	j		Label_4
+Label_3:
+	move	$t1, $t0
+	j		Label_5
+Label_4:
+Label_5:
+	bgt		$t0, $t2, Label_6
+	j		Label_7
+Label_6:
+	move	$t2, $t0
+	j		Label_8
+Label_7:
+Label_8:
+	la		$a0, $string5
+	li		$v0, 4
+	syscall
+	move	$a0, $t1
+	li		$v0, 1
+	syscall
+	la		$a0, $string6
+	li		$v0, 4
+	syscall
+	move	$a0, $t2
+	li		$v0, 1
+	syscall
+	li		$t6, 1
+	add		$t7, $t4, $t6
+	move	$t4, $t7
+	j		Label_0
+Label_2:
+ret_main:
+	sw		$t5, -8($fp)
+	sw		$t0, -24($fp)
+	sw		$t1, -16($fp)
+	sw		$t2, -20($fp)
+	sw		$t7, -28($fp)
+	sw		$t4, -12($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra

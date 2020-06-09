@@ -1,0 +1,34 @@
+void main()
+{
+    int n, i, min, max, x;
+    printf("How many num are there: ");
+    scanf(n);
+    printf("\nPlease input the first num: ");
+    scanf(x);
+    min = x;
+    max = x;
+    
+    printf("\nThe min num is: ");
+    printf(min);
+    printf("\nThe max num is: ");
+    printf(max);
+    for(i = 2; i <= n; i = i + 1)
+    {
+        scanf(x);
+        printf("\n The next input is: ");
+        printf(x);
+        if(x < min)
+        {
+            min = x;
+        }
+        if(x > max)
+        {
+            max = x;
+        }
+        printf("\nThe min num is: ");
+        printf(min);
+        printf("\nThe max num is: ");
+        printf(max);
+    }
+    
+}

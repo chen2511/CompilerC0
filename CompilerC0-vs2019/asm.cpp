@@ -62,6 +62,8 @@ void saveReg();
 void mem2reg(char* varname, int reg);
 void baseAddr2reg(char* varname, int reg);
 
+void updateOldVarWhenRead(Symbol* sb);
+
 /*
 根据变量名，返回所在的寄存器号；
 同时需要更新此寄存器到队列末尾
@@ -870,6 +872,9 @@ void scanf2asm()
 			fprintf(ASM_FILE, "\tsw\t\t$v0, -%d($fp)\n", addr);
 		}
 	}
+
+	// 修复多次读取出错bug
+	updateOldVarWhenRead(sb);
 }
 
 /*
@@ -1040,5 +1045,30 @@ void baseAddr2reg(char* varname, int reg) {
 		}
 	}
 	INFO_ASM("\t# End of Array BaseAddr\n");
+}
+
+
+/*
+bug：多次读取同名变量时，由于scanf是直接写入内存，但或许之前使用过这个变量，并且已经调入寄存器；查表的时候会显示在
+	寄存器堆中，这样就会读取就值；
+	发现于 Test11.c0；多次输入x，发现后面使用的x的值始终不变
+	(old，会带来新问题，可用寄存器数目不断减少)处理：从寄存器堆中移除此变量，且不用写回内存；故只需更新符号表状态、寄存器映射队列、可用寄存器数目
+	(new)处理：如果在寄存器，则更新寄存器数据即可，其他不变
+*/
+void updateOldVarWhenRead(Symbol* sb)
+{
+	if (sb->isreg) 
+	{
+		std::list<RegInfo>::iterator iter = regInfoList.begin();
+		for (; iter != regInfoList.end(); ++iter) {
+			if (!strcmp((*iter).varname, sb->name)) {
+				INFO("剩余寄存器：%d，已在寄存器：true，变量名：%s，寄存器序号：%d\n", s_emptyRegNum, varname, std::distance(regInfoList.begin(), iter));
+				break;
+			}
+		}
+
+		fprintf(ASM_FILE, "\tmove\t$t%d, $v0\n", (*iter).regindex);
+
+	}
 }
 

@@ -1,0 +1,25 @@
+int max(int x, int y)
+{
+    if(x > y)
+    {
+        return (x);       
+    }
+    else
+    {
+        return (y);
+    }
+}
+
+void main()
+{
+    int a, b, c;
+    int m;
+    scanf(a);
+    scanf(b);
+    scanf(c);
+    m = max(a, max(b, c));
+
+    printf(m);
+
+    return;
+}

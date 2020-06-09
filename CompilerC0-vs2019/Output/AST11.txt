@@ -1,0 +1,87 @@
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: n
+ID name: i
+ID name: min
+ID name: max
+ID name: x
+
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: How many num are there: 
+
+Read Stmt:
+Read ID: n
+
+Write Stmt:
+Write Str: \nPlease input the first num: 
+
+Read Stmt:
+Read ID: x
+
+Assign to: min
+ x 
+Assign to: max
+ x 
+Write Stmt:
+Write Str: \nThe min num is: 
+
+Write Stmt:
+ min 
+Write Stmt:
+Write Str: \nThe max num is: 
+
+Write Stmt:
+ max 
+For Stmt:
+ <=  i  n 
+Assign to: i
+ 2 
+Stmt Sequence>>>   
+
+Read Stmt:
+Read ID: x
+
+Write Stmt:
+Write Str: \n The next input is: 
+
+Write Stmt:
+ x 
+If :
+ <  x  min 
+Stmt Sequence>>>   
+
+Assign to: min
+ x 
+<<<Stmt Sequence End  
+
+If :
+ >  x  max 
+Stmt Sequence>>>   
+
+Assign to: max
+ x 
+<<<Stmt Sequence End  
+
+Write Stmt:
+Write Str: \nThe min num is: 
+
+Write Stmt:
+ min 
+Write Stmt:
+Write Str: \nThe max num is: 
+
+Write Stmt:
+ max 
+<<<Stmt Sequence End  
+
+Assign to: i
+ i  +  1 
+<<<Stmt Sequence End  
