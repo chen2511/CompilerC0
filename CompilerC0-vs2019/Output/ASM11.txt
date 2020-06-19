@@ -45,59 +45,82 @@ main:
 	syscall
 	li		$t3, 2
 	move	$t4, $t3
+	sw		$t0, -24($fp)
+	sw		$t1, -16($fp)
+	sw		$t2, -20($fp)
+	sw		$t4, -12($fp)
 Label_0:
-	lw		$t5, -8($fp)
-	ble		$t4, $t5, Label_1
+	lw		$t0, -12($fp)
+	lw		$t1, -8($fp)
+	ble		$t0, $t1, Label_1
+	sw		$t0, -12($fp)
+	sw		$t1, -8($fp)
 	j		Label_2
 Label_1:
 	li		$v0, 5
 	syscall
 	sw		$v0, -24($fp)
-	move	$t0, $v0
 	la		$a0, $string4
 	li		$v0, 4
 	syscall
+	lw		$t0, -24($fp)
 	move	$a0, $t0
 	li		$v0, 1
 	syscall
+	sw		$t0, -24($fp)
+	lw		$t0, -24($fp)
+	lw		$t1, -16($fp)
 	blt		$t0, $t1, Label_3
+	sw		$t0, -24($fp)
+	sw		$t1, -16($fp)
 	j		Label_4
 Label_3:
+	lw		$t0, -24($fp)
 	move	$t1, $t0
+	sw		$t0, -24($fp)
+	sw		$t1, -16($fp)
 	j		Label_5
 Label_4:
 Label_5:
-	bgt		$t0, $t2, Label_6
+	lw		$t0, -24($fp)
+	lw		$t1, -20($fp)
+	bgt		$t0, $t1, Label_6
+	sw		$t0, -24($fp)
+	sw		$t1, -20($fp)
 	j		Label_7
 Label_6:
-	move	$t2, $t0
+	lw		$t0, -24($fp)
+	move	$t1, $t0
+	sw		$t0, -24($fp)
+	sw		$t1, -20($fp)
 	j		Label_8
 Label_7:
 Label_8:
 	la		$a0, $string5
 	li		$v0, 4
 	syscall
-	move	$a0, $t1
+	lw		$t0, -16($fp)
+	move	$a0, $t0
 	li		$v0, 1
 	syscall
 	la		$a0, $string6
 	li		$v0, 4
 	syscall
-	move	$a0, $t2
+	lw		$t1, -20($fp)
+	move	$a0, $t1
 	li		$v0, 1
 	syscall
-	li		$t6, 1
-	add		$t7, $t4, $t6
-	move	$t4, $t7
+	lw		$t2, -12($fp)
+	li		$t3, 1
+	add		$t4, $t2, $t3
+	move	$t2, $t4
+	sw		$t0, -16($fp)
+	sw		$t1, -20($fp)
+	sw		$t4, -28($fp)
+	sw		$t2, -12($fp)
 	j		Label_0
 Label_2:
 ret_main:
-	sw		$t5, -8($fp)
-	sw		$t0, -24($fp)
-	sw		$t1, -16($fp)
-	sw		$t2, -20($fp)
-	sw		$t7, -28($fp)
-	sw		$t4, -12($fp)
 	lw		$ra, -4($fp)
 	move	$sp, $fp
 	lw		$fp, ($fp)

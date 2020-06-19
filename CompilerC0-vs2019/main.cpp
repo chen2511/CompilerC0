@@ -46,12 +46,13 @@ void processFileName(int index) {
 
 int main(int argc, char* argv[])
 {
-    processFileName(7);
+    processFileName(11);
         
     sourceFile = fopen(sourcefilename.c_str(), "r");
     AST_File = fopen(astfilename.c_str(), "w+");
     if (NULL == sourceFile) {
         cout << "source file open failed!\n";
+        exit(-1);
     }
     else {
         cout << "source file open successfully!\n";

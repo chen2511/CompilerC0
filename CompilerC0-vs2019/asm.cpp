@@ -63,6 +63,7 @@ void mem2reg(char* varname, int reg);
 void baseAddr2reg(char* varname, int reg);
 
 void updateOldVarWhenRead(Symbol* sb);
+void basicBlockDivide();
 
 /*
 根据变量名，返回所在的寄存器号；
@@ -351,27 +352,51 @@ void function2asm() {
 			getarray2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, ">")) {
+			// --------------
+			saveReg();
+			// --------------
 			gre2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, ">=")) {
+			// --------------
+			saveReg();
+			// --------------
 			geq2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "<")) {
+			// --------------
+			saveReg();
+			// --------------
 			lss2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "<=")) {
+			// --------------
+			saveReg();
+			// --------------
 			leq2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "==")) {
+			// --------------
+			saveReg();
+			// --------------
 			eql2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "!=")) {
+			// --------------
+			saveReg();
+			// --------------
 			neq2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "j")) {
+			// --------------
+			saveReg();
+			// --------------
 			j2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "jnz")) {
+			// --------------
+			saveReg();
+			// --------------
 			jnz2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "para")) {
@@ -384,6 +409,9 @@ void function2asm() {
 			assign2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "lab")) {
+			// --------------
+			saveReg();
+			// --------------
 			lab2asm();
 		}
 		else if (0 == strcmp(quadvarlist[cur_4var].op, "call")) {
@@ -1070,5 +1098,18 @@ void updateOldVarWhenRead(Symbol* sb)
 		fprintf(ASM_FILE, "\tmove\t$t%d, $v0\n", (*iter).regindex);
 
 	}
+}
+
+// 划分基本块
+void basicBlockDivide()
+{
+	int index = 0;
+	while (index < NXQ)
+	{
+
+	}
+
+
+
 }
 

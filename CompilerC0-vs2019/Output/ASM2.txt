@@ -13,19 +13,21 @@ factor:
 	lw		$t0, -8($fp)
 	li		$t1, 0
 	beq		$t0, $t1, Label_0
+	sw		$t0, -8($fp)
 	j		Label_1
 Label_0:
-	li		$t2, 1
-	move	$v0, $t2
+	li		$t0, 1
+	move	$v0, $t0
 	j		ret_factor
 	j		Label_2
 Label_1:
 Label_2:
-	li		$t3, 1
-	sub		$t4, $t0, $t3
-	sw		$t4, -8($sp)
+	lw		$t0, -8($fp)
+	li		$t1, 1
+	sub		$t2, $t0, $t1
+	sw		$t2, -8($sp)
 	sw		$t0, -8($fp)
-	sw		$t4, -12($fp)
+	sw		$t2, -12($fp)
 	jal		factor
 	move	$t0, $v0
 	lw		$t1, -8($fp)
