@@ -195,6 +195,7 @@ extern SymTab* g_symtab;
 
 typedef struct {
     char op[15];
+    // 改进5：字符串改进枚举，性能差
     char* var1;
     char* var2;
     char* var3;

@@ -110,12 +110,16 @@ void strengthReduction()
 }
 
 // 删除公共子表达式
+// 改进5：划分基本块，数据流分析，常数**，DAG
+// 改进6： 优化文档，一个方面深入，语义等价第一；考虑所有情况；真正的优化，使用性强
 void subexpressElimination() 
 {
+	// 改进7：最多三层
 	if (strcmp(quadvarlist[curIndex].op, "+") == 0 || strcmp(quadvarlist[curIndex].op, "-") == 0 || strcmp(quadvarlist[curIndex].op, "*") == 0
 		|| strcmp(quadvarlist[curIndex].op, "/") == 0) 
 	{
 		// 检查当前基本块
+		// 改进8：逻辑、可读性改进；思考说清缘由
 		for (int theSameIndex = curIndex + 1; strcmp(quadvarlist[theSameIndex].op, "+") == 0 || strcmp(quadvarlist[theSameIndex].op, "-") == 0
 			|| strcmp(quadvarlist[theSameIndex].op, "*") == 0 || strcmp(quadvarlist[theSameIndex].op, "/") == 0 || strcmp(quadvarlist[theSameIndex].op, "assign") == 0;
 			theSameIndex++

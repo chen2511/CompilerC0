@@ -1,0 +1,52 @@
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: g_a
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: g_b
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: ga_c
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: ga_d
+
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: a
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: b
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: c
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: d
+
+
+Stmt Sequence>>>   
+
+Assign to: g_a
+ 259 
+Assign to: g_b
+ 259 
+Assign to: a
+ 1 
+Assign to: b
+ 259 
+Assign to: ga_c
+ 259  0 
+Assign to: ga_d
+ 259  0 
+Assign to: c
+ 65  a 
+Assign to: d
+ 259  0 
+<<<Stmt Sequence End  

@@ -1,0 +1,88 @@
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: a
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: b
+
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: Input a: \n
+
+Read Stmt:
+Read ID: a
+
+Write Stmt:
+Write Str: Input b: \n
+
+Read Stmt:
+Read ID: b
+
+If :
+ >  a  b 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: a > b \n
+
+<<<Stmt Sequence End  
+
+If :
+ <  a  b 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: a < b \n
+
+<<<Stmt Sequence End  
+
+If :
+ ==  a  b 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: a == b\n
+
+<<<Stmt Sequence End  
+
+If :
+ &&  >  a  0  >  b  0 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: a & b >0 \n
+
+<<<Stmt Sequence End  
+
+While Stmt:
+ >  a  0 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: a > 0\n
+
+Assign to: a
+ a  -  1 
+<<<Stmt Sequence End  
+
+For Stmt:
+ >  b  0 
+Assign to: b
+ 3 
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: b > 0\n
+
+<<<Stmt Sequence End  
+
+Assign to: b
+ b  -  1 
+<<<Stmt Sequence End  

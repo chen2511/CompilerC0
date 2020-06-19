@@ -1,0 +1,137 @@
+.data:
+	$string0:	.asciiz	"call p1\n"
+	$string1:	.asciiz	"call p2\n"
+	$string2:	.asciiz	"call p3\n"
+	$string3:	.asciiz	"call p4\n"
+.text:
+	jal		main
+	li		$v0, 10
+	syscall
+p1:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 0
+	la		$a0, $string0
+	li		$v0, 4
+	syscall
+ret_p1:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p2:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 4
+	la		$a0, $string1
+	li		$v0, 4
+	syscall
+	lw		$t0, -8($fp)
+	move	$a0, $t0
+	li		$v0, 1
+	syscall
+ret_p2:
+	sw		$t0, -8($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p3:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 8
+	la		$a0, $string2
+	li		$v0, 4
+	syscall
+	lw		$t0, -8($fp)
+	li		$t1, 1
+	add		$t2, $t0, $t1
+	move	$v0, $t2
+	j		ret_p3
+ret_p3:
+	sw		$t0, -8($fp)
+	sw		$t2, -12($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p4:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	lw		$a0, -8($fp)
+	andi	$a0, $a0, 0xff
+	sw		$a0, -8($fp)
+	subi	$sp, $sp, 4
+	la		$a0, $string3
+	li		$v0, 4
+	syscall
+	lw		$t0, -8($fp)
+	move	$a0, $t0
+	li		$v0, 11
+	syscall
+	move	$v0, $t0
+	j		ret_p4
+ret_p4:
+	sw		$t0, -8($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+p5:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 4
+	li		$t0, 353
+	move	$t1, $t0
+	move	$v0, $t1
+	andi	$v0, $v0, 0xff
+	j		ret_p5
+ret_p5:
+	sw		$t1, -8($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+main:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 20
+	jal		p1
+	li		$t0, 2
+	sw		$t0, -8($sp)
+	jal		p2
+	li		$t0, 3
+	sw		$t0, -8($sp)
+	jal		p3
+	move	$t0, $v0
+	move	$t1, $t0
+	li		$t2, 353
+	move	$t3, $t2
+	sw		$t3, -8($sp)
+	sw		$t0, -16($fp)
+	sw		$t1, -8($fp)
+	sw		$t3, -20($fp)
+	jal		p4
+	jal		p5
+	move	$t0, $v0
+	move	$t1, $t0
+	andi	$t1, $t1, 0xff
+ret_main:
+	sw		$t0, -24($fp)
+	sw		$t1, -12($fp)
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra

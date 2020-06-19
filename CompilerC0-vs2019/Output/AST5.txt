@@ -1,0 +1,96 @@
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: p1 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: call p1\n
+
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: p2 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 1 a	
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: call p2\n
+
+Write Stmt:
+ a 
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: p3 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 1 a	
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: call p3\n
+
+Ret Stmt:
+ a  +  1 
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: p4 
+ Function Info: Return Type(VOID,INT,CHAR):1 
+		ParaTable(VOID,INT,CHAR): 2 a	
+
+Stmt Sequence>>>   
+
+Write Stmt:
+Write Str: call p4\n
+
+Write Stmt:
+ a 
+Ret Stmt:
+ a 
+<<<Stmt Sequence End  
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: p5 
+ Function Info: Return Type(VOID,INT,CHAR):2 
+		ParaTable(VOID,INT,CHAR): 
+
+Stmt Sequence>>>   
+
+Ret Stmt:
+ 256  +  97 
+<<<Stmt Sequence End  
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: a
+
+Type: 2	(VOID,INT,CHAR)	list: 
+ID name: b
+
+
+Stmt Sequence>>>   
+
+Call Stmt:  Function: p1 
+Paras: 
+
+Call Stmt:  Function: p2 
+Paras:  2 
+
+Assign to: a
+ p3  ()  3 
+Call Stmt:  Function: p4 
+Paras:  97  +  256 
+
+Assign to: b
+ p5  () 
+<<<Stmt Sequence End  

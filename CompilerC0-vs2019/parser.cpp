@@ -859,6 +859,7 @@ TreeNode* statementSequence() {
 	TreeNode* p = NULL;
 	TreeNode* q = NULL;
 	// FIRST( <语句> )：； if while for } ID(f) ID scanf printf return 
+	// 改进4：函数
 	while (TokenType::SEMICOLON == g_token.opType || TokenType::IF == g_token.opType || TokenType::WHILE == g_token.opType ||
 		TokenType::FOR == g_token.opType || TokenType::LBRACE == g_token.opType || TokenType::IDEN == g_token.opType ||
 		TokenType::SCANF == g_token.opType || TokenType::PRINTF == g_token.opType || TokenType::RETURN == g_token.opType) {
@@ -868,6 +869,7 @@ TreeNode* statementSequence() {
 			t->child[0] = p;
 		}
 		else {								// 之后的语句
+			// 改进3：学会用库，list；提高效率；
 			q = statement();
 			p->sibling = q;
 			p = q;
@@ -916,6 +918,7 @@ TreeNode* statement() {
 	}
 	else if (TokenType::LBRACE == g_token.opType) {
 		//‘{ ’<语句列>‘ }’
+		// >> inline 或 func
 		match(TokenType::LBRACE);
 		t = statementSequence();
 
@@ -1099,6 +1102,7 @@ TreeNode* whileLoopStatement() {
 	return t;
 }
 
+// 赋值语句 》》 语句
 // for‘(’<赋值语句>; <布尔表达式>; <赋值语句>‘)’<语句>
 TreeNode* forLoopStatement() {
 	TreeNode* t = newStmtNode(StmtKind::For_StmtK);
@@ -1140,6 +1144,7 @@ TreeNode* forLoopStatement() {
 		t->child[2] = p;					// 把for循环末尾的赋值语句直接填充
 	}
 	else {
+		// sibling 改进
 		t->child[2]->sibling = p;			// 把第三个赋值语句放到 循环体末尾
 	}
 	
