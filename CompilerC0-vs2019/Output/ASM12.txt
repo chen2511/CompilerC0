@@ -1,0 +1,253 @@
+.data:
+	$a:		.space	400
+	$n:		.space	4
+	$string0:	.asciiz	"\n"
+	$string1:	.asciiz	" "
+.text:
+	jal		main
+	li		$v0, 10
+	syscall
+qsort:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 56
+	la		$t0, $a
+	lw		$t1, -8($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, ($s0)
+	move	$t3, $t2
+	move	$t4, $t1
+	lw		$t5, -12($fp)
+	move	$t6, $t5
+	sw		$t2, -28($fp)
+	sw		$t3, -16($fp)
+	sw		$t1, -8($fp)
+	sw		$t4, -20($fp)
+	sw		$t5, -12($fp)
+	sw		$t6, -24($fp)
+	lw		$t0, -8($fp)
+	lw		$t1, -12($fp)
+	bge		$t0, $t1, Label_0
+	sw		$t0, -8($fp)
+	sw		$t1, -12($fp)
+	j		Label_1
+Label_0:
+	j		ret_qsort
+	j		Label_2
+Label_1:
+Label_2:
+Label_3:
+	lw		$t0, -20($fp)
+	lw		$t1, -24($fp)
+	blt		$t0, $t1, Label_4
+	sw		$t0, -20($fp)
+	sw		$t1, -24($fp)
+	j		Label_5
+Label_4:
+Label_6:
+	lw		$t0, -20($fp)
+	lw		$t1, -24($fp)
+	blt		$t0, $t1, Label_7
+	sw		$t0, -20($fp)
+	sw		$t1, -24($fp)
+	j		Label_9
+Label_7:
+	la		$t0, $a
+	lw		$t1, -24($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, ($s0)
+	sw		$t1, -24($fp)
+	sw		$t2, -32($fp)
+	lw		$t0, -32($fp)
+	lw		$t1, -16($fp)
+	bge		$t0, $t1, Label_8
+	sw		$t0, -32($fp)
+	sw		$t1, -16($fp)
+	j		Label_9
+Label_8:
+	lw		$t0, -24($fp)
+	li		$t1, 1
+	sub		$t2, $t0, $t1
+	move	$t0, $t2
+	sw		$t2, -36($fp)
+	sw		$t0, -24($fp)
+	j		Label_6
+Label_9:
+	la		$t0, $a
+	lw		$t1, -24($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, ($s0)
+	lw		$t3, -20($fp)
+	mul		$s0, $t3, 4
+	add		$s0, $t0, $s0
+	sw		$t2, ($s0)
+	sw		$t1, -24($fp)
+	sw		$t3, -20($fp)
+	sw		$t2, -40($fp)
+Label_10:
+	lw		$t0, -20($fp)
+	lw		$t1, -24($fp)
+	blt		$t0, $t1, Label_11
+	sw		$t0, -20($fp)
+	sw		$t1, -24($fp)
+	j		Label_13
+Label_11:
+	la		$t0, $a
+	lw		$t1, -20($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, ($s0)
+	sw		$t1, -20($fp)
+	sw		$t2, -44($fp)
+	lw		$t0, -44($fp)
+	lw		$t1, -16($fp)
+	ble		$t0, $t1, Label_12
+	sw		$t0, -44($fp)
+	sw		$t1, -16($fp)
+	j		Label_13
+Label_12:
+	lw		$t0, -20($fp)
+	li		$t1, 1
+	add		$t2, $t0, $t1
+	move	$t0, $t2
+	sw		$t2, -48($fp)
+	sw		$t0, -20($fp)
+	j		Label_10
+Label_13:
+	la		$t0, $a
+	lw		$t1, -20($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, ($s0)
+	lw		$t3, -24($fp)
+	mul		$s0, $t3, 4
+	add		$s0, $t0, $s0
+	sw		$t2, ($s0)
+	sw		$t1, -20($fp)
+	sw		$t3, -24($fp)
+	sw		$t2, -52($fp)
+	j		Label_3
+Label_5:
+	la		$t0, $a
+	lw		$t1, -20($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, -16($fp)
+	sw		$t2, ($s0)
+	li		$t3, 1
+	sub		$t4, $t1, $t3
+	lw		$t5, -8($fp)
+	sw		$t5, -8($sp)
+	sw		$t4, -12($sp)
+	sw		$t2, -16($fp)
+	sw		$t1, -20($fp)
+	sw		$t5, -8($fp)
+	sw		$t4, -56($fp)
+	jal		qsort
+	lw		$t0, -20($fp)
+	li		$t1, 1
+	add		$t2, $t0, $t1
+	sw		$t2, -8($sp)
+	lw		$t3, -12($fp)
+	sw		$t3, -12($sp)
+	sw		$t0, -20($fp)
+	sw		$t2, -60($fp)
+	sw		$t3, -12($fp)
+	jal		qsort
+ret_qsort:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra
+main:
+	sw		$fp, ($sp)
+	move	$fp, $sp
+	subi	$sp, $sp, 8
+	sw		$ra, 4($sp)
+	subi	$sp, $sp, 24
+	li		$v0, 5
+	syscall
+	la		$s0, $n
+	sw		$v0, ($s0)
+	li		$t0, 0
+	move	$t1, $t0
+	sw		$t1, -8($fp)
+Label_14:
+	lw		$t0, -8($fp)
+	lw		$t1, $n
+	blt		$t0, $t1, Label_15
+	sw		$t0, -8($fp)
+	sw		$t1, $n
+	j		Label_16
+Label_15:
+	li		$v0, 5
+	syscall
+	sw		$v0, -12($fp)
+	la		$t0, $a
+	lw		$t1, -8($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, -12($fp)
+	sw		$t2, ($s0)
+	li		$t3, 1
+	add		$t4, $t1, $t3
+	move	$t1, $t4
+	sw		$t2, -12($fp)
+	sw		$t4, -16($fp)
+	sw		$t1, -8($fp)
+	j		Label_14
+Label_16:
+	lw		$t0, $n
+	li		$t1, 1
+	sub		$t2, $t0, $t1
+	li		$t3, 0
+	sw		$t3, -8($sp)
+	sw		$t2, -12($sp)
+	sw		$t0, $n
+	sw		$t2, -20($fp)
+	jal		qsort
+	la		$a0, $string0
+	li		$v0, 4
+	syscall
+	li		$t0, 0
+	move	$t1, $t0
+	sw		$t1, -8($fp)
+Label_17:
+	lw		$t0, -8($fp)
+	lw		$t1, $n
+	blt		$t0, $t1, Label_18
+	sw		$t0, -8($fp)
+	sw		$t1, $n
+	j		Label_19
+Label_18:
+	la		$t0, $a
+	lw		$t1, -8($fp)
+	mul		$s0, $t1, 4
+	add		$s0, $t0, $s0
+	lw		$t2, ($s0)
+	move	$t3, $t2
+	move	$a0, $t3
+	li		$v0, 1
+	syscall
+	la		$a0, $string1
+	li		$v0, 4
+	syscall
+	li		$t4, 1
+	add		$t5, $t1, $t4
+	move	$t1, $t5
+	sw		$t2, -24($fp)
+	sw		$t3, -12($fp)
+	sw		$t5, -28($fp)
+	sw		$t1, -8($fp)
+	j		Label_17
+Label_19:
+ret_main:
+	lw		$ra, -4($fp)
+	move	$sp, $fp
+	lw		$fp, ($fp)
+	jr		$ra

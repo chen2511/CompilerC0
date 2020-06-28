@@ -1,0 +1,125 @@
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: a
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: n
+
+
+>>>>>>>>>>>> Function Declaration >>>>>>>>>>>>
+ Function Name: qsort 
+ Function Info: Return Type(VOID,INT,CHAR):0 
+		ParaTable(VOID,INT,CHAR): 1 left	1 left	
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: k
+
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: first
+ID name: last
+
+
+Stmt Sequence>>>   
+
+Assign to: k
+ a  []  left 
+Assign to: first
+ left 
+Assign to: last
+ right 
+If :
+ >=  left  right 
+Ret Stmt:
+
+While Stmt:
+ <  first  last 
+Stmt Sequence>>>   
+
+While Stmt:
+ &&  <  first  last  >=  a  []  last  k 
+Stmt Sequence>>>   
+
+Assign to: last
+ last  -  1 
+<<<Stmt Sequence End  
+
+Assign to: a
+ a  []  last  first 
+While Stmt:
+ &&  <  first  last  <=  a  []  first  k 
+Stmt Sequence>>>   
+
+Assign to: first
+ first  +  1 
+<<<Stmt Sequence End  
+
+Assign to: a
+ a  []  first  last 
+<<<Stmt Sequence End  
+
+Assign to: a
+ k  first 
+Call Stmt:  Function: qsort 
+Paras:  left  first  -  1 
+
+Call Stmt:  Function: qsort 
+Paras:  first  +  1  right 
+
+<<<Stmt Sequence End  
+
+***************************************************
+************ Main Function Declaration ************
+***************************************************
+
+------------ Var Declaration ------------
+Type: 1	(VOID,INT,CHAR)	list: 
+ID name: i
+ID name: t
+
+
+Stmt Sequence>>>   
+
+Read Stmt:
+Read ID: n
+
+For Stmt:
+ <  i  n 
+Assign to: i
+ 0 
+Stmt Sequence>>>   
+
+Read Stmt:
+Read ID: t
+
+Assign to: a
+ t  i 
+<<<Stmt Sequence End  
+
+Assign to: i
+ i  +  1 
+Call Stmt:  Function: qsort 
+Paras:  0  n  -  1 
+
+Write Stmt:
+Write Str: \n
+
+For Stmt:
+ <  i  n 
+Assign to: i
+ 0 
+Stmt Sequence>>>   
+
+Assign to: t
+ a  []  i 
+Write Stmt:
+ t 
+Write Stmt:
+Write Str:  
+
+<<<Stmt Sequence End  
+
+Assign to: i
+ i  +  1 
+<<<Stmt Sequence End  

@@ -853,6 +853,15 @@ TreeNode* mainFunction() {
 
 /********************* 以上是语法分析第二次单元测试的内容	*************************/
 
+// token 是否等于相应的 语句列的 FIRST
+inline bool isTokenForStatementSequence()
+{
+	return (TokenType::SEMICOLON == g_token.opType || TokenType::IF == g_token.opType || TokenType::WHILE == g_token.opType ||
+		TokenType::FOR == g_token.opType || TokenType::LBRACE == g_token.opType || TokenType::IDEN == g_token.opType ||
+		TokenType::SCANF == g_token.opType || TokenType::PRINTF == g_token.opType || TokenType::RETURN == g_token.opType);
+}
+
+
 //25.<语句列> ::= ｛<语句>｝
 TreeNode* statementSequence() {
 	TreeNode* t = newStmtNode(StmtKind::Seq_StmtK);
@@ -860,16 +869,14 @@ TreeNode* statementSequence() {
 	TreeNode* q = NULL;
 	// FIRST( <语句> )：； if while for } ID(f) ID scanf printf return 
 	// 改进4：函数
-	while (TokenType::SEMICOLON == g_token.opType || TokenType::IF == g_token.opType || TokenType::WHILE == g_token.opType ||
-		TokenType::FOR == g_token.opType || TokenType::LBRACE == g_token.opType || TokenType::IDEN == g_token.opType ||
-		TokenType::SCANF == g_token.opType || TokenType::PRINTF == g_token.opType || TokenType::RETURN == g_token.opType) {
+	while (isTokenForStatementSequence()) {
 			
 		if (NULL == p) {					// 第一条语句
 			p = statement();
 			t->child[0] = p;
 		}
 		else {								// 之后的语句
-			// 改进3：学会用库，list；提高效率；
+			
 			q = statement();
 			p->sibling = q;
 			p = q;
@@ -1102,7 +1109,7 @@ TreeNode* whileLoopStatement() {
 	return t;
 }
 
-// 赋值语句 》》 语句
+
 // for‘(’<赋值语句>; <布尔表达式>; <赋值语句>‘)’<语句>
 TreeNode* forLoopStatement() {
 	TreeNode* t = newStmtNode(StmtKind::For_StmtK);
@@ -1144,7 +1151,7 @@ TreeNode* forLoopStatement() {
 		t->child[2] = p;					// 把for循环末尾的赋值语句直接填充
 	}
 	else {
-		// sibling 改进
+		
 		t->child[2]->sibling = p;			// 把第三个赋值语句放到 循环体末尾
 	}
 	
@@ -1277,7 +1284,7 @@ TreeNode* scanfStatement() {
 
 
 /*
-34. < 写语句 > :: = printf ‘(’<字符串>, <算术表达式>‘)’ | printf ‘(’<字符串>‘)’ | printf ‘(’<算术表达式>‘)’
+34. < 写语句 > :: =  printf ‘(’<字符串>‘)’ | printf ‘(’<算术表达式>‘)’
 
 定义写语句是以printf为起始的，后接圆括号括起来的字符串或表达式或者两者都有，若两者都存在，则字符串在先，以逗号隔开。
 */

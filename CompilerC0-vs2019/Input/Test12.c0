@@ -5,17 +5,10 @@ void qsort(int left, int right)
 {
     int k;
     int first, last;
-    int ss, t;
-    int t1, t2;
     k = a[left];
     first = left;
     last = right;
 
-    printf("\nleft: ");
-    printf(left);
-    printf("\nright: ");
-    printf(right);
-    
     if(left >= right)
         return ;
 
@@ -32,44 +25,11 @@ void qsort(int left, int right)
             first = first + 1;
         }
         a[last] = a[first];
-
     }
     a[first] = k;
-    printf("\nfirst:");
-    printf(first);
-    printf("\nleft: ");
-    printf(left);
-    printf("\nright: ");
-    printf(right);
-    printf("\n");
-    
 
-    for(ss = 0; ss < n; ss = ss + 1)
-    {
-        t = a[ss];
-        printf(t);
-        printf(" ");
-    }
-    
-    printf("\n");
-
-
-    t1 = first - 1;
-    t2 = first + 1;
-    printf("\nleft: ");
-    printf(left);
-    printf("\nt1:");
-    printf(t1);
-    printf("\nt2:");
-    printf(t2);
-    printf("\nright: ");
-    printf(right);
-    printf("\n");
-
-    qsort(left, t1);
-    qsort(t2, right);
-
-
+    qsort(left, first - 1);
+    qsort(first + 1, right);
 }
 
 

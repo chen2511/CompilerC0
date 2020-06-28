@@ -4,25 +4,25 @@
 
 using namespace std;
 
-//ÔÚÊ¶±ğ³ö±êÊ¶·ûÖ®ºó£¬ÑéÖ¤ÊÇ·ñ¹Ø¼ü×Ö
+//åœ¨è¯†åˆ«å‡ºæ ‡è¯†ç¬¦ä¹‹åï¼ŒéªŒè¯æ˜¯å¦å…³é”®å­—
 const char* reservedWords[] = {
-    "char", "const",  "else", "false", "for", 
-    "if", "int", "main", "printf", "return", 
+    "char", "const",  "else", "false", "for",
+    "if", "int", "main", "printf", "return",
     "scanf", "true", "void", "while"
 };
 
-//»º³åÊı×é
+//ç¼“å†²æ•°ç»„
 char g_lineBuf[4097];
-//ÔÚbufÖĞµÄÖ¸Õë£»
+//åœ¨bufä¸­çš„æŒ‡é’ˆï¼›
 int g_lexBegin = 0;
-//forward Ö¸ÏòÏÂÒ»¸ö½«Òª¶ÁÈ¡µÄ×Ö·û£»lexBegin±íÊ¾¸Ãtoken¿ªÊ¼µÄÎ»ÖÃ
+//forward æŒ‡å‘ä¸‹ä¸€ä¸ªå°†è¦è¯»å–çš„å­—ç¬¦ï¼›lexBeginè¡¨ç¤ºè¯¥tokenå¼€å§‹çš„ä½ç½®
 int g_forward = 0;
-//Êı×é´óĞ¡
+//æ•°ç»„å¤§å°
 int g_bufSize = 0;
-//ÊÇ·ñÎÄ¼şÄ©Î²
+//æ˜¯å¦æ–‡ä»¶æœ«å°¾
 bool EOF_flag = false;
 
-//×´Ì¬»úµÄËùÓĞ×´Ì¬
+//çŠ¶æ€æœºçš„æ‰€æœ‰çŠ¶æ€
 typedef enum {
     STATE_START, STATE_NUM, STATE_ID, STATE_CHAR, STATE_STRING, STATE_DONE
 }StateType;
@@ -34,7 +34,7 @@ void backSpace()
     g_forward--;
 }
 
-//½«Öµ¿½±´µ½tokenµÄvalueÖĞ
+//å°†å€¼æ‹·è´åˆ°tokençš„valueä¸­
 void copyValue(string tmpstr)
 {
     int i;
@@ -44,7 +44,7 @@ void copyValue(string tmpstr)
     g_token.value[i] = '\0';
 }
 
-//²é¿´ÊÇ·ñÎª¹Ø¼ü×Ö£¬ÈôÊÇ£¬¸Ä±ätoken Type
+//æŸ¥çœ‹æ˜¯å¦ä¸ºå…³é”®å­—ï¼Œè‹¥æ˜¯ï¼Œæ”¹å˜token Type
 void compareWithKeyWord()
 {
     for (int i = 0; i < RESERVEDWORD_NUM; i++) {
@@ -55,7 +55,7 @@ void compareWithKeyWord()
     }
 }
 
-//´ÓÎÄ¼şÖĞÖğ²½¶ÁÈë×Ö·û£¬Êä³ötoken
+//ä»æ–‡ä»¶ä¸­é€æ­¥è¯»å…¥å­—ç¬¦ï¼Œè¾“å‡ºtoken
 void getNextToken() {
     string tmpstr;
     char ch;
@@ -72,11 +72,11 @@ void getNextToken() {
 
         switch (state)
         {
-        case STATE_START: {      /////////////////////¿ªÊ¼×´Ì¬
+        case STATE_START: {      /////////////////////å¼€å§‹çŠ¶æ€
             if (' ' == ch || '\t' == ch || '\n' == ch) {
 
             }
-            else if (isdigit(ch)) {                  //Êı×Ö
+            else if (isdigit(ch)) {                  //æ•°å­—
                 if ('0' == ch) {
                     state = STATE_DONE;
                     tmpstr += ch;
@@ -88,16 +88,16 @@ void getNextToken() {
                 }
             }
             else if (isalpha(ch) || '_' == ch) {
-                state = STATE_ID;    //±êÊ¶·û
+                state = STATE_ID;    //æ ‡è¯†ç¬¦
                 tmpstr += ch;
             }
-            else if ('\'' == ch) {              //×Ö·û
+            else if ('\'' == ch) {              //å­—ç¬¦
                 state = STATE_CHAR;
             }
-            else if ('"' == ch) {               //×Ö·û´®
+            else if ('"' == ch) {               //å­—ç¬¦ä¸²
                 state = STATE_STRING;
             }
-            else {                              //Ò»¸ö»òÁ½¸ö×Ö·û¾Íµ½ÖÕÌ¬
+            else {                              //ä¸€ä¸ªæˆ–ä¸¤ä¸ªå­—ç¬¦å°±åˆ°ç»ˆæ€
                 state = STATE_DONE;
                 tmpstr += ch;
                 switch (ch) {
@@ -215,7 +215,7 @@ void getNextToken() {
 
             ch = getNextChar();
             state = STATE_DONE;
-            // ÓĞÒ»´¦bug£¬ÏÂÃæÕâ¾äÍü¼Ç¼ÓÁË¡£¡£¡£
+            // æœ‰ä¸€å¤„bugï¼Œä¸‹é¢è¿™å¥å¿˜è®°åŠ äº†ã€‚ã€‚ã€‚
             g_token.opType = TokenType::LETTER;
             if ('\'' != ch) {
                 backSpace();
@@ -264,7 +264,7 @@ void getNextToken() {
             break;
         }
     }
-    if (TokenType::IDEN == g_token.opType) {             //²éÑ¯¹Ø¼ü×Ö±í
+    if (TokenType::IDEN == g_token.opType) {             //æŸ¥è¯¢å…³é”®å­—è¡¨
 
     }
 
@@ -272,29 +272,29 @@ void getNextToken() {
     if (g_token.opType == TokenType::IDEN) {
         compareWithKeyWord();
     }
-    
+
 }
 
-//·µ»ØÏÂÒ»¸ö×Ö·û
+//è¿”å›ä¸‹ä¸€ä¸ªå­—ç¬¦
 char getNextChar() {
     if (g_bufSize <= g_forward) {
-        //Èç¹û¸Ãbuf¶ÁÈ¡Íê£¬¶ÁÈ¡ÏÂÒ»ĞĞ
+        //å¦‚æœè¯¥bufè¯»å–å®Œï¼Œè¯»å–ä¸‹ä¸€è¡Œ
         g_lineNumber++;
         if (fgets(g_lineBuf, 4096, sourceFile)) {
-            //³É¹¦¶ÁÈ¡
+            //æˆåŠŸè¯»å–
             g_bufSize = strlen(g_lineBuf);
             g_forward = 0;
 
-            //Ö®Ç°ÕâÀïÍü¼ÇÉèÎª0ÁË
+            //ä¹‹å‰è¿™é‡Œå¿˜è®°è®¾ä¸º0äº†
             g_lexBegin = 0;
         }
         else {
-            //ÎÄ¼ş½áÎ²
+            //æ–‡ä»¶ç»“å°¾
             EOF_flag = true;
             return EOF;
         }
     }
-    //·µ»ØÏÂÒ»¸ö×Ö·û
+    //è¿”å›ä¸‹ä¸€ä¸ªå­—ç¬¦
     return g_lineBuf[g_forward++];
 }
 
