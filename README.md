@@ -1,9 +1,5 @@
 # CompilerC0
 
->   考虑到有些图片等内容显示不全，有pdf文档
->
->   github地址：https://github.com/chen2511/CompilerC0
-
 [TOC]
 
 ## 零、文件说明
@@ -264,7 +260,7 @@ EBNF更适合递归下降分析法
 
 例如：
 
-![image-20200420001326020](README.assets/image-20200420001326020.png)
+![image-20200420001326020](C:/Users/299/Desktop/image-20200420001326020.png)
 
 
 
@@ -323,48 +319,50 @@ static int flashBackIndex;
 ```c++
 // 匹配 期待的 token；否则报错
 // 读取下一个token
-static void match(TokenType expectToken)
+static bool match(TokenType expectToken);
 ```
 
 #### 2.4.2 非终结符过程
 
 ```c++
 //为每一个非终结符创建一个函数
-void program();
+TreeNode* program();
 
-void constDeclaration();
-void constDefine();
-void varDeclaration();
-void varDefine();
-void typeID();
-void functionDefinitionWithReturn();
-void DeclarationHead();
-void functionDefinitionWithoutReturn();
-void paraTable();
-void complexSentense();
-void mainFunction();
+TreeNode* constDeclaration();
+TreeNode* constDefine();
+TreeNode* varDeclaration();
+TreeNode* __varDeclaration();
+TreeNode* varDefine();
+Type typeID();
+TreeNode* functionDefinitionWithReturn();
+TreeNode* DeclarationHead();
+TreeNode* functionDefinitionWithoutReturn();
+void paraTable(FuncInfo * finfo);
+TreeNode* complexStatement();
+TreeNode* mainFunction();
 
-void signedNum();
+TreeNode* signedNum();
 
-void statementSequence();
-void statement();
-void assignStatement();
-void ifStatement();
-void loopStatement();
-void callWithReturn();
-void callWithoutReturn();
-void valueParaTable();
-void readStatement();
-void writeStatement();
-void returnStatement();
+TreeNode* statementSequence();
+TreeNode* statement();
+TreeNode* assignStatement();
+TreeNode* ifStatement();
+TreeNode* whileLoopStatement();
+TreeNode* forLoopStatement();
+TreeNode* callWithReturn();
+TreeNode* callWithoutReturn();
+TreeNode* valueParaTable();
+TreeNode* scanfStatement();
+TreeNode* printfStatement();
+TreeNode* returnStatement();
 
-void exp();
-void term();
-void factor();
-void boolExp();
-void boolTerm();
-void boolFactor();
-void conditionFactor();
+TreeNode* exp();
+TreeNode* term();
+TreeNode* factor();
+TreeNode* boolExp();
+TreeNode* boolTerm();
+TreeNode* boolFactor();
+TreeNode* conditionFactor();
 ```
 
 
@@ -1135,14 +1133,6 @@ extern int NXQ;
 
 
 
-
-
->   东：先处理fp，fp到sp，fp=sp，再处理ra，jal；进入函数：保存参数到内存，之后就是函数体；返回阶段：处理返回值v1寄存器，ra到t0，再恢复ra，sp，fp，jr t0
-
-
-
->   杨：
-
 >   MIPS编程入门（妈妈说标题要高大上，才会有人看>_<！）https://www.cnblogs.com/thoupin/p/4018455.html
 
 ![image-20200514184733334](README.assets/image-20200514184733334.png)
@@ -1537,8 +1527,7 @@ switch (e)
 
 ### 1、asm生成阶段：scanf语句
 
-bug：多次读取同名变量时，由于scanf是直接写入内存，但或许之前使用过这个变量，并且已经调入寄存器；查表的时候会显示在
-	寄存器堆中，这样就会读取就值；
+bug：多次读取同名变量时，由于scanf是直接写入内存，但或许之前使用过这个变量，并且已经调入寄存器；查表的时候会显示在寄存器堆中，这样就会读取就值；
 	发现于 Test11.c0；多次输入x，发现后面使用的x的值始终不变
 	(old，会带来新问题，可用寄存器数目不断减少)处理：从寄存器堆中移除此变量，且不用写回内存；故只需更新符号表状态、寄存器映射队列、可用寄存器数目
 	(new)处理：如果在寄存器，则更新寄存器数据即可，其他不变

@@ -19,7 +19,7 @@ static Type s_funcRetType;
 // 函数名
 static char* s_funcName;
 
-void data2asm();
+void globaldata2asm();
 int getRegIndex(char* varname);
 void updateSymTab();
 void genasm();
@@ -208,9 +208,10 @@ void updateSymTab() {
 */
 void genasm()
 {
+	// 符号表部分逆序，按函数定义顺序
 	updateSymTab();
 	// 全局变量
-	data2asm();
+	globaldata2asm();
 
 	fprintf(ASM_FILE, ".text:\n");
 	fprintf(ASM_FILE, "\tjal\t\tmain\n");
@@ -253,7 +254,7 @@ void genasm()
 /*
 初始化 .data段	+ 全局变量和字符串
 */
-void data2asm() {
+void globaldata2asm() {
 
 	fprintf(ASM_FILE, ".data:\n");
 
