@@ -1,4 +1,4 @@
-#include "symtab.h"
+ï»¿#include "symtab.h"
 
 
 static int g_adress = 0;
@@ -7,7 +7,7 @@ static int f_adress = 8;
 #define SHIFT 4
 #define CHAR_SIZE 4
 
-// É¢ÁĞº¯Êı
+// æ•£åˆ—å‡½æ•°
 static int hash(char* key)
 {
 	int temp = 0;
@@ -20,7 +20,7 @@ static int hash(char* key)
 	return temp;
 }
 
-// ³õÊ¼»¯Ò»ÕÅ µ¥±í£»Ã¿¸öº¯ÊıÒ»ÕÅ±í¡¢È«¾ÖÒ»ÕÅ±í
+// åˆå§‹åŒ–ä¸€å¼  å•è¡¨ï¼›æ¯ä¸ªå‡½æ•°ä¸€å¼ è¡¨ã€å…¨å±€ä¸€å¼ è¡¨
 SymTab* initSimpleSymTable(char* name)
 {
 	SymTab* st = new SymTab;
@@ -29,33 +29,33 @@ SymTab* initSimpleSymTable(char* name)
 	for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
 		st->hashTable[i] = NULL;
 	}
-	// bug£ºÓ¦¸Ã´Ó8¿ªÊ¼£¬²»È»ÓĞµÄº¯Êı
+	// bugï¼šåº”è¯¥ä»8å¼€å§‹ï¼Œä¸ç„¶æœ‰çš„å‡½æ•°
 	st->varsize = 8;
-	f_adress = 8;		// Ã¿´ÎÓĞÒ»¸öĞÂº¯Êı£¬º¯Êı±íÖ¸Õë±ä»¯£¬Ïà¶ÔµØÖ·
+	f_adress = 8;		// æ¯æ¬¡æœ‰ä¸€ä¸ªæ–°å‡½æ•°ï¼Œå‡½æ•°è¡¨æŒ‡é’ˆå˜åŒ–ï¼Œç›¸å¯¹åœ°å€
 	
 	return st;
 }
 
-// ·µ»ØÊÇ·ñ²åÈë³É¹¦£¨ºóÀ´²¢Ã»ÓĞÓÃµ½·µ»ØÖµ£¬ÄÚ²¿´¦ÀíÁË£©£¬Èç¿Õ¼ä²»×ã¡¢ÖØ¸´¶¨Òå£¬Ä¬ÈÏint vec = -1, FuncInfo* p = NULL
-// ¸ù¾İ isGlobal±êÖ¾ È·¶¨²åÈëÈ«¾Ö±í»¹ÊÇ º¯Êı±í
+// è¿”å›æ˜¯å¦æ’å…¥æˆåŠŸï¼ˆåæ¥å¹¶æ²¡æœ‰ç”¨åˆ°è¿”å›å€¼ï¼Œå†…éƒ¨å¤„ç†äº†ï¼‰ï¼Œå¦‚ç©ºé—´ä¸è¶³ã€é‡å¤å®šä¹‰ï¼Œé»˜è®¤int vec = -1, FuncInfo* p = NULL
+// æ ¹æ® isGlobalæ ‡å¿— ç¡®å®šæ’å…¥å…¨å±€è¡¨è¿˜æ˜¯ å‡½æ•°è¡¨
 bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valuetype, int value, int vec, FuncInfo* p)
 {
 	int h = hash(name);
 	SymbolList list;
-	if (isGlobal) {							// È«¾Ö±í
+	if (isGlobal) {							// å…¨å±€è¡¨
 		list = g_symtab->hashTable[h];
 	}
-	else {									// º¯Êı±í
+	else {									// å‡½æ•°è¡¨
 		list = g_symtab->next->hashTable[h];
 	}
 
-	// ²éÕÒ±íÖĞÊÇ·ñÒÑÓĞ
-	// Îª¿Õ£¬ÍË³ö£¬Ã»ÕÒµ½Í¬Ãû£» Ãû×Ö²»Ò»Ñù¼ÌĞøÕÒ£» 
+	// æŸ¥æ‰¾è¡¨ä¸­æ˜¯å¦å·²æœ‰
+	// ä¸ºç©ºï¼Œé€€å‡ºï¼Œæ²¡æ‰¾åˆ°åŒåï¼› åå­—ä¸ä¸€æ ·ç»§ç»­æ‰¾ï¼› 
 	while ((list != NULL) && (strcmp(name, list->name) != 0)) {
 		list = list->next;
 	}
 
-	if (NULL == list) {						// Î´¶¨Òå£¬¿É²åÈë·ûºÅ±í
+	if (NULL == list) {						// æœªå®šä¹‰ï¼Œå¯æ’å…¥ç¬¦å·è¡¨
 		Symbol* sym = new Symbol;
 		if (NULL == sym) {
 			printf("Error in line  %d  general SymTab! Not Enough Mem\n", lineno);
@@ -64,25 +64,25 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 		sym->name = name;
 		sym->type = type;
 		sym->valueType = valuetype;
-		if (IDType::Const_ID == type) {				// ³£Á¿²Å³õÊ¼»¯
+		if (IDType::Const_ID == type) {				// å¸¸é‡æ‰åˆå§‹åŒ–
 			sym->value = value;
 		}
 		sym->vec = vec;
 		sym->pfinfo = p;
 
-		// Ä¬ÈÏ false
+		// é»˜è®¤ false
 		sym->isreg = false;
 
-		// ¼ÆËãµØÖ·£¬²åÈë±íÖĞ
-		if (isGlobal) {						// ¸ù¾İÊÇ·ñÈ«¾Ö±í£¬ÉèÖÃµØÖ·£¬²åÈëÏàÓ¦±í
+		// è®¡ç®—åœ°å€ï¼Œæ’å…¥è¡¨ä¸­
+		if (isGlobal) {						// æ ¹æ®æ˜¯å¦å…¨å±€è¡¨ï¼Œè®¾ç½®åœ°å€ï¼Œæ’å…¥ç›¸åº”è¡¨
 			sym->adress = g_adress;
-			// ¸üĞÂµØÖ·
+			// æ›´æ–°åœ°å€
 			int size;
 			if (Type::T_INTEGER == valuetype || IDType::Func_ID == type) {
 				size = 4;				// int
 			}
 			else {
-				size = CHAR_SIZE;				// ×Ö·û
+				size = CHAR_SIZE;				// å­—ç¬¦
 			}
 			if (-1 != vec) {
 				g_adress += size * vec;
@@ -90,20 +90,20 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 			else {
 				g_adress += size;
 			}
-			// È«¾Ö±í
+			// å…¨å±€è¡¨
 			sym->next = g_symtab->hashTable[h];
 			g_symtab->hashTable[h] = sym;
 			g_symtab->varsize = g_adress;
 		}
-		else {								// º¯Êı±í
+		else {								// å‡½æ•°è¡¨
 			sym->adress = f_adress;
-			// ¸üĞÂµØÖ·
+			// æ›´æ–°åœ°å€
 			int size;
 			if (Type::T_INTEGER == valuetype) {
 				size = 4;				// int
 			}
 			else {
-				size = CHAR_SIZE;				// ×Ö·û
+				size = CHAR_SIZE;				// å­—ç¬¦
 			}
 			if (-1 != vec) {
 				f_adress += size * vec;
@@ -111,20 +111,20 @@ bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valu
 			else {
 				f_adress += size;
 			}
-			// ²åÈëº¯Êı±í
+			// æ’å…¥å‡½æ•°è¡¨
 			sym->next = g_symtab->next->hashTable[h];
 			g_symtab->next->hashTable[h] = sym;
 			g_symtab->next->varsize = f_adress;
 		}
 		return true;
 	}
-	else {									// ÒÑ¶¨Òå£¬±¨´í
-		printf("Error in line %d : %s ÖØ¶¨Òå\n", lineno, name);
+	else {									// å·²å®šä¹‰ï¼ŒæŠ¥é”™
+		printf("Error in line %d : %s é‡å®šä¹‰\n", lineno, name);
 		return false;
 	}
 }
 
-// ²åÈëÁÙÊ±±äÁ¿£º±äÁ¿Ãû¡¢isreg¡¢µØÖ·
+// æ’å…¥ä¸´æ—¶å˜é‡ï¼šå˜é‡åã€isregã€åœ°å€
 void insertTempVar2SymTab(char* name)
 {
 	int h = hash(name);
@@ -132,29 +132,29 @@ void insertTempVar2SymTab(char* name)
 	SymbolList list;
 	list = g_symtab->next->hashTable[h];
 
-	// ²éÕÒ±íÖĞÊÇ·ñÒÑÓĞ
-	// Îª¿Õ£¬ÍË³ö£¬Ã»ÕÒµ½Í¬Ãû£» Ãû×Ö²»Ò»Ñù¼ÌĞøÕÒ£» 
+	// æŸ¥æ‰¾è¡¨ä¸­æ˜¯å¦å·²æœ‰
+	// ä¸ºç©ºï¼Œé€€å‡ºï¼Œæ²¡æ‰¾åˆ°åŒåï¼› åå­—ä¸ä¸€æ ·ç»§ç»­æ‰¾ï¼› 
 	while ((list != NULL) && (strcmp(name, list->name) != 0)) {
 		list = list->next;
 	}
-	// ĞŞ¸´bug£¬ÁÙÊ±±äÁ¿Ö»ÓĞµÚÒ»´Î³öÏÖ²Å¼ÓÈë
+	// ä¿®å¤bugï¼Œä¸´æ—¶å˜é‡åªæœ‰ç¬¬ä¸€æ¬¡å‡ºç°æ‰åŠ å…¥
 	if (NULL != list) {
 		return;
 	}
 
 	Symbol* sym = new Symbol;
 	sym->name = name;
-	// Ä¬ÈÏ false
+	// é»˜è®¤ false
 	sym->isreg = false;
 
 	sym->valueType = Type::T_INTEGER;
 
-	// º¯Êı±í
+	// å‡½æ•°è¡¨
 	sym->adress = g_symtab->next->varsize;
-	// ¸üĞÂµØÖ·
+	// æ›´æ–°åœ°å€
 	g_symtab->next->varsize += 4;
 
-	// ²åÈëº¯Êı±í
+	// æ’å…¥å‡½æ•°è¡¨
 	sym->next = g_symtab->next->hashTable[h];
 	g_symtab->next->hashTable[h] = sym;
 }
@@ -162,20 +162,20 @@ void insertTempVar2SymTab(char* name)
 Symbol* lookUp_SymTab(char* name)
 {
 	int h = hash(name);
-	// ÏÈ¼ì²éº¯Êı±í
+	// å…ˆæ£€æŸ¥å‡½æ•°è¡¨
 	SymbolList list = g_symtab->next->hashTable[h];
 	while ((list != NULL) && (strcmp(name, list->name) != 0))
 		list = list->next;
 	if (NULL != list)
 		return list;
-	else {				// ÔÚ¼ì²éÈ«¾Ö±í
+	else {				// åœ¨æ£€æŸ¥å…¨å±€è¡¨
 		list = g_symtab->hashTable[h];
 		while ((list != NULL) && (strcmp(name, list->name) != 0))
 			list = list->next;
 		if (NULL != list)
 			return list;
 	}
-	// ¶¼Ã»ÓĞ£¬Î´¶¨Òå
+	// éƒ½æ²¡æœ‰ï¼Œæœªå®šä¹‰
 	return nullptr;
 }
 
@@ -184,13 +184,13 @@ Symbol* lookUp_SymTab(char* name, bool& isGlobal)
 {
 	isGlobal = false;
 	int h = hash(name);
-	// ÏÈ¼ì²éº¯Êı±í
+	// å…ˆæ£€æŸ¥å‡½æ•°è¡¨
 	SymbolList list = g_symtab->next->hashTable[h];
 	while ((list != NULL) && (strcmp(name, list->name) != 0))
 		list = list->next;
 	if (NULL != list)
 		return list;
-	else {				// ÔÚ¼ì²éÈ«¾Ö±í
+	else {				// åœ¨æ£€æŸ¥å…¨å±€è¡¨
 		isGlobal = true;
 		list = g_symtab->hashTable[h];
 		while ((list != NULL) && (strcmp(name, list->name) != 0))
@@ -198,6 +198,6 @@ Symbol* lookUp_SymTab(char* name, bool& isGlobal)
 		if (NULL != list)
 			return list;
 	}
-	// ¶¼Ã»ÓĞ£¬Î´¶¨Òå
+	// éƒ½æ²¡æœ‰ï¼Œæœªå®šä¹‰
 	return nullptr;
 }

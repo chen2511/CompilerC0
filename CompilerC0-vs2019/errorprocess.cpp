@@ -1,4 +1,4 @@
-#include "errorprocess.h"
+ï»¿#include "errorprocess.h"
 #include "scan.h"
 
 void errorProcess(ErrorType e)
@@ -26,8 +26,8 @@ void errorProcess(ErrorType e)
 		}
 		break;
 	}
-	// ÒÔÉÏ¶¼ÊÇ³£Á¿¶¨Òå½×¶ÎµÄ´íÎó
-	// ±äÁ¿¶¨Òå´íÎó£º
+	// ä»¥ä¸Šéƒ½æ˜¯å¸¸é‡å®šä¹‰é˜¶æ®µçš„é”™è¯¯
+	// å˜é‡å®šä¹‰é”™è¯¯ï¼š
 	case ErrorType::LACK_XXX_VARDEF: {
 		while (g_token.opType != TokenType::INT && g_token.opType != TokenType::CHAR
 			&& g_token.opType != TokenType::VOID && g_token.opType != TokenType::IF
@@ -45,7 +45,7 @@ void errorProcess(ErrorType e)
 		}
 		break;
 	}
-	// º¯Êı¶¨Òå´íÎó
+	// å‡½æ•°å®šä¹‰é”™è¯¯
 	case ErrorType::LACK_TYPE_FUN:
 	case ErrorType::LACK_IDEN_FUN: 
 	case ErrorType::LACK_KUOHAO_FUN: {
@@ -64,7 +64,7 @@ void errorProcess(ErrorType e)
 
 		break;
 	}
-	// Óï¾ä´íÎó
+	// è¯­å¥é”™è¯¯
 	case ErrorType::SENTENCE_ERROR: {
 		while (g_token.opType != TokenType::IF
 			&& g_token.opType != TokenType::WHILE && g_token.opType != TokenType::FOR

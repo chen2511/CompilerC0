@@ -1,4 +1,4 @@
-#include "opt.h"
+ï»¿#include "opt.h"
 #include "ir.h"
 
 static int curIndex;
@@ -10,12 +10,12 @@ bool isTheSameBasicBlock(int index);
 bool checkVarWhetherChanged(int index);
 
 /* 
-³£Á¿ºÏ²¢£º ³£Á¿¼ÆËã¸ÄÎª¸³Öµ
-½« + - * / ×ª»¯Îª ¸³Öµ
+å¸¸é‡åˆå¹¶ï¼š å¸¸é‡è®¡ç®—æ”¹ä¸ºèµ‹å€¼
+å°† + - * / è½¬åŒ–ä¸º èµ‹å€¼
 */
 void constantMerge() 
 {
-	// ÏÈÅĞ¶ÏÁ½¸ö²Ù×÷ÊıÊÇ·ñ¶¼ÊÇÊı×Ö£¬Èç¹ûÊÇ¼ÌĞø
+	// å…ˆåˆ¤æ–­ä¸¤ä¸ªæ“ä½œæ•°æ˜¯å¦éƒ½æ˜¯æ•°å­—ï¼Œå¦‚æœæ˜¯ç»§ç»­
 	if (isdigit(quadvarlist[curIndex].var1[0]) && isdigit(quadvarlist[curIndex].var2[0]))
 	{
 		int num1 = atoi(quadvarlist[curIndex].var1);
@@ -41,7 +41,7 @@ void constantMerge()
 			quadvarlist[curIndex].var2 = newempty();
 			strcpy(quadvarlist[curIndex].op, "assign");
 			break;
-			// ²»ÊÇ + - * / ÍË³ö
+			// ä¸æ˜¯ + - * / é€€å‡º
 		default:
 			break;
 		}
@@ -49,7 +49,7 @@ void constantMerge()
 }
 
 /*
-Ç¿¶ÈÏ÷Èõ£º ³Ë·¨ºÍ³ı·¨¸ÄÎªÒÆÎ»
+å¼ºåº¦å‰Šå¼±ï¼š ä¹˜æ³•å’Œé™¤æ³•æ”¹ä¸ºç§»ä½
 */
 void strengthReduction()
 {
@@ -58,9 +58,9 @@ void strengthReduction()
 		if (isdigit(quadvarlist[curIndex].var1[0]) && isdigit(quadvarlist[curIndex].var2[0])) {
 			return;
 		}
-		// ²»ÊÇ³£Êı£ºÇ¿¶ÈÏ÷Èõ£¨ÓĞÒ»¸öÎª³£Êı£©
+		// ä¸æ˜¯å¸¸æ•°ï¼šå¼ºåº¦å‰Šå¼±ï¼ˆæœ‰ä¸€ä¸ªä¸ºå¸¸æ•°ï¼‰
 		if (isdigit(quadvarlist[curIndex].var1[0])) {
-			// ÅĞ¶ÏÊÇ·ñ 2µÄ´Î·½
+			// åˆ¤æ–­æ˜¯å¦ 2çš„æ¬¡æ–¹
 			int exp2 = isPower2(atoi(quadvarlist[curIndex].var1));
 			//printf("%d\n", exp2);
 
@@ -72,7 +72,7 @@ void strengthReduction()
 		}
 		else if (isdigit(quadvarlist[curIndex].var2[0])) {
 
-			// ÅĞ¶ÏÊÇ·ñ 2µÄ´Î·½
+			// åˆ¤æ–­æ˜¯å¦ 2çš„æ¬¡æ–¹
 			int exp2 = isPower2(atoi(quadvarlist[curIndex].var2));
 			//printf("%d\n", exp2);
 
@@ -84,9 +84,9 @@ void strengthReduction()
 		if (isdigit(quadvarlist[curIndex].var1[0]) && isdigit(quadvarlist[curIndex].var2[0])) {
 			return;
 		}
-		// ²»ÊÇ³£Êı£ºÇ¿¶ÈÏ÷Èõ£¨ÓĞÒ»¸öÎª³£Êı£©
+		// ä¸æ˜¯å¸¸æ•°ï¼šå¼ºåº¦å‰Šå¼±ï¼ˆæœ‰ä¸€ä¸ªä¸ºå¸¸æ•°ï¼‰
 		if (isdigit(quadvarlist[curIndex].var2[0])) {
-			// ÅĞ¶ÏÊÇ·ñ 2µÄ´Î·½
+			// åˆ¤æ–­æ˜¯å¦ 2çš„æ¬¡æ–¹
 			int exp2 = isPower2(atoi(quadvarlist[curIndex].var2));
 			//printf("%d\n", exp2);
 
@@ -100,28 +100,28 @@ void strengthReduction()
 
 }
 
-// É¾³ı¹«¹²×Ó±í´ïÊ½
-// ¸Ä½ø5£º»®·Ö»ù±¾¿é£¬Êı¾İÁ÷·ÖÎö£¬³£Êı**£¬DAG
-// ¸Ä½ø6£º ÓÅ»¯ÎÄµµ£¬Ò»¸ö·½ÃæÉîÈë£¬ÓïÒåµÈ¼ÛµÚÒ»£»¿¼ÂÇËùÓĞÇé¿ö£»ÕæÕıµÄÓÅ»¯£¬Ê¹ÓÃĞÔÇ¿
+// åˆ é™¤å…¬å…±å­è¡¨è¾¾å¼
+// æ”¹è¿›5ï¼šåˆ’åˆ†åŸºæœ¬å—ï¼Œæ•°æ®æµåˆ†æï¼Œå¸¸æ•°**ï¼ŒDAG
+// æ”¹è¿›6ï¼š ä¼˜åŒ–æ–‡æ¡£ï¼Œä¸€ä¸ªæ–¹é¢æ·±å…¥ï¼Œè¯­ä¹‰ç­‰ä»·ç¬¬ä¸€ï¼›è€ƒè™‘æ‰€æœ‰æƒ…å†µï¼›çœŸæ­£çš„ä¼˜åŒ–ï¼Œä½¿ç”¨æ€§å¼º
 void subexpressElimination() 
 {
-	// ¸Ä½ø7£º×î¶àÈı²ã
+	// æ”¹è¿›7ï¼šæœ€å¤šä¸‰å±‚
 	if ( isTheSame4VarOp("+", curIndex) || isTheSame4VarOp("-", curIndex) ||
 		 isTheSame4VarOp("*", curIndex) || isTheSame4VarOp("/" ,curIndex) )
 	{
-		// ¼ì²éµ±Ç°»ù±¾¿é
-		// ¸Ä½ø8£ºÂß¼­¡¢¿É¶ÁĞÔ¸Ä½ø£»Ë¼¿¼ËµÇåÔµÓÉ
+		// æ£€æŸ¥å½“å‰åŸºæœ¬å—
+		// æ”¹è¿›8ï¼šé€»è¾‘ã€å¯è¯»æ€§æ”¹è¿›ï¼›æ€è€ƒè¯´æ¸…ç¼˜ç”±
 		for (int theSameIndex = curIndex + 1; isTheSameBasicBlock(theSameIndex); theSameIndex++) 
 		{
-			// ¼ì²éÊÇ·ñ²Ù×÷ÊıÊÇ·ñ±»¸Ä±ä£º¸³Öµ²Ù×÷£¬²¢ÇÒÖ®Ç°²Ù×÷Êı1¡¢2ºÍ±»¸³ÖµµÄ±äÁ¿Ò»Ñù
+			// æ£€æŸ¥æ˜¯å¦æ“ä½œæ•°æ˜¯å¦è¢«æ”¹å˜ï¼šèµ‹å€¼æ“ä½œï¼Œå¹¶ä¸”ä¹‹å‰æ“ä½œæ•°1ã€2å’Œè¢«èµ‹å€¼çš„å˜é‡ä¸€æ ·
 			if (checkVarWhetherChanged(theSameIndex))
 			{
 				return;
 			}
-			// É¾³ı¹«¹²×Ó±í´ïÊ½
+			// åˆ é™¤å…¬å…±å­è¡¨è¾¾å¼
 			if (isTheSameOp(curIndex, theSameIndex)) 
 			{
-				// ¿ªÊ¼Ìæ»»£ºÓÃÒÑ¾­¼ÆËã¹ıµÄ±äÁ¿´úÌæĞÂµÄ
+				// å¼€å§‹æ›¿æ¢ï¼šç”¨å·²ç»è®¡ç®—è¿‡çš„å˜é‡ä»£æ›¿æ–°çš„
 				for (int h = theSameIndex + 1; isTheSameBasicBlock(h); h++)
 				{
 					if (!strcmp(quadvarlist[h].var1, quadvarlist[theSameIndex].var3)) {
@@ -132,14 +132,14 @@ void subexpressElimination()
 					}
 				}
 
-				// É¾³ı Í¬op
+				// åˆ é™¤ åŒop
 				strcpy(quadvarlist[theSameIndex].op, "null");
 			}
 		}
 	}
 }
 
-// ÓÅ»¯
+// ä¼˜åŒ–
 void optimize()
 {
 	while (curIndex < NXQ) {
@@ -155,7 +155,7 @@ void optimize()
 }
 
 
-// ¼ì²éÊÇ·ñÎªÍ¬Ò»ËÄÔªÊ½ op1=op2;var1.1=var1.2&&var2.1==var2.2||¡­¡­;
+// æ£€æŸ¥æ˜¯å¦ä¸ºåŒä¸€å››å…ƒå¼ op1=op2;var1.1=var1.2&&var2.1==var2.2||â€¦â€¦;
 bool isTheSameOp(int cur, int tocmp)
 {
 	if (!strcmp(quadvarlist[cur].op, quadvarlist[tocmp].op)) {
@@ -174,14 +174,14 @@ bool isTheSameOp(int cur, int tocmp)
 
 }
 
-// ÅĞ¶ÏÊÇ2µÄ¼¸´Î·½
+// åˆ¤æ–­æ˜¯2çš„å‡ æ¬¡æ–¹
 int isPower2(int num)
 {
-	// ÊÇ2µÄ´Î·½
+	// æ˜¯2çš„æ¬¡æ–¹
 	if (1 == num || 0 == num) {
 		return 0;
 	}
-	// num & (num - 1) Ó¦¸ÃµÈÓÚ0
+	// num & (num - 1) åº”è¯¥ç­‰äº0
 	if (0 == (num & (num - 1))) {
 		int cnt = 1;
 		while (1) {
@@ -198,8 +198,8 @@ int isPower2(int num)
 	}
 }
 
-// ÅĞ¶ÏÊÇ·ñÍ¬Ò»¸ö op
-// ÊäÈëÄ¿±êËÄÔªÊ½ op£¬ ËÄÔªÊ½ index
+// åˆ¤æ–­æ˜¯å¦åŒä¸€ä¸ª op
+// è¾“å…¥ç›®æ ‡å››å…ƒå¼ opï¼Œ å››å…ƒå¼ index
 bool isTheSame4VarOp(const char* aimOp, int index)
 {
 	if (strcmp(quadvarlist[index].op, aimOp) == 0)
@@ -213,8 +213,8 @@ bool isTheSame4VarOp(const char* aimOp, int index)
 		
 }
 
-// ÅĞ¶Ïµ±Ç°ËÄÔªÊ½ÊÇ·ñÍ¬Ò»»ù±¾¿é
-// Ö÷ÒªË¼Â·£º ÅĞ¶ÏÊÇ·ñÓöµ½j lab call callret Func Main
+// åˆ¤æ–­å½“å‰å››å…ƒå¼æ˜¯å¦åŒä¸€åŸºæœ¬å—
+// ä¸»è¦æ€è·¯ï¼š åˆ¤æ–­æ˜¯å¦é‡åˆ°j lab call callret Func Main
 bool isTheSameBasicBlock(int index)
 {
 	if (isTheSame4VarOp("+", index) || isTheSame4VarOp("-", index) || isTheSame4VarOp("*", index) || isTheSame4VarOp("/", index)
@@ -233,7 +233,7 @@ bool isTheSameBasicBlock(int index)
 	//	|| strcmp(quadvarlist[theSameIndex].op, "/") == 0 || strcmp(quadvarlist[theSameIndex].op, "assign") == 0;
 }
 
-// ¼ì²é ²Ù×÷ÊıÊÇ·ñ±»ÖØĞÂ¸³Öµ£¬ÊÇ·µ»Ø true
+// æ£€æŸ¥ æ“ä½œæ•°æ˜¯å¦è¢«é‡æ–°èµ‹å€¼ï¼Œæ˜¯è¿”å› true
 bool checkVarWhetherChanged(int index)
 {
 	if (isTheSame4VarOp("assign", index))

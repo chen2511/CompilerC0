@@ -1,4 +1,4 @@
-#include <string>
+ï»¿#include <string>
 #include "semantic.h"
 
 
@@ -8,9 +8,9 @@ void semanticExp(TreeNode* tree);
 int checkParaNum(TreeNode* list, FuncInfo* pf);
 
 
-// ¼ì²é º¯Êıµ÷ÓÃ ²ÎÊıÁĞ±í £¬·µ»Ø¸öÊı
+// æ£€æŸ¥ å‡½æ•°è°ƒç”¨ å‚æ•°åˆ—è¡¨ ï¼Œè¿”å›ä¸ªæ•°
 int checkParaNum(TreeNode* list, FuncInfo* pf) {
-	// ²ÎÊıÁĞ±íÊÇÒ»¸ö±í´ïÊ½ÁĞ±í£¬ÀïÃæµÄÃ¿Ò»¸ö±í´ïÊ½¶¼Òª¼ì²é
+	// å‚æ•°åˆ—è¡¨æ˜¯ä¸€ä¸ªè¡¨è¾¾å¼åˆ—è¡¨ï¼Œé‡Œé¢çš„æ¯ä¸€ä¸ªè¡¨è¾¾å¼éƒ½è¦æ£€æŸ¥
 	int cnt = 0;
 	while (NULL != list) {
 		
@@ -24,64 +24,64 @@ int checkParaNum(TreeNode* list, FuncInfo* pf) {
 
 void semanticExp(TreeNode* tree) {
 	if (ExpKind::Num_ExpK == tree->kind.exp) {
-		// ÊÇ³£Á¿£¬ Ê²Ã´¶¼²»×ö
+		// æ˜¯å¸¸é‡ï¼Œ ä»€ä¹ˆéƒ½ä¸åš
 	}
 	else if (ExpKind::Iden_ExpK == tree->kind.exp) {
 		Symbol* lookup = lookUp_SymTab(tree->attr.name);
 
 		if (lookup == NULL) {
-			printf("Error in line %d : ±êÊ¶·ûÎ´¶¨Òå£º%s\n", tree->lineno, tree->attr.name);
+			printf("Error in line %d : æ ‡è¯†ç¬¦æœªå®šä¹‰ï¼š%s\n", tree->lineno, tree->attr.name);
 			return;
 		}
 
-		if (lookup->vec >= 0) {				// ÊÇÊı×é£¬ Ã»ÓĞÏÂ±êÔËËã
-			printf("Error in line %d : ±êÊ¶·ûÊÇÊı×é£¬ĞèÒª½øĞĞÏÂ±êÔËËã£º%s\n", tree->lineno, tree->attr.name);
+		if (lookup->vec >= 0) {				// æ˜¯æ•°ç»„ï¼Œ æ²¡æœ‰ä¸‹æ ‡è¿ç®—
+			printf("Error in line %d : æ ‡è¯†ç¬¦æ˜¯æ•°ç»„ï¼Œéœ€è¦è¿›è¡Œä¸‹æ ‡è¿ç®—ï¼š%s\n", tree->lineno, tree->attr.name);
 			return;
 		}
 		/*
-			bug: printfĞèÒªÈ·¶¨ÀàĞÍ
-			´ÓirÒÆµ½ÓïÒå·ÖÎö´¦Àí
+			bug: printféœ€è¦ç¡®å®šç±»å‹
+			ä»irç§»åˆ°è¯­ä¹‰åˆ†æå¤„ç†
 		*/
 		tree->type = lookup->valueType;
 	}
 	else {				//ExpKind::Op_ExpK
-		if (tree->attr.op == TokenType::CALL) {				// º¯Êıµ÷ÓÃ Òª¼ì²é£ºº¯ÊıÊÇ·ñÉùÃ÷£¬ÒÔ¼°²ÎÊı¸öÊıÊÇ·ñÆ¥Åä£¬ÊÇ·ñÓĞ·µ»ØÖµ
+		if (tree->attr.op == TokenType::CALL) {				// å‡½æ•°è°ƒç”¨ è¦æ£€æŸ¥ï¼šå‡½æ•°æ˜¯å¦å£°æ˜ï¼Œä»¥åŠå‚æ•°ä¸ªæ•°æ˜¯å¦åŒ¹é…ï¼Œæ˜¯å¦æœ‰è¿”å›å€¼
 			Symbol* lookup = lookUp_SymTab(tree->child[0]->attr.name);
 
 			if (lookup == NULL) {
-				printf("Error in line %d : º¯ÊıÎ´¶¨Òå: %s()\n", tree->lineno, tree->child[0]->attr.name);
+				printf("Error in line %d : å‡½æ•°æœªå®šä¹‰: %s()\n", tree->lineno, tree->child[0]->attr.name);
 				return;
 			}
 
-			// ¼ì²é·µ»ØÖµ
+			// æ£€æŸ¥è¿”å›å€¼
 			if (Type::T_VOID == lookup->valueType) {
-				printf("Error in line %d : º¯ÊıÎŞ·µ»ØÖµ,  %s()\n", tree->lineno, lookup->name);
+				printf("Error in line %d : å‡½æ•°æ— è¿”å›å€¼,  %s()\n", tree->lineno, lookup->name);
 				return;
 			}
 
-			// ¼ì²é²ÎÊı¸öÊı£¬ Í¬Ê±¼ì²éÃ¿¸ö²ÎÊıµÄ±í´ïÊ½ÊÇ·ñºÏ·¨
+			// æ£€æŸ¥å‚æ•°ä¸ªæ•°ï¼Œ åŒæ—¶æ£€æŸ¥æ¯ä¸ªå‚æ•°çš„è¡¨è¾¾å¼æ˜¯å¦åˆæ³•
 			if (lookup->pfinfo->paranum != checkParaNum(tree->child[1], lookup->pfinfo)) {
-				printf("Error in line %d : º¯Êı²ÎÊı²»Æ¥Åä, %s()\n", tree->lineno, lookup->name);
+				printf("Error in line %d : å‡½æ•°å‚æ•°ä¸åŒ¹é…, %s()\n", tree->lineno, lookup->name);
 				return;
 			}
 
 		}
-		else if (tree->attr.op == TokenType::ARRAYAT) {			// ÏÂ±êÔËËã£¬¼ì²é±êÊ¶·ûÊÇ·ñÊÇÊı×é£¬ ²¢ÇÒ¼ì²éindexÎ»ÖÃµÄ±í´ïÊ½£»µ«²»¼ì²éÔ½½ç
+		else if (tree->attr.op == TokenType::ARRAYAT) {			// ä¸‹æ ‡è¿ç®—ï¼Œæ£€æŸ¥æ ‡è¯†ç¬¦æ˜¯å¦æ˜¯æ•°ç»„ï¼Œ å¹¶ä¸”æ£€æŸ¥indexä½ç½®çš„è¡¨è¾¾å¼ï¼›ä½†ä¸æ£€æŸ¥è¶Šç•Œ
 			Symbol* lookup = lookUp_SymTab(tree->child[0]->attr.name);
 
 			if (lookup == NULL) {
-				printf("Error in line %d : ±êÊ¶·ûÎ´¶¨Òå£º%s\n", tree->lineno, tree->child[0]->attr.name);
+				printf("Error in line %d : æ ‡è¯†ç¬¦æœªå®šä¹‰ï¼š%s\n", tree->lineno, tree->child[0]->attr.name);
 				return;
 			}
 
 			if (lookup->vec < 0) {
-				printf("Error in line %d : ±êÊ¶·û²»ÊÇÊı×é£¬²»ÄÜ½øĞĞÏÂ±êÔËËã£º%s\n", tree->lineno, tree->child[0]->attr.name);
+				printf("Error in line %d : æ ‡è¯†ç¬¦ä¸æ˜¯æ•°ç»„ï¼Œä¸èƒ½è¿›è¡Œä¸‹æ ‡è¿ç®—ï¼š%s\n", tree->lineno, tree->child[0]->attr.name);
 				return;
 			}
 
 			semanticExp(tree->child[1]);
 		}
-		else {							// +-*/ ¼ì²é×óÓÒ½Úµã
+		else {							// +-*/ æ£€æŸ¥å·¦å³èŠ‚ç‚¹
 			semanticExp(tree->child[0]);
 			semanticExp(tree->child[1]);
 		}
@@ -92,26 +92,26 @@ void semanticExp(TreeNode* tree) {
 void semanticBoolExp(TreeNode* tree) {
 	if (tree == NULL)
 		return;
-	// bool Exp ÀïÃæÓĞ 4 ÖÖ½Úµã£º ²¼¶ûop¡¢²¼¶û³£Á¿¡¢¹ØÏµop¡¢±í´ïÊ½
+	// bool Exp é‡Œé¢æœ‰ 4 ç§èŠ‚ç‚¹ï¼š å¸ƒå°”opã€å¸ƒå°”å¸¸é‡ã€å…³ç³»opã€è¡¨è¾¾å¼
 	if (tree->nodekind == NodeKind::ExpK) {
 		semanticExp(tree);
 	}
 	else {
-		if (tree->kind.bexp == BoolExpKind::ConOp_BoolEK) {			// ±í´ïÊ½ ConOp ±í´ïÊ½
+		if (tree->kind.bexp == BoolExpKind::ConOp_BoolEK) {			// è¡¨è¾¾å¼ ConOp è¡¨è¾¾å¼
 			semanticExp(tree->child[0]);
 			semanticExp(tree->child[1]);
 		}
 		else if (tree->kind.bexp == BoolExpKind::Const_BoolEK) {
-			// ³£Á¿ £¬²»½øĞĞ¼ì²é		true¡¢false
+			// å¸¸é‡ ï¼Œä¸è¿›è¡Œæ£€æŸ¥		trueã€false
 		}
-		else {  // BoolExpKind::Op_BoolEK£º Óë»ò·Ç
+		else {  // BoolExpKind::Op_BoolEKï¼š ä¸æˆ–é
 			semanticBoolExp(tree->child[0]);
 			semanticBoolExp(tree->child[1]);
 		}
 	}
 }
 
-// µİ¹é±éÀúAST£¬½¨Á¢·ûºÅ±í£¬²¢½øĞĞÀàĞÍ¼ì²é
+// é€’å½’éå†ASTï¼Œå»ºç«‹ç¬¦å·è¡¨ï¼Œå¹¶è¿›è¡Œç±»å‹æ£€æŸ¥
 void semanticAnalyze(TreeNode* tree)			
 {
 	if (NULL == tree)
@@ -122,7 +122,7 @@ void semanticAnalyze(TreeNode* tree)
 	SymTab* tmp;
 	Symbol* lookup;
 	while (NULL != tree) {
-		// ÓïÒå·ÖÎö½×¶Î¾Í²»·ÖÎöÓï·¨ÓĞ´íÎóµÄÓï¾ä£¬Ò²¾ÍÊÇËµµ±Ç°½Úµã²»·ÖÎö£¬µ«ÊÇĞÖµÜ½Úµã¿ÉÒÔ¼ÌĞø·ÖÎö
+		// è¯­ä¹‰åˆ†æé˜¶æ®µå°±ä¸åˆ†æè¯­æ³•æœ‰é”™è¯¯çš„è¯­å¥ï¼Œä¹Ÿå°±æ˜¯è¯´å½“å‰èŠ‚ç‚¹ä¸åˆ†æï¼Œä½†æ˜¯å…„å¼ŸèŠ‚ç‚¹å¯ä»¥ç»§ç»­åˆ†æ
 		if (tree->error == true) {
 			tree = tree->sibling;
 
@@ -136,9 +136,9 @@ void semanticAnalyze(TreeNode* tree)
 			{
 			case DecKind::Const_DecK:
 				break;
-			case DecKind::Const_DefK:			// ³£Á¿¶¨Òå
+			case DecKind::Const_DefK:			// å¸¸é‡å®šä¹‰
 				ttt = tree->type;
-				st = tree->child[0];			// ÕâÀïÊÇ ³£Á¿ÁĞ±í
+				st = tree->child[0];			// è¿™é‡Œæ˜¯ å¸¸é‡åˆ—è¡¨
 				int val;
 				while (NULL != st) {
 					if (Type::T_INTEGER == ttt) {
@@ -151,13 +151,13 @@ void semanticAnalyze(TreeNode* tree)
 					}
 					st = st->sibling;
 				}
-				// ¶à¸ö³£Á¿¶¨Òå
+				// å¤šä¸ªå¸¸é‡å®šä¹‰
 				semanticAnalyze(tree->sibling);
-				// ·µ»ØÌø¹ıµİ¹é£» ÊÂÊµÉÏÊÇÖ®Ç°³éÏóÓï·¨Ê÷ÕâÀïÓ¦¸Ã¶à¶¨ÒåÒ»ÖÖÀàĞÍ£»¾Í²»ÓÃÉÏÃæÕâÁ½ĞĞÁË£¬²»¹ı´ú¼Û²»´ó
+				// è¿”å›è·³è¿‡é€’å½’ï¼› äº‹å®ä¸Šæ˜¯ä¹‹å‰æŠ½è±¡è¯­æ³•æ ‘è¿™é‡Œåº”è¯¥å¤šå®šä¹‰ä¸€ç§ç±»å‹ï¼›å°±ä¸ç”¨ä¸Šé¢è¿™ä¸¤è¡Œäº†ï¼Œä¸è¿‡ä»£ä»·ä¸å¤§
 				return;
 			case DecKind::Var_DecK:
 				break;
-			case DecKind::Var_DefK:					// ±äÁ¿¶¨Òå
+			case DecKind::Var_DefK:					// å˜é‡å®šä¹‰
 				ttt = tree->type;
 				st = tree->child[0];
 				
@@ -166,34 +166,34 @@ void semanticAnalyze(TreeNode* tree)
 
 					st = st->sibling;
 				}
-				// ¶à¸ö±äÁ¿¶¨Òå
+				// å¤šä¸ªå˜é‡å®šä¹‰
 				semanticAnalyze(tree->sibling);
 				
 				return;
-			case DecKind::Func_DecK:					// º¯Êı¶¨Òå
-				// ¿ªÊ¼¶¨Òåº¯Êı£¬ ³£±äÁ¿ÉùÃ÷Ö»ÄÜ½øÈëº¯Êı±í
+			case DecKind::Func_DecK:					// å‡½æ•°å®šä¹‰
+				// å¼€å§‹å®šä¹‰å‡½æ•°ï¼Œ å¸¸å˜é‡å£°æ˜åªèƒ½è¿›å…¥å‡½æ•°è¡¨
 				isGlobal = false;
 
-				// ´¦Àíº¯ÊıÃû£¬²åÈëÈ«¾Ö±í
+				// å¤„ç†å‡½æ•°åï¼Œæ’å…¥å…¨å±€è¡¨
 				insert_SymTab(true, tree->lineno, tree->attr.name, IDType::Func_ID, tree->pfinfo->rettype, (int)INFINITY, -1, tree->pfinfo);
 
-				// ĞÂ½¨º¯Êı±í
+				// æ–°å»ºå‡½æ•°è¡¨
 				tmp = initSimpleSymTable(tree->attr.name);
 				tmp->next = g_symtab->next;
 				g_symtab->next = tmp;
-				// ´¦Àí²ÎÊı±í
+				// å¤„ç†å‚æ•°è¡¨
 				for (int i = 0; i < tree->pfinfo->paranum; i++) {
 					insert_SymTab(false, tree->lineno, tree->pfinfo->paratable[i].pname, IDType::Para_ID, tree->pfinfo->paratable[i].ptype,
 						(int)INFINITY);
 				}
 				break;
 			case DecKind::MainFunc_DecK:
-				// ¿ªÊ¼¶¨Òåº¯Êı£¬ ³£±äÁ¿ÉùÃ÷Ö»ÄÜ½øÈëº¯Êı±í
+				// å¼€å§‹å®šä¹‰å‡½æ•°ï¼Œ å¸¸å˜é‡å£°æ˜åªèƒ½è¿›å…¥å‡½æ•°è¡¨
 				isGlobal = false;
 
 				insert_SymTab(true, tree->lineno, (char*)("main"), IDType::Func_ID, Type::T_VOID, (int)INFINITY, -1);
 
-				// ĞÂ½¨º¯Êı±í
+				// æ–°å»ºå‡½æ•°è¡¨
 				
 				tmp = initSimpleSymTable((char*)("main"));
 				tmp->next = g_symtab->next;
@@ -203,40 +203,40 @@ void semanticAnalyze(TreeNode* tree)
 				break;
 			}
 		}
-		else if (NodeKind::StmtK == tree->nodekind) {		// ´Ë´¦ÓĞÒ»Ğ©ÖØ´óbug£¬ caseÀïÃæ±ğĞ´return£»»á°ÑºóÃæµÄĞÖµÜ½ÚµãÌø¹ı
+		else if (NodeKind::StmtK == tree->nodekind) {		// æ­¤å¤„æœ‰ä¸€äº›é‡å¤§bugï¼Œ caseé‡Œé¢åˆ«å†™returnï¼›ä¼šæŠŠåé¢çš„å…„å¼ŸèŠ‚ç‚¹è·³è¿‡
 			switch (tree->kind.stmt)
 			{
-			case StmtKind::Assign_StmtK:					// ¸³ÖµÓï¾ä
+			case StmtKind::Assign_StmtK:					// èµ‹å€¼è¯­å¥
 			{
 				lookup = lookUp_SymTab(tree->attr.name);
-				if (NULL == lookup) {				// Î´¶¨Òå
-					printf("Error in line %d : ±êÊ¶·ûÎ´¶¨Òå£º%s\n", tree->lineno, tree->attr.name);
+				if (NULL == lookup) {				// æœªå®šä¹‰
+					printf("Error in line %d : æ ‡è¯†ç¬¦æœªå®šä¹‰ï¼š%s\n", tree->lineno, tree->attr.name);
 				}
-				else {								// ÒÑ¶¨Òå
-					// ¸³ÖµÓï¾ä ×ó±ßÀàĞÍ 
+				else {								// å·²å®šä¹‰
+					// èµ‹å€¼è¯­å¥ å·¦è¾¹ç±»å‹ 
 					tree->type = lookup->valueType;
 
-					if (lookup->type == IDType::Const_ID) {		// ³£Á¿
-						printf("Error in line %d : ±êÊ¶·ûÊÇ³£Á¿£¬²»ÄÜ¸³Öµ£º%s\n", tree->lineno, tree->attr.name);
-						// ¼ÌĞøÉ¨ÃèºóÃæ£¬²»Á¢Âí·µ»Ø
+					if (lookup->type == IDType::Const_ID) {		// å¸¸é‡
+						printf("Error in line %d : æ ‡è¯†ç¬¦æ˜¯å¸¸é‡ï¼Œä¸èƒ½èµ‹å€¼ï¼š%s\n", tree->lineno, tree->attr.name);
+						// ç»§ç»­æ‰«æåé¢ï¼Œä¸ç«‹é©¬è¿”å›
 					}
 					if (NULL != tree->child[1]) {
-						if (lookup->vec <= 0) {				// ²»ÊÇÊı×é£¬½øĞĞÏÂ±êÔËËã
-							printf("Error in line %d : ±êÊ¶·û²»ÊÇÊı×é£¬²»ÄÜ½øĞĞÏÂ±êÔËËã£º%s\n", tree->lineno, tree->attr.name);
+						if (lookup->vec <= 0) {				// ä¸æ˜¯æ•°ç»„ï¼Œè¿›è¡Œä¸‹æ ‡è¿ç®—
+							printf("Error in line %d : æ ‡è¯†ç¬¦ä¸æ˜¯æ•°ç»„ï¼Œä¸èƒ½è¿›è¡Œä¸‹æ ‡è¿ç®—ï¼š%s\n", tree->lineno, tree->attr.name);
 						}
-						// ²»¹ÜÊÇ²»ÊÇÊı×é£¬¶¼¼ì²é index±í´ïÊ½
+						// ä¸ç®¡æ˜¯ä¸æ˜¯æ•°ç»„ï¼Œéƒ½æ£€æŸ¥ indexè¡¨è¾¾å¼
 						// semanticExp(tree->child[1]);
 					}
 					else {
-						if (lookup->vec >= 0) {				// ÊÇÊı×é£¬ Ã»ÓĞÏÂ±êÔËËã
-							printf("Error in line %d : ±êÊ¶·ûÊÇÊı×é£¬ĞèÒª½øĞĞÏÂ±êÔËËã£º%s\n", tree->lineno, tree->attr.name);
+						if (lookup->vec >= 0) {				// æ˜¯æ•°ç»„ï¼Œ æ²¡æœ‰ä¸‹æ ‡è¿ç®—
+							printf("Error in line %d : æ ‡è¯†ç¬¦æ˜¯æ•°ç»„ï¼Œéœ€è¦è¿›è¡Œä¸‹æ ‡è¿ç®—ï¼š%s\n", tree->lineno, tree->attr.name);
 						}
 					}
 				}
-				// ÓÒ²à±í´ïÊ½
+				// å³ä¾§è¡¨è¾¾å¼
 				//semanticExp(tree->child[0]);
 
-				// ¼ì²éÓÉÄ©Î²´¦ ±éÀúchild½Úµã
+				// æ£€æŸ¥ç”±æœ«å°¾å¤„ éå†childèŠ‚ç‚¹
 			}
 				break;
 			case StmtKind::If_StmtK:
@@ -245,22 +245,22 @@ void semanticAnalyze(TreeNode* tree)
 				break;
 			case StmtKind::For_StmtK:
 				break;
-			case StmtKind::Call_StmtK:			// ÎŞ·µ»ØÖµº¯Êıµ÷ÓÃ
+			case StmtKind::Call_StmtK:			// æ— è¿”å›å€¼å‡½æ•°è°ƒç”¨
 			{
 				lookup = lookUp_SymTab(tree->attr.name);
-				if (NULL == lookup) {					// Î´¶¨Òå
-					printf("Error in line %d : º¯ÊıÎ´¶¨Òå£º%s()\n", tree->lineno, tree->attr.name);
+				if (NULL == lookup) {					// æœªå®šä¹‰
+					printf("Error in line %d : å‡½æ•°æœªå®šä¹‰ï¼š%s()\n", tree->lineno, tree->attr.name);
 					//return;
 				}
-				else {									// ÒÑ¶¨Òå
-					if (IDType::Func_ID != lookup->type) {			// ²»ÊÇº¯Êı
-						printf("Error in line %d : ¸Ã±êÊ¶·û²»ÊÇº¯Êı£º%s()\n", tree->lineno, tree->attr.name);
+				else {									// å·²å®šä¹‰
+					if (IDType::Func_ID != lookup->type) {			// ä¸æ˜¯å‡½æ•°
+						printf("Error in line %d : è¯¥æ ‡è¯†ç¬¦ä¸æ˜¯å‡½æ•°ï¼š%s()\n", tree->lineno, tree->attr.name);
 						//return;
 					}
-					else {											// ÊÇº¯Êı£¬Òª¼ì²é²ÎÊı
-						// ¼ì²é²ÎÊı¸öÊı£¬ Í¬Ê±¼ì²éÃ¿¸ö²ÎÊıµÄ±í´ïÊ½ÊÇ·ñºÏ·¨
+					else {											// æ˜¯å‡½æ•°ï¼Œè¦æ£€æŸ¥å‚æ•°
+						// æ£€æŸ¥å‚æ•°ä¸ªæ•°ï¼Œ åŒæ—¶æ£€æŸ¥æ¯ä¸ªå‚æ•°çš„è¡¨è¾¾å¼æ˜¯å¦åˆæ³•
 						if (lookup->pfinfo->paranum != checkParaNum(tree->child[0], lookup->pfinfo)) {
-							printf("Error in line %d : º¯Êı²ÎÊı²»Æ¥Åä: %s()\n", tree->lineno, lookup->name);
+							printf("Error in line %d : å‡½æ•°å‚æ•°ä¸åŒ¹é…: %s()\n", tree->lineno, lookup->name);
 							//return;
 						}
 					}
@@ -276,63 +276,63 @@ void semanticAnalyze(TreeNode* tree)
 			{
 				lookup = lookUp_SymTab(tree->attr.name);
 				if (NULL == lookup) {
-					printf("Error in line %d : ±êÊ¶·ûÎ´¶¨Òå£º%s\n", tree->lineno, tree->attr.name);
+					printf("Error in line %d : æ ‡è¯†ç¬¦æœªå®šä¹‰ï¼š%s\n", tree->lineno, tree->attr.name);
 					// return;
 				}
 				else {
-					if (lookup->type == IDType::Const_ID) {		// ³£Á¿
-						printf("Error in line %d : ±êÊ¶·ûÊÇ³£Á¿£¬²»ÄÜ¶ÁÈë£º%s\n", tree->lineno, tree->attr.name);
-						// ¼ÌĞøÉ¨ÃèºóÃæ£¬²»Á¢Âí·µ»Ø
+					if (lookup->type == IDType::Const_ID) {		// å¸¸é‡
+						printf("Error in line %d : æ ‡è¯†ç¬¦æ˜¯å¸¸é‡ï¼Œä¸èƒ½è¯»å…¥ï¼š%s\n", tree->lineno, tree->attr.name);
+						// ç»§ç»­æ‰«æåé¢ï¼Œä¸ç«‹é©¬è¿”å›
 					}
 				}
 			}
 				break;
 			case StmtKind::Write_StmtK:
 			{
-				if (NULL == tree->child[0]) {			// Ö»ÓĞ±í´ïÊ½£¬Ã»ÓĞ×Ö·û´®£» Ö±½ÓÌø¹ıÒÔÏÂ¼ì²é
+				if (NULL == tree->child[0]) {			// åªæœ‰è¡¨è¾¾å¼ï¼Œæ²¡æœ‰å­—ç¬¦ä¸²ï¼› ç›´æ¥è·³è¿‡ä»¥ä¸‹æ£€æŸ¥
 					break;
 				}
 				std::string printstring = tree->child[0]->attr.name;
 				size_t pos;
 				pos = printstring.find("%d");
-				if (pos != std::string::npos) {			// ÕÒµ½ %d
+				if (pos != std::string::npos) {			// æ‰¾åˆ° %d
 					tree->type = Type::T_INTEGER;
 
-					if (NULL == tree->child[1]) {		// Ã»ÓĞ±í´ïÊ½
-						printf("Error in line %d : Õ¼ÓÃ·û²»Æ¥Åä: d \n", tree->lineno);
+					if (NULL == tree->child[1]) {		// æ²¡æœ‰è¡¨è¾¾å¼
+						printf("Error in line %d : å ç”¨ç¬¦ä¸åŒ¹é…: d \n", tree->lineno);
 						//return;
 					}
-					else {								// ¼ì²é±í´ïÊ½		¸ÄÎªµİ¹é¼ì²é£¬ÕâÀï²»¼ì²é
+					else {								// æ£€æŸ¥è¡¨è¾¾å¼		æ”¹ä¸ºé€’å½’æ£€æŸ¥ï¼Œè¿™é‡Œä¸æ£€æŸ¥
 						//	semanticExp(tree->child[1]);
 					}
 
-					break;		//²»¼ÌĞøÕÒÁË
+					break;		//ä¸ç»§ç»­æ‰¾äº†
 				}
 
 				pos = printstring.find("%c");
-				if (pos != std::string::npos) {			// ÕÒµ½ %c
+				if (pos != std::string::npos) {			// æ‰¾åˆ° %c
 					tree->type = Type::T_CHAR;
 
-					if (NULL == tree->child[1]) {		// Ã»ÓĞ±í´ïÊ½
-						printf("Error in line %d : Õ¼ÓÃ·û²»Æ¥Åä: c \n", tree->lineno);
+					if (NULL == tree->child[1]) {		// æ²¡æœ‰è¡¨è¾¾å¼
+						printf("Error in line %d : å ç”¨ç¬¦ä¸åŒ¹é…: c \n", tree->lineno);
 						//return;
 					}
-					else {								// ¼ì²é±í´ïÊ½   
+					else {								// æ£€æŸ¥è¡¨è¾¾å¼   
 						//	semanticExp(tree->child[1]);
 					}
 
-					break;		//²»¼ÌĞøÕÒÁË
+					break;		//ä¸ç»§ç»­æ‰¾äº†
 				}
 
-				// ¼ÈÃ»ÓĞ%c Ò²Ã»ÓĞ%d
-				if (NULL != tree->child[1]) {		// È´ÓĞ±í´ïÊ½
-					printf("Error in line %d : È±ÉÙÕ¼ÓÃ·û \n", tree->lineno);
+				// æ—¢æ²¡æœ‰%c ä¹Ÿæ²¡æœ‰%d
+				if (NULL != tree->child[1]) {		// å´æœ‰è¡¨è¾¾å¼
+					printf("Error in line %d : ç¼ºå°‘å ç”¨ç¬¦ \n", tree->lineno);
 					//return;
 				}
 				tree->type = Type::T_VOID;
 			}
 				break;
-			case StmtKind::Write_StmtK_Str:			// ²¢²»»á½øÈëÕâÀï£¬ ÉÏÒ»¼¶ ´¦ÀíÁË
+			case StmtKind::Write_StmtK_Str:			// å¹¶ä¸ä¼šè¿›å…¥è¿™é‡Œï¼Œ ä¸Šä¸€çº§ å¤„ç†äº†
 				break;
 			case StmtKind::Ret_StmtK:
 				break;
@@ -340,12 +340,12 @@ void semanticAnalyze(TreeNode* tree)
 				break;
 			}
 		}
-		else if (NodeKind::ExpK == tree->nodekind) {			// ÒòÎª±í´ïÊ½µ¥¶À´¦Àí£¬²¢ÇÒÃ»ÓĞĞÖµÜ½Úµã£¬Ö±½Ó·µ»Ø
-			// µ¥¶À´¦Àí±í´ïÊ½
+		else if (NodeKind::ExpK == tree->nodekind) {			// å› ä¸ºè¡¨è¾¾å¼å•ç‹¬å¤„ç†ï¼Œå¹¶ä¸”æ²¡æœ‰å…„å¼ŸèŠ‚ç‚¹ï¼Œç›´æ¥è¿”å›
+			// å•ç‹¬å¤„ç†è¡¨è¾¾å¼
 			semanticExp(tree);
 			return;
 		}
-		else // ²¼¶û±í´ïÊ½
+		else // å¸ƒå°”è¡¨è¾¾å¼
 		{
 			semanticBoolExp(tree);
 			return;
@@ -355,7 +355,7 @@ void semanticAnalyze(TreeNode* tree)
 			if (NULL != tree->child[i])
 				semanticAnalyze(tree->child[i]);
 		}
-		// ´Ë´¦¼Ó½Úµã ±éÀú½áÊø ÒªÖ´ĞĞµÄ´úÂë
+		// æ­¤å¤„åŠ èŠ‚ç‚¹ éå†ç»“æŸ è¦æ‰§è¡Œçš„ä»£ç 
 		tree = tree->sibling;
 	}
 }

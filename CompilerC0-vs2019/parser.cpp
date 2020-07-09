@@ -1,5 +1,5 @@
-/*
-	µİ¹éÏÂ½µ×Ó³ÌĞòÊµÏÖÓï·¨·ÖÎö£¬²¢Éú³É³éÏóÓï·¨Ê÷
+ï»¿/*
+	é€’å½’ä¸‹é™å­ç¨‹åºå®ç°è¯­æ³•åˆ†æï¼Œå¹¶ç”ŸæˆæŠ½è±¡è¯­æ³•æ ‘
 */
 
 #include "global.h"
@@ -17,7 +17,7 @@ static int flashBackLineNum;
 
 static bool match(TokenType expectToken);
 
-//ÎªÃ¿Ò»¸ö·ÇÖÕ½á·û´´½¨Ò»¸öº¯Êı
+//ä¸ºæ¯ä¸€ä¸ªéç»ˆç»“ç¬¦åˆ›å»ºä¸€ä¸ªå‡½æ•°
 TreeNode* program();
 
 TreeNode* constDeclaration();
@@ -56,13 +56,13 @@ TreeNode* boolTerm();
 TreeNode* boolFactor();
 TreeNode* conditionFactor();
 
-// ·ÖÎö¿ªÊ¼£¬µ÷ÓÃ³ÌĞò
+// åˆ†æå¼€å§‹ï¼Œè°ƒç”¨ç¨‹åº
 TreeNode* parser() {
 	TreeNode* synaxTree;
 
 	getNextToken();
-	//Óï·¨·ÖÎö¿ªÊ¼
-	//²âÊÔÊ±£ºµ¥¶Àµ÷ÓÃÆäËû¹ı³Ì
+	//è¯­æ³•åˆ†æå¼€å§‹
+	//æµ‹è¯•æ—¶ï¼šå•ç‹¬è°ƒç”¨å…¶ä»–è¿‡ç¨‹
 	synaxTree = program();
 
 	if (!EOF_flag) {
@@ -77,76 +77,76 @@ TreeNode* parser() {
 	return synaxTree;
 }
 
-// Æ¥Åä ÆÚ´ıµÄ token£»·ñÔò±¨´í
-// ¶ÁÈ¡ÏÂÒ»¸ötoken
+// åŒ¹é… æœŸå¾…çš„ tokenï¼›å¦åˆ™æŠ¥é”™
+// è¯»å–ä¸‹ä¸€ä¸ªtoken
 static bool match(TokenType expectToken) {
-	if (expectToken == g_token.opType) {	// ÓëÔ¤ÆÚÏàÍ¬£¬Ìø¹ıtoken£¬ true
+	if (expectToken == g_token.opType) {	// ä¸é¢„æœŸç›¸åŒï¼Œè·³è¿‡tokenï¼Œ true
 		getNextToken();
 		return true;
 	}
-	else {								// ÌáÊ¾´íÎó£¬µ«ÔÚÕâÀï²»Ìø¶Á
+	else {								// æç¤ºé”™è¯¯ï¼Œä½†åœ¨è¿™é‡Œä¸è·³è¯»
 		printf("match error in line %d :\t\texpect Token %d, but %d value: %s \n", g_lineNumber, expectToken, g_token.opType, g_token.value);
 		return false;
 	}
 }
 
 /*
-13.<³ÌĞò> ::= £Û<³£Á¿ËµÃ÷>£İ£Û<±äÁ¿ËµÃ÷>£İ{<ÓĞ·µ»ØÖµº¯Êı¶¨Òå>|<ÎŞ·µ»ØÖµº¯Êı¶¨Òå>}<Ö÷º¯Êı>
-ÕâÀïÓĞºÜ¶àµÄ¹«Òò×Ó£¬µ«ÊÇÎªÁËÎÄ·¨¼òµ¥£¬ºÃÀí½â£»¾ÍÔÚ³ÌĞòÉÏÊµÏÖ£¬Ã»ÓĞÌáÈ¡
+13.<ç¨‹åº> ::= ï¼»<å¸¸é‡è¯´æ˜>ï¼½ï¼»<å˜é‡è¯´æ˜>ï¼½{<æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰>|<æ— è¿”å›å€¼å‡½æ•°å®šä¹‰>}<ä¸»å‡½æ•°>
+è¿™é‡Œæœ‰å¾ˆå¤šçš„å…¬å› å­ï¼Œä½†æ˜¯ä¸ºäº†æ–‡æ³•ç®€å•ï¼Œå¥½ç†è§£ï¼›å°±åœ¨ç¨‹åºä¸Šå®ç°ï¼Œæ²¡æœ‰æå–
 */
 TreeNode* program() {
 	TreeNode* t = NULL;
-	TreeNode* p = NULL;									// ·µ»Øt£¬ pÖĞ¼ä´¦Àí
+	TreeNode* p = NULL;									// è¿”å›tï¼Œ pä¸­é—´å¤„ç†
 	
 	
 
-	// £Û<³£Á¿ËµÃ÷>£İ
+	// ï¼»<å¸¸é‡è¯´æ˜>ï¼½
 	if (TokenType::CONST == g_token.opType) {
 		t = constDeclaration();
 		p = t;
 	}
 
 
-	// £Û<±äÁ¿ËµÃ÷>£İ
+	// ï¼»<å˜é‡è¯´æ˜>ï¼½
 
-	// ¿ÉÑ¡£ºÈç¹û²»ÊÇ int ºÍ char »áÖ±½ÓÌø¹ı£¨Ã»ÓĞ±äÁ¿¶¨Òå£©£¬µ«»¹ĞèÒª½øÒ»²½ÅĞ¶ÏÓĞ·µ»ØÖµº¯Êı¶¨Òå
+	// å¯é€‰ï¼šå¦‚æœä¸æ˜¯ int å’Œ char ä¼šç›´æ¥è·³è¿‡ï¼ˆæ²¡æœ‰å˜é‡å®šä¹‰ï¼‰ï¼Œä½†è¿˜éœ€è¦è¿›ä¸€æ­¥åˆ¤æ–­æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰
 	if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
 		flashBackIndex = g_lexBegin;
 		flashBackLineNum = g_lineNumber;
 
-		//ÒòÎªtoken»ñÈ¡µÄÖµÍêÈ«ÒÀÀµÓÚÁ½¸öÖ¸Õë£¬½«Ç°Ò»¸öÖ¸Õë±£´æ¼´¿É
-		//»º´ætoken¿ªÊ¼Î»ÖÃ£¬±ÈÈçÊ¶±ğµ½intµÄ¿ªÊ¼Î»ÖÃ£¬ÒòÎªÄ©Î²ÒªÔÙÈ¡Ò»´Îtoken
+		//å› ä¸ºtokenè·å–çš„å€¼å®Œå…¨ä¾èµ–äºä¸¤ä¸ªæŒ‡é’ˆï¼Œå°†å‰ä¸€ä¸ªæŒ‡é’ˆä¿å­˜å³å¯
+		//ç¼“å­˜tokenå¼€å§‹ä½ç½®ï¼Œæ¯”å¦‚è¯†åˆ«åˆ°intçš„å¼€å§‹ä½ç½®ï¼Œå› ä¸ºæœ«å°¾è¦å†å–ä¸€æ¬¡token
 		getNextToken();
 		getNextToken();
-		//Ô¤¶ÁÁ½¸ötoken£¬½øÒ»²½ÅĞ¶Ï
-		if (TokenType::LPARENTHES == g_token.opType) {	//ÓĞ·µ»ØÖµº¯Êı¶¨Òå£¬×óĞ¡À¨ºÅ
+		//é¢„è¯»ä¸¤ä¸ªtokenï¼Œè¿›ä¸€æ­¥åˆ¤æ–­
+		if (TokenType::LPARENTHES == g_token.opType) {	//æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰ï¼Œå·¦å°æ‹¬å·
 			b_functionDeclaration = true;
 		}
-		else {											//±äÁ¿ËµÃ÷				
-			if (TokenType::COMMA == g_token.opType) {			// ¶ººÅ
+		else {											//å˜é‡è¯´æ˜				
+			if (TokenType::COMMA == g_token.opType) {			// é€—å·
 
 			}
-			else if (TokenType::SEMICOLON == g_token.opType) { // ·ÖºÅ
+			else if (TokenType::SEMICOLON == g_token.opType) { // åˆ†å·
 
 			}
-			else if (TokenType::LBRACKET == g_token.opType) {	// ×óÖĞÀ¨ºÅ
+			else if (TokenType::LBRACKET == g_token.opType) {	// å·¦ä¸­æ‹¬å·
 
 			}
-			else {											//´íÎó								
+			else {											//é”™è¯¯								
 				printf("error in program() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 			}
 
 		}
-		// »ØËİ
+		// å›æº¯
 		g_forward = flashBackIndex;
 		g_lineNumber = flashBackLineNum;
 		getNextToken();
 
 		if (b_functionDeclaration) {
-			//ÊÇº¯Êı¶¨Òå£ºÊ²Ã´¶¼²»×ö£¬Ìø¹ı£¬½øÈëÏÂÒ»²¿·Ö
+			//æ˜¯å‡½æ•°å®šä¹‰ï¼šä»€ä¹ˆéƒ½ä¸åšï¼Œè·³è¿‡ï¼Œè¿›å…¥ä¸‹ä¸€éƒ¨åˆ†
 		}
 		else {
-			// ½øÈë±äÁ¿ËµÃ÷
+			// è¿›å…¥å˜é‡è¯´æ˜
 			if (NULL == t) {
 				t = varDeclaration();
 				p = t;
@@ -160,10 +160,10 @@ TreeNode* program() {
 
 	}
 
-	// {<ÓĞ·µ»ØÖµº¯Êı¶¨Òå>|<ÎŞ·µ»ØÖµº¯Êı¶¨Òå>}
-	// Ç°ÃæµÄ±ØĞë°´Ë³ĞòÀ´£¬´í¹ıÁË¾Í²»ÄÜ¶¨ÒåÁË¡£ÕâÀï¿ÉÒÔËæ»úË³Ğò
+	// {<æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰>|<æ— è¿”å›å€¼å‡½æ•°å®šä¹‰>}
+	// å‰é¢çš„å¿…é¡»æŒ‰é¡ºåºæ¥ï¼Œé”™è¿‡äº†å°±ä¸èƒ½å®šä¹‰äº†ã€‚è¿™é‡Œå¯ä»¥éšæœºé¡ºåº
 	while ((TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType || TokenType::VOID == g_token.opType) && !b_mainFunction) {
-		if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) { //ÓĞ·µ»ØÖµµÄ¶¨Òå
+		if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) { //æœ‰è¿”å›å€¼çš„å®šä¹‰
 			if (NULL == t) {
 				t = functionDefinitionWithReturn();
 				p = t;
@@ -174,7 +174,7 @@ TreeNode* program() {
 				p = q;
 			}
 		}
-		else if (TokenType::VOID == g_token.opType) {		// ÓĞ¿ÉÄÜÊÇÎŞ·µ»ØÖµº¯Êı¶¨Òå£¬Ò²ÓĞ¿ÉÄÜÊÇ Ö÷º¯Êı
+		else if (TokenType::VOID == g_token.opType) {		// æœ‰å¯èƒ½æ˜¯æ— è¿”å›å€¼å‡½æ•°å®šä¹‰ï¼Œä¹Ÿæœ‰å¯èƒ½æ˜¯ ä¸»å‡½æ•°
 			flashBackIndex = g_lexBegin;
 			flashBackLineNum = g_lineNumber;
 			getNextToken();
@@ -182,14 +182,14 @@ TreeNode* program() {
 			if (TokenType::MAIN == g_token.opType) {
 				b_mainFunction = true;
 			}
-			// »ØËİ
+			// å›æº¯
 			g_forward = flashBackIndex;
 			g_lineNumber = flashBackLineNum;
 			getNextToken();
 
-			// ¸ù¾İÊÇ·ñÖ÷º¯Êı±êÖ¾ Ñ¡Ôñ
+			// æ ¹æ®æ˜¯å¦ä¸»å‡½æ•°æ ‡å¿— é€‰æ‹©
 			if (b_mainFunction) {
-				// b_mainFunction ±êÖ¾ÒÑ¸Ä±ä£¬Ìø¹ı¸ÃÑ­»·£¬½øÈëÖ÷º¯Êı
+				// b_mainFunction æ ‡å¿—å·²æ”¹å˜ï¼Œè·³è¿‡è¯¥å¾ªç¯ï¼Œè¿›å…¥ä¸»å‡½æ•°
 			}
 			else {
 				if (NULL == t) {
@@ -205,7 +205,7 @@ TreeNode* program() {
 		}
 	}
 
-	// <Ö÷º¯Êı>
+	// <ä¸»å‡½æ•°>
 	if (NULL == t) {
 		t = mainFunction();
 		p = t;
@@ -220,7 +220,7 @@ TreeNode* program() {
 }
 
 /*
-14.<³£Á¿ËµÃ÷> ::= const<³£Á¿¶¨Òå>;{ const<³£Á¿¶¨Òå>;}
+14.<å¸¸é‡è¯´æ˜> ::= const<å¸¸é‡å®šä¹‰>;{ const<å¸¸é‡å®šä¹‰>;}
 */
 TreeNode* constDeclaration() {
 	match(TokenType::CONST);
@@ -236,7 +236,7 @@ TreeNode* constDeclaration() {
 	}
 	
 
-	// ¶à¸öconst ĞĞ
+	// å¤šä¸ªconst è¡Œ
 	while (TokenType::CONST == g_token.opType) {
 		match(TokenType::CONST);
 
@@ -254,18 +254,18 @@ TreeNode* constDeclaration() {
 	return t;
 }
 
-//15. < ³£Á¿¶¨Òå > :: = int<±êÊ¶·û>£½<ÕûÊı>{, <±êÊ¶·û>£½<ÕûÊı>} | char<±êÊ¶·û>£½<×Ö·û>{, <±êÊ¶·û>£½<×Ö·û>}
+//15. < å¸¸é‡å®šä¹‰ > :: = int<æ ‡è¯†ç¬¦>ï¼<æ•´æ•°>{, <æ ‡è¯†ç¬¦>ï¼<æ•´æ•°>} | char<æ ‡è¯†ç¬¦>ï¼<å­—ç¬¦>{, <æ ‡è¯†ç¬¦>ï¼<å­—ç¬¦>}
 TreeNode* constDefine() {
-	TreeNode* t = newDecNode(DecKind::Const_DefK);					// ³£Á¿¶¨Òå½Úµã
+	TreeNode* t = newDecNode(DecKind::Const_DefK);					// å¸¸é‡å®šä¹‰èŠ‚ç‚¹
 	//int
-	if (TokenType::INT == g_token.opType) {								// ¶¨ÒåÁĞ±í½Úµã
+	if (TokenType::INT == g_token.opType) {								// å®šä¹‰åˆ—è¡¨èŠ‚ç‚¹
 		t->type = Type::T_INTEGER;
 		TreeNode* p = newDecNode(DecKind::Const_DefK);
 		t->child[0] = p;
 		match(TokenType::INT);
 		
 		
-		// ±£´æ±êÊ¶·û
+		// ä¿å­˜æ ‡è¯†ç¬¦
 		p->attr.name = copyString(g_token.value);
 		if (!match(TokenType::IDEN)) 
 		{
@@ -281,10 +281,10 @@ TreeNode* constDefine() {
 			return t;
 		}
 
-		//±£´æÕûĞÎÊı¾İ
+		//ä¿å­˜æ•´å½¢æ•°æ®
 		p->child[0] = signedNum();
 
-		// {, <±êÊ¶·û>£½<ÕûÊı>}
+		// {, <æ ‡è¯†ç¬¦>ï¼<æ•´æ•°>}
 		while (TokenType::COMMA == g_token.opType) 
 		{
 			match(TokenType::COMMA);
@@ -313,13 +313,13 @@ TreeNode* constDefine() {
 	}
 	//char
 	else if (TokenType::CHAR == g_token.opType) {
-		t->type = Type::T_CHAR;					// ³£Á¿¶¨Òå ÀàĞÍ
-		// ÏÂÃæÊÇ ³£Á¿ÁĞ±í
+		t->type = Type::T_CHAR;					// å¸¸é‡å®šä¹‰ ç±»å‹
+		// ä¸‹é¢æ˜¯ å¸¸é‡åˆ—è¡¨
 		TreeNode* p = newDecNode(DecKind::Const_DefK);
 		t->child[0] = p;
 		match(TokenType::CHAR);
 
-		// ±£´æ±êÊ¶·û
+		// ä¿å­˜æ ‡è¯†ç¬¦
 		p->attr.name = copyString(g_token.value);
 		if (!match(TokenType::IDEN))
 		{
@@ -336,7 +336,7 @@ TreeNode* constDefine() {
 		}
 
 		p->child[0] = newDecNode(DecKind::Const_DefK);
-		//±£´æ×Ö·ûÊı¾İ
+		//ä¿å­˜å­—ç¬¦æ•°æ®
 		
 		if (g_token.opType == TokenType::LETTER) {
 			p->child[0]->attr.cval = g_token.value[0];
@@ -352,7 +352,7 @@ TreeNode* constDefine() {
 
 		
 		
-		//{, <±êÊ¶·û>£½<×Ö·û>}
+		//{, <æ ‡è¯†ç¬¦>ï¼<å­—ç¬¦>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
 			TreeNode* q = newDecNode(DecKind::Const_DefK);
@@ -374,7 +374,7 @@ TreeNode* constDefine() {
 			}
 
 			q->child[0] = newDecNode(DecKind::Const_DefK);
-			//±£´æ×Ö·ûÊı¾İ
+			//ä¿å­˜å­—ç¬¦æ•°æ®
 			//q->child[0]->attr.cval = g_token.value[0];
 			//match(TokenType::LETTER);
 
@@ -403,8 +403,8 @@ TreeNode* constDefine() {
 	return t;
 }
 
-//9.<ÕûÊı> ::= £Û£«£ü£­£İ<ÎŞ·ûºÅÕûÊı>
-//Ö»ÓĞ¶¨ÒåÊ±»áÓöµ½£¬ÆäËûÊ±ºòµ¥¶À´¦Àí
+//9.<æ•´æ•°> ::= ï¼»ï¼‹ï½œï¼ï¼½<æ— ç¬¦å·æ•´æ•°>
+//åªæœ‰å®šä¹‰æ—¶ä¼šé‡åˆ°ï¼Œå…¶ä»–æ—¶å€™å•ç‹¬å¤„ç†
 TreeNode* signedNum() {
 	
 	int sign = 1;
@@ -419,7 +419,7 @@ TreeNode* signedNum() {
 		printf("error in signedNum() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 		return nullptr;
 	}
-	// Èç¹ûÊÇ¸ºµÄ£¬Ó¦¸ÃÔÚÕâÀï½øĞĞÒ»¶¨´¦Àí
+	// å¦‚æœæ˜¯è´Ÿçš„ï¼Œåº”è¯¥åœ¨è¿™é‡Œè¿›è¡Œä¸€å®šå¤„ç†
 	TreeNode* t = newDecNode(DecKind::Const_DefK);
 	int valoftoken = atoi(g_token.value);
 	valoftoken *= sign;
@@ -429,8 +429,8 @@ TreeNode* signedNum() {
 	return t;
 }
 
-//16.<±äÁ¿ËµÃ÷> ::= <±äÁ¿¶¨Òå>;{<±äÁ¿¶¨Òå>;}
-//ÕâÀïÓĞ¿ÉÄÜ»áºÍºóÃæµÄÓĞ·µ»ØÖµº¯Êı¶¨Òå³åÍ»
+//16.<å˜é‡è¯´æ˜> ::= <å˜é‡å®šä¹‰>;{<å˜é‡å®šä¹‰>;}
+//è¿™é‡Œæœ‰å¯èƒ½ä¼šå’Œåé¢çš„æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰å†²çª
 TreeNode* varDeclaration() {
 	TreeNode* t = newDecNode(DecKind::Var_DecK);
 
@@ -443,47 +443,47 @@ TreeNode* varDeclaration() {
 		p->error = true;
 	}
 
-	// ±äÁ¿¶¨ÒåÅĞ¶Ï ÖØ¸´£»Ò»µ©¿ªÊ¼º¯Êı¶¨Òå£¬Á¢¼´ÍË³ö£¬²»ÄÜ¼ÌĞø±äÁ¿¶¨Òå
-	//Ñ­»·ÖÕÖ¹Ìõ¼ş£º²»ÊÇint¡¢char £¨ÎŞ·µ¶¨ÒåºÍÖ÷º¯Êı£©»òÕß ¿ªÊ¼º¯Êı¶¨Òå
+	// å˜é‡å®šä¹‰åˆ¤æ–­ é‡å¤ï¼›ä¸€æ—¦å¼€å§‹å‡½æ•°å®šä¹‰ï¼Œç«‹å³é€€å‡ºï¼Œä¸èƒ½ç»§ç»­å˜é‡å®šä¹‰
+	//å¾ªç¯ç»ˆæ­¢æ¡ä»¶ï¼šä¸æ˜¯intã€char ï¼ˆæ— è¿”å®šä¹‰å’Œä¸»å‡½æ•°ï¼‰æˆ–è€… å¼€å§‹å‡½æ•°å®šä¹‰
 	while ((TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) && !b_functionDeclaration) {
 		flashBackIndex = g_lexBegin;
 		flashBackLineNum = g_lineNumber;
 
 		getNextToken();
 		getNextToken();
-		//Ô¤¶ÁÁ½¸ötoken£¬½øÒ»²½ÅĞ¶Ï
-		if (TokenType::LPARENTHES == g_token.opType) {	//ÓĞ·µ»ØÖµº¯Êı¶¨Òå£¬×óĞ¡À¨ºÅ
+		//é¢„è¯»ä¸¤ä¸ªtokenï¼Œè¿›ä¸€æ­¥åˆ¤æ–­
+		if (TokenType::LPARENTHES == g_token.opType) {	//æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰ï¼Œå·¦å°æ‹¬å·
 			b_functionDeclaration = true;
 		}
-		else {											//±äÁ¿ËµÃ÷				
-			if (TokenType::COMMA == g_token.opType) {			// ¶ººÅ
+		else {											//å˜é‡è¯´æ˜				
+			if (TokenType::COMMA == g_token.opType) {			// é€—å·
 
 			}
-			else if (TokenType::SEMICOLON == g_token.opType) { // ·ÖºÅ
+			else if (TokenType::SEMICOLON == g_token.opType) { // åˆ†å·
 
 			}
-			else if (TokenType::LBRACKET == g_token.opType) {	// ×óÖĞÀ¨ºÅ
+			else if (TokenType::LBRACKET == g_token.opType) {	// å·¦ä¸­æ‹¬å·
 
 			}
-			else {											//´íÎó								
+			else {											//é”™è¯¯								
 				printf("error in varDeclaration() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 			}
 
 		}
-		// »ØËİ
+		// å›æº¯
 		g_forward = flashBackIndex;
 		g_lineNumber = flashBackLineNum;
 
 		getNextToken();
 
 
-		if (b_functionDeclaration) {							// ÓĞ·µ»ØÖµº¯Êı¶¨Òå£ºÍË³ö
-			// bugĞŞ¸´£ºÖ®Ç°ÉùÃ÷Ö®ºóÊÇÒ»¸övoidº¯Êı£¬ÍË³ö£¬²»×ßÕâ¸ö³ö¿Ú
+		if (b_functionDeclaration) {							// æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰ï¼šé€€å‡º
+			// bugä¿®å¤ï¼šä¹‹å‰å£°æ˜ä¹‹åæ˜¯ä¸€ä¸ªvoidå‡½æ•°ï¼Œé€€å‡ºï¼Œä¸èµ°è¿™ä¸ªå‡ºå£
 			//return nullptr;
 			return t;
 		}
 		else {
-			// ½øÈë±äÁ¿¶¨Òå
+			// è¿›å…¥å˜é‡å®šä¹‰
 			TreeNode* q = varDefine();
 			p->sibling = q;
 			p = q;
@@ -498,7 +498,7 @@ TreeNode* varDeclaration() {
 	return t;
 }
 
-//17.<±äÁ¿¶¨Òå> ::= <ÀàĞÍ±êÊ¶·û><±êÊ¶·û>[¡®[¡¯<ÎŞ·ûºÅÕûÊı>¡®]¡¯] {,<±êÊ¶·û>[¡®[¡¯<ÎŞ·ûºÅÕûÊı>¡®]¡¯]}
+//17.<å˜é‡å®šä¹‰> ::= <ç±»å‹æ ‡è¯†ç¬¦><æ ‡è¯†ç¬¦>[â€˜[â€™<æ— ç¬¦å·æ•´æ•°>â€˜]â€™] {,<æ ‡è¯†ç¬¦>[â€˜[â€™<æ— ç¬¦å·æ•´æ•°>â€˜]â€™]}
 TreeNode* varDefine() {
 	TreeNode* t = newDecNode(DecKind::Var_DefK);
 
@@ -523,9 +523,9 @@ TreeNode* varDefine() {
 		return t;
 	}
 
-	if (TokenType::LBRACKET == g_token.opType) {			//Êı×é¶¨Òå
+	if (TokenType::LBRACKET == g_token.opType) {			//æ•°ç»„å®šä¹‰
 		match(TokenType::LBRACKET);
-		// Êı×é´óĞ¡
+		// æ•°ç»„å¤§å°
 		if (TokenType::NUM == g_token.opType) {
 			p->vec = atoi(g_token.value);
 			if ('0' == g_token.value[0])
@@ -546,7 +546,7 @@ TreeNode* varDefine() {
 		}
 
 	}
-	while (TokenType::COMMA == g_token.opType) {			//ÖØ¸´¶¨Òå
+	while (TokenType::COMMA == g_token.opType) {			//é‡å¤å®šä¹‰
 		match(TokenType::COMMA);
 
 		TreeNode* q = newDecNode(DecKind::Var_DefK);
@@ -585,7 +585,7 @@ TreeNode* varDefine() {
 	return t;
 }
 
-//18.<ÀàĞÍ±êÊ¶·û> ::= int | char
+//18.<ç±»å‹æ ‡è¯†ç¬¦> ::= int | char
 Type typeID() {
 	if (TokenType::INT == g_token.opType) {
 		match(TokenType::INT);
@@ -601,10 +601,10 @@ Type typeID() {
 	}
 }
 
-//19.<ÓĞ·µ»ØÖµº¯Êı¶¨Òå> ::= <ÉùÃ÷Í·²¿>¡®(¡¯<²ÎÊı±í>¡®)¡¯ ¡®{¡¯<¸´ºÏÓï¾ä>¡®}¡¯
+//19.<æœ‰è¿”å›å€¼å‡½æ•°å®šä¹‰> ::= <å£°æ˜å¤´éƒ¨>â€˜(â€™<å‚æ•°è¡¨>â€˜)â€™ â€˜{â€™<å¤åˆè¯­å¥>â€˜}â€™
 TreeNode* functionDefinitionWithReturn() {
 	//DeclarationHead(); 
-	// ·½±ã´¦Àí£¬²¢²»Ê¹ÓÃ
+	// æ–¹ä¾¿å¤„ç†ï¼Œå¹¶ä¸ä½¿ç”¨
 	TreeNode* t = newDecNode(DecKind::Func_DecK);
 
 	Type rettype = typeID();
@@ -664,8 +664,8 @@ TreeNode* functionDefinitionWithReturn() {
 	return t;
 }
 
-//20.<ÉùÃ÷Í·²¿> ::= int<±êÊ¶·û> | char<±êÊ¶·û>
-// ·½±ã´¦Àí£¬²¢²»Ê¹ÓÃ
+//20.<å£°æ˜å¤´éƒ¨> ::= int<æ ‡è¯†ç¬¦> | char<æ ‡è¯†ç¬¦>
+// æ–¹ä¾¿å¤„ç†ï¼Œå¹¶ä¸ä½¿ç”¨
 TreeNode* DeclarationHead() {
 	if (TokenType::INT == g_token.opType) {
 		match(TokenType::INT);
@@ -681,7 +681,7 @@ TreeNode* DeclarationHead() {
 	return nullptr;
 }
 
-//21.<ÎŞ·µ»ØÖµº¯Êı¶¨Òå> ::= void<±êÊ¶·û>¡®(¡¯<²ÎÊı±í>¡®)¡¯ ¡®{¡¯<¸´ºÏÓï¾ä>¡®}¡¯
+//21.<æ— è¿”å›å€¼å‡½æ•°å®šä¹‰> ::= void<æ ‡è¯†ç¬¦>â€˜(â€™<å‚æ•°è¡¨>â€˜)â€™ â€˜{â€™<å¤åˆè¯­å¥>â€˜}â€™
 TreeNode* functionDefinitionWithoutReturn() {
 	TreeNode* t = newDecNode(DecKind::Func_DecK);
 
@@ -730,16 +730,16 @@ TreeNode* functionDefinitionWithoutReturn() {
 	return t;
 }
 
-//22.<²ÎÊı±í> ::= <ÀàĞÍ±êÊ¶·û><±êÊ¶·û>{,<ÀàĞÍ±êÊ¶·û><±êÊ¶·û>}| <¿Õ>
+//22.<å‚æ•°è¡¨> ::= <ç±»å‹æ ‡è¯†ç¬¦><æ ‡è¯†ç¬¦>{,<ç±»å‹æ ‡è¯†ç¬¦><æ ‡è¯†ç¬¦>}| <ç©º>
 void paraTable(FuncInfo* finfo) {
-	// <ÀàĞÍ±êÊ¶·û><±êÊ¶·û>
+	// <ç±»å‹æ ‡è¯†ç¬¦><æ ‡è¯†ç¬¦>
 	int cnt = 0;
 	if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
 		Type _t = typeID();
 		finfo->paratable[cnt].ptype = _t;
 		finfo->paratable[cnt++].pname = copyString(g_token.value);
 		match(TokenType::IDEN);
-		// {,<ÀàĞÍ±êÊ¶·û><±êÊ¶·û>}
+		// {,<ç±»å‹æ ‡è¯†ç¬¦><æ ‡è¯†ç¬¦>}
 		while (TokenType::COMMA == g_token.opType) {
 			match(TokenType::COMMA);
 			Type _t = typeID();
@@ -748,22 +748,22 @@ void paraTable(FuncInfo* finfo) {
 			match(TokenType::IDEN);
 		}
 	}
-	// <¿Õ>
+	// <ç©º>
 	;
 	finfo->paranum = cnt;
 }
 
-////////////////////////////16'.__<±äÁ¿ËµÃ÷> ::= <±äÁ¿¶¨Òå>;{<±äÁ¿¶¨Òå>;}
-//ÕâÀïÊÇµ¥´¿µÄ <±äÁ¿ËµÃ÷>
+////////////////////////////16'.__<å˜é‡è¯´æ˜> ::= <å˜é‡å®šä¹‰>;{<å˜é‡å®šä¹‰>;}
+//è¿™é‡Œæ˜¯å•çº¯çš„ <å˜é‡è¯´æ˜>
 TreeNode* __varDeclaration() {
-	// <±äÁ¿¶¨Òå>;
+	// <å˜é‡å®šä¹‰>;
 	TreeNode* t = newDecNode(DecKind::Var_DecK);
 
 	TreeNode* p = varDefine();
 	t->child[0] = p;
 
 	match(TokenType::SEMICOLON);
-	// {<±äÁ¿¶¨Òå>;}
+	// {<å˜é‡å®šä¹‰>;}
 	while (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
 		TreeNode* q = varDefine();
 		p->sibling = q;
@@ -773,19 +773,19 @@ TreeNode* __varDeclaration() {
 	return t;
 }
 
-//23.<¸´ºÏÓï¾ä> ::= £Û<³£Á¿ËµÃ÷>£İ£Û<±äÁ¿ËµÃ÷>£İ<Óï¾äÁĞ>
+//23.<å¤åˆè¯­å¥> ::= ï¼»<å¸¸é‡è¯´æ˜>ï¼½ï¼»<å˜é‡è¯´æ˜>ï¼½<è¯­å¥åˆ—>
 TreeNode* complexStatement() {
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
 	TreeNode* q = NULL;
-	// £Û<³£Á¿ËµÃ÷>£İ
+	// ï¼»<å¸¸é‡è¯´æ˜>ï¼½
 	if (TokenType::CONST == g_token.opType) {
 		t = constDeclaration();
 		p = t;
 	}
-	// £Û<±äÁ¿ËµÃ÷>£İ
+	// ï¼»<å˜é‡è¯´æ˜>ï¼½
 	if (TokenType::INT == g_token.opType || TokenType::CHAR == g_token.opType) {
-		// ÕâÀïÃ»ÓĞÖ±½Óµ÷ÓÃ"varDeclaration"º¯Êı£¬ÒòÎªº¯ÊıÖĞÓĞÒ»Ğ©¶àÓàµÄ¹ı³Ì À´Ê¶±ğ¡°º¯Êı¶¨Òå¡±
+		// è¿™é‡Œæ²¡æœ‰ç›´æ¥è°ƒç”¨"varDeclaration"å‡½æ•°ï¼Œå› ä¸ºå‡½æ•°ä¸­æœ‰ä¸€äº›å¤šä½™çš„è¿‡ç¨‹ æ¥è¯†åˆ«â€œå‡½æ•°å®šä¹‰â€
 		if (NULL == t) {
 			t = __varDeclaration();
 			p = t;
@@ -797,7 +797,7 @@ TreeNode* complexStatement() {
 		}
 	}
 
-	// <Óï¾äÁĞ>
+	// <è¯­å¥åˆ—>
 	if (NULL == t) {
 		t = statementSequence();
 	}
@@ -811,7 +811,7 @@ TreeNode* complexStatement() {
 	return t;
 }
 
-//24.<Ö÷º¯Êı> ::= void main ¡®(¡¯ ¡®)¡¯ ¡®{¡¯<¸´ºÏÓï¾ä>¡®}¡¯
+//24.<ä¸»å‡½æ•°> ::= void main â€˜(â€™ â€˜)â€™ â€˜{â€™<å¤åˆè¯­å¥>â€˜}â€™
 TreeNode* mainFunction() {
 	TreeNode* t = newDecNode(DecKind::MainFunc_DecK);
 
@@ -851,9 +851,9 @@ TreeNode* mainFunction() {
 
 }
 
-/********************* ÒÔÉÏÊÇÓï·¨·ÖÎöµÚ¶ş´Îµ¥Ôª²âÊÔµÄÄÚÈİ	*************************/
+/********************* ä»¥ä¸Šæ˜¯è¯­æ³•åˆ†æç¬¬äºŒæ¬¡å•å…ƒæµ‹è¯•çš„å†…å®¹	*************************/
 
-// token ÊÇ·ñµÈÓÚÏàÓ¦µÄ Óï¾äÁĞµÄ FIRST
+// token æ˜¯å¦ç­‰äºç›¸åº”çš„ è¯­å¥åˆ—çš„ FIRST
 inline bool isTokenForStatementSequence()
 {
 	return (TokenType::SEMICOLON == g_token.opType || TokenType::IF == g_token.opType || TokenType::WHILE == g_token.opType ||
@@ -862,20 +862,20 @@ inline bool isTokenForStatementSequence()
 }
 
 
-//25.<Óï¾äÁĞ> ::= £û<Óï¾ä>£ı
+//25.<è¯­å¥åˆ—> ::= ï½›<è¯­å¥>ï½
 TreeNode* statementSequence() {
 	TreeNode* t = newStmtNode(StmtKind::Seq_StmtK);
 	TreeNode* p = NULL;
 	TreeNode* q = NULL;
-	// FIRST( <Óï¾ä> )£º£» if while for } ID(f) ID scanf printf return 
-	// ¸Ä½ø4£ºº¯Êı
+	// FIRST( <è¯­å¥> )ï¼šï¼› if while for } ID(f) ID scanf printf return 
+	// æ”¹è¿›4ï¼šå‡½æ•°
 	while (isTokenForStatementSequence()) {
 			
-		if (NULL == p) {					// µÚÒ»ÌõÓï¾ä
+		if (NULL == p) {					// ç¬¬ä¸€æ¡è¯­å¥
 			p = statement();
 			t->child[0] = p;
 		}
-		else {								// Ö®ºóµÄÓï¾ä
+		else {								// ä¹‹åçš„è¯­å¥
 			
 			q = statement();
 			p->sibling = q;
@@ -885,11 +885,11 @@ TreeNode* statementSequence() {
 
 	}
 
-	// FOLLOW(<Óï¾äÁĞ>): }
+	// FOLLOW(<è¯­å¥åˆ—>): }
 	if (TokenType::RBRACE == g_token.opType) {
-		// Óï¾äÁĞÀïÃæÒ»¸öÓï¾äÒ²Ã»ÓĞ£¬ Ìø¹ı
+		// è¯­å¥åˆ—é‡Œé¢ä¸€ä¸ªè¯­å¥ä¹Ÿæ²¡æœ‰ï¼Œ è·³è¿‡
 	}
-	else {		// ¼È²»ÊÇÓï¾äÒ²²»ÊÇ }
+	else {		// æ—¢ä¸æ˜¯è¯­å¥ä¹Ÿä¸æ˜¯ }
 		printf("error in statementSequence() :in line %d ,tokenType %d value: %s \n", g_lineNumber, g_token.opType, g_token.value);
 
 		errorProcess(ErrorType::SENTENCE_ERROR);
@@ -899,33 +899,33 @@ TreeNode* statementSequence() {
 }
 
 /*
-26. < Óï¾ä > :: = <Ìõ¼şÓï¾ä>£ü<Ñ­»·Óï¾ä>£ü¡®{ ¡¯<Óï¾äÁĞ>¡® }¡¯£ü<ÓĞ·µ»ØÖµµÄº¯Êıµ÷ÓÃÓï¾ä>; £ü<ÎŞ·µ»ØÖµµÄº¯Êıµ÷ÓÃÓï¾ä>;
-		£ü<¸³ÖµÓï¾ä>; £ü<¶ÁÓï¾ä>; £ü<Ğ´Óï¾ä>; £ü<¿Õ>; £ü<·µ»ØÓï¾ä>;
+26. < è¯­å¥ > :: = <æ¡ä»¶è¯­å¥>ï½œ<å¾ªç¯è¯­å¥>ï½œâ€˜{ â€™<è¯­å¥åˆ—>â€˜ }â€™ï½œ<æœ‰è¿”å›å€¼çš„å‡½æ•°è°ƒç”¨è¯­å¥>; ï½œ<æ— è¿”å›å€¼çš„å‡½æ•°è°ƒç”¨è¯­å¥>;
+		ï½œ<èµ‹å€¼è¯­å¥>; ï½œ<è¯»è¯­å¥>; ï½œ<å†™è¯­å¥>; ï½œ<ç©º>; ï½œ<è¿”å›è¯­å¥>;
 
-!!!!!!×¢Òâ£ºÕâÀïµÄ  ¡°<¿Õ>; ¡± ºÍ ¿ÕÓï¾äÊÇ²»Ò»ÑùµÄ£¬Ö»ÓĞ¸ö·ÖºÅ
+!!!!!!æ³¨æ„ï¼šè¿™é‡Œçš„  â€œ<ç©º>; â€ å’Œ ç©ºè¯­å¥æ˜¯ä¸ä¸€æ ·çš„ï¼Œåªæœ‰ä¸ªåˆ†å·
 */
 TreeNode* statement() {
 	TreeNode* t = NULL;
 	if (TokenType::SEMICOLON == g_token.opType) {
-		// <¿Õ>;
+		// <ç©º>;
 		match(TokenType::SEMICOLON);
-		return nullptr;									// ¿ÕÓï¾ä·µ»Ø¿ÕÖ¸Õë£¬Ê²Ã´¶¼²»×ö
+		return nullptr;									// ç©ºè¯­å¥è¿”å›ç©ºæŒ‡é’ˆï¼Œä»€ä¹ˆéƒ½ä¸åš
 	}
 	else if (TokenType::IF == g_token.opType) {
-		// <Ìõ¼şÓï¾ä>:
+		// <æ¡ä»¶è¯­å¥>:
 		t = ifStatement();
 	}
 	else if (TokenType::WHILE == g_token.opType) {
-		// <Ñ­»·Óï¾ä>
+		// <å¾ªç¯è¯­å¥>
 		t = whileLoopStatement();
 	}
 	else if (TokenType::FOR == g_token.opType) {
-		// <Ñ­»·Óï¾ä>
+		// <å¾ªç¯è¯­å¥>
 		t = forLoopStatement();
 	}
 	else if (TokenType::LBRACE == g_token.opType) {
-		//¡®{ ¡¯<Óï¾äÁĞ>¡® }¡¯
-		// >> inline »ò func
+		//â€˜{ â€™<è¯­å¥åˆ—>â€˜ }â€™
+		// >> inline æˆ– func
 		match(TokenType::LBRACE);
 		t = statementSequence();
 
@@ -937,11 +937,11 @@ TreeNode* statement() {
 		}
 	}
 	else if (TokenType::IDEN == g_token.opType) {
-		// <ÓĞ·µ»ØÖµµÄº¯Êıµ÷ÓÃÓï¾ä>;
-		// <ÎŞ·µ»ØÖµµÄº¯Êıµ÷ÓÃÓï¾ä>;
-		// <¸³ÖµÓï¾ä>;
+		// <æœ‰è¿”å›å€¼çš„å‡½æ•°è°ƒç”¨è¯­å¥>;
+		// <æ— è¿”å›å€¼çš„å‡½æ•°è°ƒç”¨è¯­å¥>;
+		// <èµ‹å€¼è¯­å¥>;
 
-		// ´Ë´¦ÒªÅĞ¶ÏÊÇ µ÷ÓÃ»¹ÊÇ ¸³Öµ£» ÎŞÂÛÊÇ·ñÓĞ·µ»ØÖµ£¬¶¼ÊÇÒ»ÑùµÄ
+		// æ­¤å¤„è¦åˆ¤æ–­æ˜¯ è°ƒç”¨è¿˜æ˜¯ èµ‹å€¼ï¼› æ— è®ºæ˜¯å¦æœ‰è¿”å›å€¼ï¼Œéƒ½æ˜¯ä¸€æ ·çš„
 		flashBackIndex = g_lexBegin;
 		flashBackLineNum = g_lineNumber;
 
@@ -949,11 +949,11 @@ TreeNode* statement() {
 
 		bool isAssign = false;
 		if (TokenType::ASSIGN == g_token.opType || TokenType::LBRACKET == g_token.opType) {
-			// ¸³ÖµÓï¾ä
+			// èµ‹å€¼è¯­å¥
 			isAssign = true;
 		}
 		else {
-			// º¯Êıµ÷ÓÃ
+			// å‡½æ•°è°ƒç”¨
 		}
 
 		g_forward = flashBackIndex;
@@ -965,45 +965,45 @@ TreeNode* statement() {
 			t = assignStatement();
 		}
 		else {
-			// ·´ÕıÕâÀïµÄº¯Êıµ÷ÓÃ¶¼ÊÇ ²»ÀûÓÃÆä ·µ»ØÖµ£¬ µÈ¼ÛÓÚÎŞ·µ»ØÖµµÄµ÷ÓÃ
+			// åæ­£è¿™é‡Œçš„å‡½æ•°è°ƒç”¨éƒ½æ˜¯ ä¸åˆ©ç”¨å…¶ è¿”å›å€¼ï¼Œ ç­‰ä»·äºæ— è¿”å›å€¼çš„è°ƒç”¨
 			t = callWithoutReturn();
 		}
 		if (!match(TokenType::SEMICOLON))
 		{
 			errorProcess(ErrorType::SENTENCE_ERROR);
-			// ÉÙ·ÖºÅµ±Ç°Óï¾ä²»Ëã´í
+			// å°‘åˆ†å·å½“å‰è¯­å¥ä¸ç®—é”™
 			return t;
 		}
 
 	}
 	else if (TokenType::SCANF == g_token.opType) {
-		// <¶ÁÓï¾ä>;
+		// <è¯»è¯­å¥>;
 		t = scanfStatement();
 		if (!match(TokenType::SEMICOLON))
 		{
 			errorProcess(ErrorType::SENTENCE_ERROR);
-			// ÉÙ·ÖºÅµ±Ç°Óï¾ä²»Ëã´í
+			// å°‘åˆ†å·å½“å‰è¯­å¥ä¸ç®—é”™
 			return t;
 		}
 
 	}
 	else if (TokenType::PRINTF == g_token.opType) {
-		// <Ğ´Óï¾ä>;
+		// <å†™è¯­å¥>;
 		t = printfStatement();
 		if (!match(TokenType::SEMICOLON))
 		{
 			errorProcess(ErrorType::SENTENCE_ERROR);
-			// ÉÙ·ÖºÅµ±Ç°Óï¾ä²»Ëã´í
+			// å°‘åˆ†å·å½“å‰è¯­å¥ä¸ç®—é”™
 			return t;
 		}
 	}
 	else if (TokenType::RETURN == g_token.opType) {
-		// <·µ»ØÓï¾ä>;
+		// <è¿”å›è¯­å¥>;
 		t = returnStatement();
 		if (!match(TokenType::SEMICOLON))
 		{
 			errorProcess(ErrorType::SENTENCE_ERROR);
-			// ÉÙ·ÖºÅµ±Ç°Óï¾ä²»Ëã´í
+			// å°‘åˆ†å·å½“å‰è¯­å¥ä¸ç®—é”™
 			return t;
 		}
 	}
@@ -1013,7 +1013,7 @@ TreeNode* statement() {
 		if (!match(TokenType::SEMICOLON))
 		{
 			errorProcess(ErrorType::SENTENCE_ERROR);
-			// ÉÙ·ÖºÅµ±Ç°Óï¾ä²»Ëã´í
+			// å°‘åˆ†å·å½“å‰è¯­å¥ä¸ç®—é”™
 			return t;
 		}
 	}
@@ -1021,16 +1021,16 @@ TreeNode* statement() {
 }
 
 
-//27. < ¸³ÖµÓï¾ä > :: = <±êÊ¶·û>[¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯]£½<ËãÊõ±í´ïÊ½>
+//27. < èµ‹å€¼è¯­å¥ > :: = <æ ‡è¯†ç¬¦>[â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™]ï¼<ç®—æœ¯è¡¨è¾¾å¼>
 TreeNode* assignStatement() {
 	TreeNode* t = newStmtNode(StmtKind::Assign_StmtK);
-	// ¸Ã½Úµã ÓĞÁ½¸ö¸öº¢×Ó£º±êÊ¶·û£¨´æÔÚ¸Ã½ÚµãÖĞ£©¡¢±í´ïÊ½¡¢Êı×éÏÂ±ê±í´ïÊ½£¨¿ÉÑ¡£©£¨ÔÚ×Ó½Úµã£©
+	// è¯¥èŠ‚ç‚¹ æœ‰ä¸¤ä¸ªä¸ªå­©å­ï¼šæ ‡è¯†ç¬¦ï¼ˆå­˜åœ¨è¯¥èŠ‚ç‚¹ä¸­ï¼‰ã€è¡¨è¾¾å¼ã€æ•°ç»„ä¸‹æ ‡è¡¨è¾¾å¼ï¼ˆå¯é€‰ï¼‰ï¼ˆåœ¨å­èŠ‚ç‚¹ï¼‰
 	t->attr.name = copyString(g_token.value);
 	match(TokenType::IDEN);
 
-	if (TokenType::LBRACKET == g_token.opType) {		//	¸³Öµ¸øÊı×é
+	if (TokenType::LBRACKET == g_token.opType) {		//	èµ‹å€¼ç»™æ•°ç»„
 		match(TokenType::LBRACKET);
-		t->child[1] = exp();							// µÚ¶ş¸öº¢×ÓÊÇ Index
+		t->child[1] = exp();							// ç¬¬äºŒä¸ªå­©å­æ˜¯ Index
 		if (!match(TokenType::RBRACKET))
 		{
 			errorProcess(ErrorType::SENTENCE_ERROR);
@@ -1044,16 +1044,16 @@ TreeNode* assignStatement() {
 		t->error = true;
 		return t;
 	}
-	t->child[0] = exp();								// µÚÒ»¸öº¢×Ó£¬ÊÇÓÒ¶ËµÄ±í´ïÊ½
+	t->child[0] = exp();								// ç¬¬ä¸€ä¸ªå­©å­ï¼Œæ˜¯å³ç«¯çš„è¡¨è¾¾å¼
 
 	return t;
 }
 
 
-//28. < Ìõ¼şÓï¾ä > :: = if ¡®(¡¯<²¼¶û±í´ïÊ½>¡®)¡¯<Óï¾ä>£Ûelse<Óï¾ä>£İ
+//28. < æ¡ä»¶è¯­å¥ > :: = if â€˜(â€™<å¸ƒå°”è¡¨è¾¾å¼>â€˜)â€™<è¯­å¥>ï¼»else<è¯­å¥>ï¼½
 TreeNode* ifStatement() {
 	TreeNode* t = newStmtNode(StmtKind::If_StmtK);
-	// ÓĞÈı¸öº¢×Ó£¬ bool±í´ïÊ½¡¢thenÓï¾ä¡¢elseÓï¾ä
+	// æœ‰ä¸‰ä¸ªå­©å­ï¼Œ boolè¡¨è¾¾å¼ã€thenè¯­å¥ã€elseè¯­å¥
 
 	match(TokenType::IF);
 	if (!match(TokenType::LPARENTHES))
@@ -1063,7 +1063,7 @@ TreeNode* ifStatement() {
 		return t;
 	}
 
-	t->child[0] = boolExp();				// ²¼¶û±í´ïÊ½
+	t->child[0] = boolExp();				// å¸ƒå°”è¡¨è¾¾å¼
 
 	if (!match(TokenType::RPARENTHES))
 	{
@@ -1072,21 +1072,21 @@ TreeNode* ifStatement() {
 		return t;
 	}
 
-	t->child[1] = statement();				// thenÓï¾ä
+	t->child[1] = statement();				// thenè¯­å¥
 
 	if (TokenType::ELSE == g_token.opType) {
 		match(TokenType::ELSE);
-		t->child[2] = statement();			// elseÓï¾ä
+		t->child[2] = statement();			// elseè¯­å¥
 	}
 	return t;
 }
 
 /*
-29. < Ñ­»·Óï¾ä > :: = while ¡®(¡¯<²¼¶û±í´ïÊ½>¡®)¡¯<Óï¾ä> | for¡®(¡¯<¸³ÖµÓï¾ä>; <²¼¶û±í´ïÊ½>; <¸³ÖµÓï¾ä>¡®)¡¯<Óï¾ä>
+29. < å¾ªç¯è¯­å¥ > :: = while â€˜(â€™<å¸ƒå°”è¡¨è¾¾å¼>â€˜)â€™<è¯­å¥> | forâ€˜(â€™<èµ‹å€¼è¯­å¥>; <å¸ƒå°”è¡¨è¾¾å¼>; <èµ‹å€¼è¯­å¥>â€˜)â€™<è¯­å¥>
 
-forÑ­»·ÖĞµÄÈı¸ö±í´ïÊ½£º³õÊ¼»¯±í´ïÊ½¡¢Ñ­»·±äÁ¿²âÊÔ±í´ïÊ½¡¢Ñ­»·±äÁ¿ĞŞÕı±í´ïÊ½
+forå¾ªç¯ä¸­çš„ä¸‰ä¸ªè¡¨è¾¾å¼ï¼šåˆå§‹åŒ–è¡¨è¾¾å¼ã€å¾ªç¯å˜é‡æµ‹è¯•è¡¨è¾¾å¼ã€å¾ªç¯å˜é‡ä¿®æ­£è¡¨è¾¾å¼
 */
-// while ¡®(¡¯<²¼¶û±í´ïÊ½>¡®)¡¯<Óï¾ä>
+// while â€˜(â€™<å¸ƒå°”è¡¨è¾¾å¼>â€˜)â€™<è¯­å¥>
 TreeNode* whileLoopStatement() {
 	TreeNode* t = newStmtNode(StmtKind::While_StmtK);
 	match(TokenType::WHILE);
@@ -1110,7 +1110,7 @@ TreeNode* whileLoopStatement() {
 }
 
 
-// for¡®(¡¯<¸³ÖµÓï¾ä>; <²¼¶û±í´ïÊ½>; <¸³ÖµÓï¾ä>¡®)¡¯<Óï¾ä>
+// forâ€˜(â€™<èµ‹å€¼è¯­å¥>; <å¸ƒå°”è¡¨è¾¾å¼>; <èµ‹å€¼è¯­å¥>â€˜)â€™<è¯­å¥>
 TreeNode* forLoopStatement() {
 	TreeNode* t = newStmtNode(StmtKind::For_StmtK);
 	TreeNode* p = NULL;
@@ -1147,20 +1147,20 @@ TreeNode* forLoopStatement() {
 	}
 
 	t->child[2] = statement();
-	if (NULL == t->child[2]) {		// forÑ­»·ÊÇ¿ÕÓï¾ä
-		t->child[2] = p;					// °ÑforÑ­»·Ä©Î²µÄ¸³ÖµÓï¾äÖ±½ÓÌî³ä
+	if (NULL == t->child[2]) {		// forå¾ªç¯æ˜¯ç©ºè¯­å¥
+		t->child[2] = p;					// æŠŠforå¾ªç¯æœ«å°¾çš„èµ‹å€¼è¯­å¥ç›´æ¥å¡«å……
 	}
 	else {
 		
-		t->child[2]->sibling = p;			// °ÑµÚÈı¸ö¸³ÖµÓï¾ä·Åµ½ Ñ­»·ÌåÄ©Î²
+		t->child[2]->sibling = p;			// æŠŠç¬¬ä¸‰ä¸ªèµ‹å€¼è¯­å¥æ”¾åˆ° å¾ªç¯ä½“æœ«å°¾
 	}
 	
 	return t;
 }
 
 
-//30. < ÓĞ·µ»ØÖµµÄº¯Êıµ÷ÓÃÓï¾ä > :: = <±êÊ¶·û>¡®(¡¯<Öµ²ÎÊı±í>¡®)¡¯
-// ±í´ïÊ½ÖĞÓÃ´Ëº¯Êı, ½«Æä¿´×öÒ»¸öÌØ¶¨op£¬ÓĞÁ½¸ö×Ó½Úµã£ºº¯ÊıÃû¡¢²ÎÊıÁĞ±í
+//30. < æœ‰è¿”å›å€¼çš„å‡½æ•°è°ƒç”¨è¯­å¥ > :: = <æ ‡è¯†ç¬¦>â€˜(â€™<å€¼å‚æ•°è¡¨>â€˜)â€™
+// è¡¨è¾¾å¼ä¸­ç”¨æ­¤å‡½æ•°, å°†å…¶çœ‹åšä¸€ä¸ªç‰¹å®šopï¼Œæœ‰ä¸¤ä¸ªå­èŠ‚ç‚¹ï¼šå‡½æ•°åã€å‚æ•°åˆ—è¡¨
 TreeNode* callWithReturn() {
 	TreeNode* t = newExpNode(ExpKind::Op_ExpK);
 	t->attr.op = TokenType::CALL;
@@ -1188,8 +1188,8 @@ TreeNode* callWithReturn() {
 	return t;
 }
 
-//31. < ÎŞ·µ»ØÖµµÄº¯Êıµ÷ÓÃÓï¾ä > :: = <±êÊ¶·û>¡®(¡¯<Öµ²ÎÊı±í>¡®)¡¯
-// µ¥´¿µ÷ÓÃÓï¾ä ÓÃ´Ëº¯Êı
+//31. < æ— è¿”å›å€¼çš„å‡½æ•°è°ƒç”¨è¯­å¥ > :: = <æ ‡è¯†ç¬¦>â€˜(â€™<å€¼å‚æ•°è¡¨>â€˜)â€™
+// å•çº¯è°ƒç”¨è¯­å¥ ç”¨æ­¤å‡½æ•°
 TreeNode* callWithoutReturn() {
 	TreeNode* t = newStmtNode(StmtKind::Call_StmtK);
 
@@ -1216,9 +1216,9 @@ TreeNode* callWithoutReturn() {
 
 
 /*
-32. < Öµ²ÎÊı±í > :: = <ËãÊõ±í´ïÊ½>{ ,<ËãÊõ±í´ïÊ½> }£ü<¿Õ>
+32. < å€¼å‚æ•°è¡¨ > :: = <ç®—æœ¯è¡¨è¾¾å¼>{ ,<ç®—æœ¯è¡¨è¾¾å¼> }ï½œ<ç©º>
 
->>>>>>>> ¿ÕÓï¾ä£ºÕâÀïÒ²ÓĞÒ»´¦¿ÕÓï¾ä£¬µ«follow¼¯Ö»ÓĞ')'Ò»¸öÔªËØ
+>>>>>>>> ç©ºè¯­å¥ï¼šè¿™é‡Œä¹Ÿæœ‰ä¸€å¤„ç©ºè¯­å¥ï¼Œä½†followé›†åªæœ‰')'ä¸€ä¸ªå…ƒç´ 
 */
 TreeNode* valueParaTable() {
 	TreeNode* t = NULL;
@@ -1236,7 +1236,7 @@ TreeNode* valueParaTable() {
 }
 
 
-//33. < ¶ÁÓï¾ä > :: = scanf ¡®(¡¯<±êÊ¶·û>{, <±êÊ¶·û>}¡®)¡¯
+//33. < è¯»è¯­å¥ > :: = scanf â€˜(â€™<æ ‡è¯†ç¬¦>{, <æ ‡è¯†ç¬¦>}â€˜)â€™
 TreeNode* scanfStatement() {
 	TreeNode* t = newStmtNode(StmtKind::Read_StmtK);
 	TreeNode* p = NULL;
@@ -1284,9 +1284,9 @@ TreeNode* scanfStatement() {
 
 
 /*
-34. < Ğ´Óï¾ä > :: =  printf ¡®(¡¯<×Ö·û´®>¡®)¡¯ | printf ¡®(¡¯<ËãÊõ±í´ïÊ½>¡®)¡¯
+34. < å†™è¯­å¥ > :: =  printf â€˜(â€™<å­—ç¬¦ä¸²>â€˜)â€™ | printf â€˜(â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜)â€™
 
-¶¨ÒåĞ´Óï¾äÊÇÒÔprintfÎªÆğÊ¼µÄ£¬ºó½ÓÔ²À¨ºÅÀ¨ÆğÀ´µÄ×Ö·û´®»ò±í´ïÊ½»òÕßÁ½Õß¶¼ÓĞ£¬ÈôÁ½Õß¶¼´æÔÚ£¬Ôò×Ö·û´®ÔÚÏÈ£¬ÒÔ¶ººÅ¸ô¿ª¡£
+å®šä¹‰å†™è¯­å¥æ˜¯ä»¥printfä¸ºèµ·å§‹çš„ï¼Œåæ¥åœ†æ‹¬å·æ‹¬èµ·æ¥çš„å­—ç¬¦ä¸²æˆ–è¡¨è¾¾å¼æˆ–è€…ä¸¤è€…éƒ½æœ‰ï¼Œè‹¥ä¸¤è€…éƒ½å­˜åœ¨ï¼Œåˆ™å­—ç¬¦ä¸²åœ¨å…ˆï¼Œä»¥é€—å·éš”å¼€ã€‚
 */
 TreeNode* printfStatement() {
 	TreeNode* t = newStmtNode(StmtKind::Write_StmtK);
@@ -1320,7 +1320,7 @@ TreeNode* printfStatement() {
 	return t;
 }
 
-//35. < ·µ»ØÓï¾ä > :: = return[¡®(¡¯<ËãÊõ±í´ïÊ½>¡®)¡¯]
+//35. < è¿”å›è¯­å¥ > :: = return[â€˜(â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜)â€™]
 TreeNode* returnStatement() {
 	TreeNode* t = newStmtNode(StmtKind::Ret_StmtK);
 	match(TokenType::RETURN);
@@ -1338,15 +1338,15 @@ TreeNode* returnStatement() {
 }
 
 
-/************************  ÒÔÉÏ£ºÓï·¨·ÖÎöµÚÈı´Î²âÊÔÄÚÈİ  ***********************/
+/************************  ä»¥ä¸Šï¼šè¯­æ³•åˆ†æç¬¬ä¸‰æ¬¡æµ‹è¯•å†…å®¹  ***********************/
 
-//36. < ËãÊõ±í´ïÊ½ > :: = £Û£«£ü£­£İ<Ïî>{ <¼Ó·¨ÔËËã·û><Ïî> }
+//36. < ç®—æœ¯è¡¨è¾¾å¼ > :: = ï¼»ï¼‹ï½œï¼ï¼½<é¡¹>{ <åŠ æ³•è¿ç®—ç¬¦><é¡¹> }
 TreeNode* exp() {
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
 	bool isNegative = false;
 
-	// £Û£«£ü£­£İ
+	// ï¼»ï¼‹ï½œï¼ï¼½
 	if (TokenType::PLUS == g_token.opType || TokenType::MINU == g_token.opType) {
 		if (TokenType::MINU == g_token.opType) {
 			isNegative = true;
@@ -1360,13 +1360,13 @@ TreeNode* exp() {
 	t = term();
 
 	if (isNegative) {
-		// ÕıµÄ ²»×ö´¦Àí£¬¸ºÊı »á°ÑµÚÒ»ÏîµÄÖµ£¬ ±äºÅ
+		// æ­£çš„ ä¸åšå¤„ç†ï¼Œè´Ÿæ•° ä¼šæŠŠç¬¬ä¸€é¡¹çš„å€¼ï¼Œ å˜å·
 		//p = newExpNode(ExpKind::Op_ExpK);
 		//p->attr.op = TokenType::NEGATIVE;
 		//p->child[0] = t;
 		//t = p;
 
-		// ĞÂ·½·¨£º ¿ªÊ¼µÄ¸ººÅ×ª»»³É£º 0 - term
+		// æ–°æ–¹æ³•ï¼š å¼€å§‹çš„è´Ÿå·è½¬æ¢æˆï¼š 0 - term
 		p = newExpNode(ExpKind::Op_ExpK);
 		p->attr.op = TokenType::MINU;
 		p->child[1] = t;
@@ -1376,7 +1376,7 @@ TreeNode* exp() {
 		p->attr.val = 0;
 		t->child[0] = p;
 	}
-	// { <¼Ó·¨ÔËËã·û><Ïî> }
+	// { <åŠ æ³•è¿ç®—ç¬¦><é¡¹> }
 	while (TokenType::PLUS == g_token.opType || TokenType::MINU == g_token.opType) {
 		if (TokenType::MINU == g_token.opType) {
 			p = newExpNode(ExpKind::Op_ExpK);
@@ -1401,7 +1401,7 @@ TreeNode* exp() {
 }
 
 
-//37. < Ïî > :: = <Òò×Ó>{ <³Ë·¨ÔËËã·û><Òò×Ó> }
+//37. < é¡¹ > :: = <å› å­>{ <ä¹˜æ³•è¿ç®—ç¬¦><å› å­> }
 TreeNode* term() {
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
@@ -1430,21 +1430,21 @@ TreeNode* term() {
 	return t;
 }
 
-//38. < Òò×Ó > :: = <±êÊ¶·û>£ü<±êÊ¶·û>¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯£ü<ÕûÊı> | <×Ö·û>£ü<ÓĞ·µ»ØÖµº¯Êıµ÷ÓÃÓï¾ä> | ¡®(¡¯<ËãÊõ±í´ïÊ½>¡®)¡¯
+//38. < å› å­ > :: = <æ ‡è¯†ç¬¦>ï½œ<æ ‡è¯†ç¬¦>â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™ï½œ<æ•´æ•°> | <å­—ç¬¦>ï½œ<æœ‰è¿”å›å€¼å‡½æ•°è°ƒç”¨è¯­å¥> | â€˜(â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜)â€™
 TreeNode* factor() {
-	// <±êÊ¶·û>£ü<±êÊ¶·û>¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯£ü<ÓĞ·µ»ØÖµº¯Êıµ÷ÓÃÓï¾ä>
+	// <æ ‡è¯†ç¬¦>ï½œ<æ ‡è¯†ç¬¦>â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™ï½œ<æœ‰è¿”å›å€¼å‡½æ•°è°ƒç”¨è¯­å¥>
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
 
 	if (TokenType::IDEN == g_token.opType) {
-		// ´Ë´¦ÒªÅĞ¶ÏÊÇ µ÷ÓÃ»¹ÊÇ ¸³Öµ
+		// æ­¤å¤„è¦åˆ¤æ–­æ˜¯ è°ƒç”¨è¿˜æ˜¯ èµ‹å€¼
 		flashBackIndex = g_lexBegin;
 		flashBackLineNum = g_lineNumber;
 		getNextToken();
 
 		bool isCall = false;
 		if (TokenType::LPARENTHES == g_token.opType) {
-			// º¯Êıµ÷ÓÃ
+			// å‡½æ•°è°ƒç”¨
 			isCall = true;
 		}
 		
@@ -1452,12 +1452,12 @@ TreeNode* factor() {
 		g_lineNumber = flashBackLineNum;
 		getNextToken();
 
-		// <ÓĞ·µ»ØÖµº¯Êıµ÷ÓÃÓï¾ä>
+		// <æœ‰è¿”å›å€¼å‡½æ•°è°ƒç”¨è¯­å¥>
 		if (isCall) {
 			t = callWithReturn();
 		}
 		else {
-			// <±êÊ¶·û>£ü<±êÊ¶·û>¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯
+			// <æ ‡è¯†ç¬¦>ï½œ<æ ‡è¯†ç¬¦>â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™
 			t = newExpNode(ExpKind::Iden_ExpK);
 			t->attr.name = copyString(g_token.value);
 			match(TokenType::IDEN);
@@ -1496,12 +1496,12 @@ TreeNode* factor() {
 
 }
 
-//39. < ²¼¶û±í´ïÊ½ > :: = <²¼¶ûÏî>{ ¡® || ¡¯ <²¼¶ûÏî> }
+//39. < å¸ƒå°”è¡¨è¾¾å¼ > :: = <å¸ƒå°”é¡¹>{ â€˜ || â€™ <å¸ƒå°”é¡¹> }
 TreeNode* boolExp() {
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
 	t = boolTerm();
-	// { ¡® || ¡¯ <²¼¶ûÏî> }
+	// { â€˜ || â€™ <å¸ƒå°”é¡¹> }
 	while (TokenType::OR == g_token.opType) {
 		p = newBoolExpNode(BoolExpKind::Op_BoolEK);
 		p->attr.op = TokenType::OR;
@@ -1514,12 +1514,12 @@ TreeNode* boolExp() {
 	return t;
 }
 
-//40. < ²¼¶ûÏî > :: = <²¼Òò×Ó>{ && <²¼Òò×Ó> }
+//40. < å¸ƒå°”é¡¹ > :: = <å¸ƒå› å­>{ && <å¸ƒå› å­> }
 TreeNode* boolTerm() {
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
 	t = boolFactor();
-	// { && <²¼Òò×Ó> }
+	// { && <å¸ƒå› å­> }
 	while (TokenType::AND == g_token.opType) {
 		p = newBoolExpNode(BoolExpKind::Op_BoolEK);
 		p->attr.op = TokenType::AND;
@@ -1533,7 +1533,7 @@ TreeNode* boolTerm() {
 }
 
 
-//41. < ²¼Òò×Ó > :: = false | true | !<²¼Òò×Ó> | ¡®(¡®<²¼¶û±í´ïÊ½>¡¯)¡¯ | <Ìõ¼şÒò×Ó>[<Ìõ¼şÔËËã·û> <Ìõ¼şÒò×Ó>]
+//41. < å¸ƒå› å­ > :: = false | true | !<å¸ƒå› å­> | â€˜(â€˜<å¸ƒå°”è¡¨è¾¾å¼>â€™)â€™ | <æ¡ä»¶å› å­>[<æ¡ä»¶è¿ç®—ç¬¦> <æ¡ä»¶å› å­>]
 TreeNode* boolFactor() {
 	TreeNode* t = NULL;
 	TreeNode* p = NULL;
@@ -1561,10 +1561,10 @@ TreeNode* boolFactor() {
 		t = boolExp();
 		match(TokenType::RPARENTHES);
 		break;
-	default: // <Ìõ¼şÒò×Ó>[<Ìõ¼şÔËËã·û> <Ìõ¼şÒò×Ó>]
+	default: // <æ¡ä»¶å› å­>[<æ¡ä»¶è¿ç®—ç¬¦> <æ¡ä»¶å› å­>]
 		//conditionFactor();
 		t = exp();
-		// [<Ìõ¼şÔËËã·û> <Ìõ¼şÒò×Ó>]
+		// [<æ¡ä»¶è¿ç®—ç¬¦> <æ¡ä»¶å› å­>]
 		if (TokenType::LSS == g_token.opType || TokenType::LEQ == g_token.opType ||
 			TokenType::GRE == g_token.opType || TokenType::GEQ == g_token.opType ||
 			TokenType::NEQ == g_token.opType || TokenType::EQL == g_token.opType
@@ -1603,19 +1603,19 @@ TreeNode* boolFactor() {
 }
 
 
-//42. < Ìõ¼şÒò×Ó > :: = <±êÊ¶·û>[¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯]£ü <ÕûÊı> | <×Ö·û> | <ÓĞ·µ»ØÖµº¯Êıµ÷ÓÃÓï¾ä>
-// ·½±ã´¦Àí£¬²¢²»Ê¹ÓÃ; ÓÃµÄÊÇ±í´ïÊ½À´Ê¶±ğ
+//42. < æ¡ä»¶å› å­ > :: = <æ ‡è¯†ç¬¦>[â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™]ï½œ <æ•´æ•°> | <å­—ç¬¦> | <æœ‰è¿”å›å€¼å‡½æ•°è°ƒç”¨è¯­å¥>
+// æ–¹ä¾¿å¤„ç†ï¼Œå¹¶ä¸ä½¿ç”¨; ç”¨çš„æ˜¯è¡¨è¾¾å¼æ¥è¯†åˆ«
 TreeNode* conditionFactor() {
-	// <±êÊ¶·û>£ü<±êÊ¶·û>¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯£ü<ÓĞ·µ»ØÖµº¯Êıµ÷ÓÃÓï¾ä>
+	// <æ ‡è¯†ç¬¦>ï½œ<æ ‡è¯†ç¬¦>â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™ï½œ<æœ‰è¿”å›å€¼å‡½æ•°è°ƒç”¨è¯­å¥>
 	if (TokenType::IDEN == g_token.opType) {
-		// ´Ë´¦ÒªÅĞ¶ÏÊÇ µ÷ÓÃ»¹ÊÇ ¸³Öµ
+		// æ­¤å¤„è¦åˆ¤æ–­æ˜¯ è°ƒç”¨è¿˜æ˜¯ èµ‹å€¼
 		flashBackIndex = g_lexBegin;
 		flashBackLineNum = g_lineNumber;
 		getNextToken();
 
 		bool isCall = false;
 		if (TokenType::LPARENTHES == g_token.opType) {
-			// º¯Êıµ÷ÓÃ
+			// å‡½æ•°è°ƒç”¨
 			isCall = true;
 		}
 
@@ -1623,12 +1623,12 @@ TreeNode* conditionFactor() {
 		g_lineNumber = flashBackLineNum;
 		getNextToken();
 
-		// <ÓĞ·µ»ØÖµº¯Êıµ÷ÓÃÓï¾ä>
+		// <æœ‰è¿”å›å€¼å‡½æ•°è°ƒç”¨è¯­å¥>
 		if (isCall) {
 			callWithReturn();
 		}
 		else {
-			// <±êÊ¶·û>£ü<±êÊ¶·û>¡®[¡¯<ËãÊõ±í´ïÊ½>¡®]¡¯
+			// <æ ‡è¯†ç¬¦>ï½œ<æ ‡è¯†ç¬¦>â€˜[â€™<ç®—æœ¯è¡¨è¾¾å¼>â€˜]â€™
 			match(TokenType::IDEN);
 			if (TokenType::LBRACKET == g_token.opType) {
 				match(TokenType::LBRACKET);
@@ -1651,8 +1651,8 @@ TreeNode* conditionFactor() {
 }
 
 /*
-ÊÂÊµÉÏ£¬ÕâÀï<Ìõ¼şÒò×Ó>²»Ïñ£¨ËãÊõ£©±í´ïÊ½ÖĞÒ»Ñù£¬ÕâÀï²»Ö§³ÖÇ¶Ì×£¬²»Ö§³Ö¡¯()¡¯£¬ÒòÎª²¼¶û±í´ïÊ½Éè¼ÆÆğÀ´·ûºÏÇ¶Ì×£¬
-	Ö÷ÒªÊÇÀ¨ºÅ²»ºÃ´¦Àí£»ÔİÊ±ÕâÃ´Éè¼Æ£¬È»ºóÈç¹ûÕæÒª±í´ïÊ½µÄ»°£¬¿ÉÒÔÔÚÇ°ÃæÏÈ¼ÆËã¸³Öµ¸øÒ»¸ö±äÁ¿
+äº‹å®ä¸Šï¼Œè¿™é‡Œ<æ¡ä»¶å› å­>ä¸åƒï¼ˆç®—æœ¯ï¼‰è¡¨è¾¾å¼ä¸­ä¸€æ ·ï¼Œè¿™é‡Œä¸æ”¯æŒåµŒå¥—ï¼Œä¸æ”¯æŒâ€™()â€™ï¼Œå› ä¸ºå¸ƒå°”è¡¨è¾¾å¼è®¾è®¡èµ·æ¥ç¬¦åˆåµŒå¥—ï¼Œ
+	ä¸»è¦æ˜¯æ‹¬å·ä¸å¥½å¤„ç†ï¼›æš‚æ—¶è¿™ä¹ˆè®¾è®¡ï¼Œç„¶åå¦‚æœçœŸè¦è¡¨è¾¾å¼çš„è¯ï¼Œå¯ä»¥åœ¨å‰é¢å…ˆè®¡ç®—èµ‹å€¼ç»™ä¸€ä¸ªå˜é‡
 */
 
 

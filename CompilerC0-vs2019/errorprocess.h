@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef ERRORPROCESS_H
 #define ERRORPROCESS_H
 

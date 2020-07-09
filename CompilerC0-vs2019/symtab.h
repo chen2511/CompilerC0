@@ -1,25 +1,25 @@
-#pragma once
+ï»¿#pragma once
 #ifndef SYMTAB_H
 #define SYMTAB_H
 
 #include "global.h"
 
-// ³õÊ¼»¯Ò»ÕÅ µ¥±í£»Ã¿¸öº¯ÊıÒ»ÕÅ±í¡¢È«¾ÖÒ»ÕÅ±í
+// åˆå§‹åŒ–ä¸€å¼  å•è¡¨ï¼›æ¯ä¸ªå‡½æ•°ä¸€å¼ è¡¨ã€å…¨å±€ä¸€å¼ è¡¨
 SymTab* initSimpleSymTable(char* name);
 
-// ·µ»ØÊÇ·ñ²åÈë³É¹¦£¬Èç¿Õ¼ä²»×ã¡¢ÖØ¸´¶¨Òå
+// è¿”å›æ˜¯å¦æ’å…¥æˆåŠŸï¼Œå¦‚ç©ºé—´ä¸è¶³ã€é‡å¤å®šä¹‰
 bool insert_SymTab(bool isGlobal, int lineno, char* name, IDType type, Type valuetype, int value, int vec = -1, FuncInfo* p = NULL);
 
-// ²åÈëÁÙÊ±±äÁ¿
+// æ’å…¥ä¸´æ—¶å˜é‡
 void insertTempVar2SymTab(char* name);
 
-// ·µ»Ø·ûºÅ½ÚµãÖ¸Õë¡¢Î´¶¨Òå·µ»Ø¿ÕÖ¸Õë£»
+// è¿”å›ç¬¦å·èŠ‚ç‚¹æŒ‡é’ˆã€æœªå®šä¹‰è¿”å›ç©ºæŒ‡é’ˆï¼›
 Symbol* lookUp_SymTab(char* name);
 
-// Ä¿±ê´úÂëÉú³ÉÊ±Ê¹ÓÃ£¬ÊÇ·ñÈ«¾Ö±äÁ¿
+// ç›®æ ‡ä»£ç ç”Ÿæˆæ—¶ä½¿ç”¨ï¼Œæ˜¯å¦å…¨å±€å˜é‡
 Symbol* lookUp_SymTab(char* name, bool& isGlobal);
 
-// ÓïÒå·ÖÎö
+// è¯­ä¹‰åˆ†æ
 
 
 #endif // !SYMTAB_H

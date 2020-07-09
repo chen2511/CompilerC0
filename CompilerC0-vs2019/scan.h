@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 #ifndef SCAN_H
 #define SCAN_H
 
 #include "global.h"
 
-// ·µ»ØÏÂÒ»¸ötoken
+// è¿”å›žä¸‹ä¸€ä¸ªtoken
 void getNextToken();
 
 

@@ -1,13 +1,13 @@
-#include "ir.h"
+ï»¿#include "ir.h"
 #include "symtab.h"
 
-// ÏÂÒ»¸öËÄÔªÊ½µÄµØÖ·
+// ä¸‹ä¸€ä¸ªå››å…ƒå¼çš„åœ°å€
 int NXQ = 0;
-// Éú³ÉÁÙÊ±±äÁ¿
+// ç”Ÿæˆä¸´æ—¶å˜é‡
 int tempvarcnt = 0;
 //
 int labelcnt = 0;
-// ËÄÔªÊ½ÁĞ±í
+// å››å…ƒå¼åˆ—è¡¨
 Quadvar quadvarlist[MAX_QUADVAR_NUM];
 
 char* stringlist[MAX_STRINGLIST_SIZE];
@@ -22,7 +22,7 @@ char* newempty();
 char* newitoa(int a);
 char* newlabel();
 
-// ²åÈë ĞòÁĞ£»³ıop£¬char* ¶¼ÊÇ¶¯Ì¬·ÖÅäµÄ; NXQ×ÔÔö
+// æ’å…¥ åºåˆ—ï¼›é™¤opï¼Œchar* éƒ½æ˜¯åŠ¨æ€åˆ†é…çš„; NXQè‡ªå¢
 void gen(const char* op, char* s1, char* s2, char* s3) {
 	strcpy(quadvarlist[NXQ].op, op);
 	//fprintf(IR_FILE, "%d:(%s,%s,%s,%s)\n", NXQ, op, s1, s2, s3);
@@ -65,9 +65,9 @@ void printIR() {
 	}
 }
 
- // ¼ì²é º¯Êıµ÷ÓÃ ²ÎÊıÁĞ±í £¬·µ»Ø¸öÊı
+ // æ£€æŸ¥ å‡½æ•°è°ƒç”¨ å‚æ•°åˆ—è¡¨ ï¼Œè¿”å›ä¸ªæ•°
 void insertPara(TreeNode* list) {
-	// ²ÎÊıÁĞ±íÊÇÒ»¸ö±í´ïÊ½ÁĞ±í£¬ÀïÃæµÄÃ¿Ò»¸ö±í´ïÊ½¶¼Òª¼ì²é
+	// å‚æ•°åˆ—è¡¨æ˜¯ä¸€ä¸ªè¡¨è¾¾å¼åˆ—è¡¨ï¼Œé‡Œé¢çš„æ¯ä¸€ä¸ªè¡¨è¾¾å¼éƒ½è¦æ£€æŸ¥
 	TreeNode* slist = list;
 	while (NULL != list) {
 		IR_Exp(list);
@@ -83,7 +83,7 @@ void insertPara(TreeNode* list) {
 	
 }
 
-// malloc int ×ªchar*
+// malloc int è½¬char*
 char* newitoa(int a) {
 	char* ss;
 	ss = (char*)malloc(20);
@@ -98,7 +98,7 @@ char* newitoa(int a) {
 	return ss;
 }
 
-// Ìî³ä¿Õ×Ö·û´®£»µÚÒ»´ÎÍê³É³õÊ¼»¯£»Ö®ºóÖ±½Ó·µ»Ø
+// å¡«å……ç©ºå­—ç¬¦ä¸²ï¼›ç¬¬ä¸€æ¬¡å®Œæˆåˆå§‹åŒ–ï¼›ä¹‹åç›´æ¥è¿”å›
 char* newempty() {
 	static char* em;
 	if (em != NULL) {
@@ -117,7 +117,7 @@ char* newempty() {
 	
 }
 
-// ·µ»ØÒ»¸öÁÙÊ±±äÁ¿ $1¡­¡­
+// è¿”å›ä¸€ä¸ªä¸´æ—¶å˜é‡ $1â€¦â€¦
 char* newtemp() {
 	char* tempvar = (char*)malloc(20);
 	if (NULL != tempvar) {
@@ -131,7 +131,7 @@ char* newtemp() {
 	return tempvar;
 }
 
-// ·µ»Ølabel
+// è¿”å›label
 char* newlabel() {
 	char* label = (char*)malloc(sizeof(char) * 10);
 	if (NULL != label) {
@@ -147,13 +147,13 @@ char* newlabel() {
 
 void IR_Exp(TreeNode* tree) {
 	/*
-		bug: printfĞèÒªÈ·¶¨ÀàĞÍ£¬Ä¬ÈÏint
+		bug: printféœ€è¦ç¡®å®šç±»å‹ï¼Œé»˜è®¤int
 	*/
 	tree->type = Type::T_INTEGER;
 
 
 	if (ExpKind::Num_ExpK == tree->kind.exp) {
-		// int »òÕß char
+		// int æˆ–è€… char
 		char* num = (char*)malloc(20);
 		if (NULL != num) {
 			itoa(tree->attr.val, num, 10);
@@ -167,21 +167,21 @@ void IR_Exp(TreeNode* tree) {
 	else if (ExpKind::Iden_ExpK == tree->kind.exp) {
 		tree->place = tree->attr.name;
 		/*
-			bug: printfĞèÒªÈ·¶¨ÀàĞÍ
+			bug: printféœ€è¦ç¡®å®šç±»å‹
 		*/
 		/*Symbol* sb = lookUp_SymTab(tree->attr.name);
 		tree->type = sb->valueType;*/
 
 	}
 	else {				//ExpKind::Op_ExpK
-		// Ö»ÓĞOpµÄÎ»ÖÃ²Å»áÉú³ÉËÄÔªÊ½£»¶¼ÊÇ¼ÆËãÖĞ¼ä±äÁ¿
-		if (tree->attr.op == TokenType::CALL) {				// º¯Êıµ÷ÓÃ Òª¼ì²é£ºº¯ÊıÊÇ·ñÉùÃ÷£¬ÒÔ¼°²ÎÊı¸öÊıÊÇ·ñÆ¥Åä£¬ÊÇ·ñÓĞ·µ»ØÖµ
+		// åªæœ‰Opçš„ä½ç½®æ‰ä¼šç”Ÿæˆå››å…ƒå¼ï¼›éƒ½æ˜¯è®¡ç®—ä¸­é—´å˜é‡
+		if (tree->attr.op == TokenType::CALL) {				// å‡½æ•°è°ƒç”¨ è¦æ£€æŸ¥ï¼šå‡½æ•°æ˜¯å¦å£°æ˜ï¼Œä»¥åŠå‚æ•°ä¸ªæ•°æ˜¯å¦åŒ¹é…ï¼Œæ˜¯å¦æœ‰è¿”å›å€¼
 			IR_Exp(tree->child[0]);
 			insertPara(tree->child[1]);
 			tree->place = newtemp();
 			gen("callret", tree->child[0]->place, newempty(), tree->place);
 		}
-		else if (tree->attr.op == TokenType::ARRAYAT) {			// ÏÂ±êÔËËã£¬¼ì²é±êÊ¶·ûÊÇ·ñÊÇÊı×é£¬ ²¢ÇÒ¼ì²éindexÎ»ÖÃµÄ±í´ïÊ½£»µ«²»¼ì²éÔ½½ç
+		else if (tree->attr.op == TokenType::ARRAYAT) {			// ä¸‹æ ‡è¿ç®—ï¼Œæ£€æŸ¥æ ‡è¯†ç¬¦æ˜¯å¦æ˜¯æ•°ç»„ï¼Œ å¹¶ä¸”æ£€æŸ¥indexä½ç½®çš„è¡¨è¾¾å¼ï¼›ä½†ä¸æ£€æŸ¥è¶Šç•Œ
 			IR_Exp(tree->child[0]);
 			IR_Exp(tree->child[1]);
 
@@ -189,7 +189,7 @@ void IR_Exp(TreeNode* tree) {
 			gen("getarray", tree->child[0]->place, tree->child[1]->place, tree->place);
 
 		}
-		else {							// +-*/ ¼ì²é×óÓÒ½Úµã
+		else {							// +-*/ æ£€æŸ¥å·¦å³èŠ‚ç‚¹
 			IR_Exp(tree->child[0]);
 			IR_Exp(tree->child[1]);
 			tree->place = newtemp();
@@ -216,7 +216,7 @@ void IR_Exp(TreeNode* tree) {
 
 
 void IR_BoolExp(TreeNode* tree) {
-	// bool Exp ÀïÃæÓĞ 4 ÖÖ½Úµã£º ²¼¶ûop¡¢²¼¶û³£Á¿¡¢¹ØÏµop¡¢±í´ïÊ½
+	// bool Exp é‡Œé¢æœ‰ 4 ç§èŠ‚ç‚¹ï¼š å¸ƒå°”opã€å¸ƒå°”å¸¸é‡ã€å…³ç³»opã€è¡¨è¾¾å¼
 	if (tree->nodekind == NodeKind::ExpK) {
 		IR_Exp(tree);
 		tree->TC = NXQ;
@@ -225,7 +225,7 @@ void IR_BoolExp(TreeNode* tree) {
 		gen("j", newempty(), newempty(), zero);
 	}
 	else {
-		if (tree->kind.bexp == BoolExpKind::ConOp_BoolEK) {			// ±í´ïÊ½ ConOp ±í´ïÊ½
+		if (tree->kind.bexp == BoolExpKind::ConOp_BoolEK) {			// è¡¨è¾¾å¼ ConOp è¡¨è¾¾å¼
 			IR_Exp(tree->child[0]);
 			IR_Exp(tree->child[1]);
 			tree->TC = NXQ;
@@ -256,7 +256,7 @@ void IR_BoolExp(TreeNode* tree) {
 			gen("j", newempty(), newempty(), zero);
 		}
 		else if (tree->kind.bexp == BoolExpKind::Const_BoolEK) {
-			// ³£Á¿ ,ÓëexpÏàÍ¬		true¡¢false
+			// å¸¸é‡ ,ä¸expç›¸åŒ		trueã€false
 			char* tt;
 
 			tt = (char*)malloc(5);
@@ -269,7 +269,7 @@ void IR_BoolExp(TreeNode* tree) {
 			gen("jnz", tree->place, newempty(), zero);
 			gen("j", newempty(), newempty(), zero);
 		}
-		else {  // BoolExpKind::Op_BoolEK£º Óë»ò·Ç
+		else {  // BoolExpKind::Op_BoolEKï¼š ä¸æˆ–é
 			if (TokenType::NOT == tree->attr.op) {
 				IR_BoolExp(tree->child[0]);
 				tree->FC = tree->child[0]->TC;
@@ -290,8 +290,8 @@ void IR_BoolExp(TreeNode* tree) {
 				IR_BoolExp(tree->child[0]);
 				char* ll = newlabel();
 				gen("lab", newempty(), newempty(), ll);
-				// ·ÖÎö£º´Ë´¦»ØÌîÊÇÃ»ÓĞÎÊÌâµÄ£¬ÒòÎª£º»ØÌî¿Ï¶¨ÊÇÌîÇ°ÃæËÄÔªÊ½£¬ÌîµÄĞòºÅ¾ÍÊÇNXQ£¬
-				// Ö»²»¹ıÕâÀïnewlabel£¬´úÌæNXQ£¬Ò²¾ÍÊÇÈ«²¿×ªµ½Õâ¸ölabelµÄµØ·½£¬¿Ï¶¨ÊÇ²»»á³öÏÖË³ĞòÉÏµÄÎÊÌâ
+				// åˆ†æï¼šæ­¤å¤„å›å¡«æ˜¯æ²¡æœ‰é—®é¢˜çš„ï¼Œå› ä¸ºï¼šå›å¡«è‚¯å®šæ˜¯å¡«å‰é¢å››å…ƒå¼ï¼Œå¡«çš„åºå·å°±æ˜¯NXQï¼Œ
+				// åªä¸è¿‡è¿™é‡Œnewlabelï¼Œä»£æ›¿NXQï¼Œä¹Ÿå°±æ˜¯å…¨éƒ¨è½¬åˆ°è¿™ä¸ªlabelçš„åœ°æ–¹ï¼Œè‚¯å®šæ˜¯ä¸ä¼šå‡ºç°é¡ºåºä¸Šçš„é—®é¢˜
 				backPatch(tree->child[0]->FC, ll);
 				tree->TC = tree->child[0]->TC;
 
@@ -304,10 +304,10 @@ void IR_BoolExp(TreeNode* tree) {
 	}
 }
 
-// µİ¹é±éÀúAST
-// ±éÀú·½Ê½±È½Ï¸´ÔÓ£º
-// ºóĞò£º±í´ïÊ½¡¢²¼¶û±í´ïÊ½
-// ÖĞĞò£ºÓï¾ä£¬ÓĞº¢×ÓµÄÓï¾äÒ»°ãcontinue
+// é€’å½’éå†AST
+// éå†æ–¹å¼æ¯”è¾ƒå¤æ‚ï¼š
+// ååºï¼šè¡¨è¾¾å¼ã€å¸ƒå°”è¡¨è¾¾å¼
+// ä¸­åºï¼šè¯­å¥ï¼Œæœ‰å­©å­çš„è¯­å¥ä¸€èˆ¬continue
 void IR_Analyze(TreeNode* tree)
 {
 	if (NULL == tree)
@@ -329,7 +329,7 @@ void IR_Analyze(TreeNode* tree)
 				IR_Analyze(tree->child[0]);
 			}
 			break;
-			case DecKind::Const_DefK:			// ³£Á¿¶¨Òå
+			case DecKind::Const_DefK:			// å¸¸é‡å®šä¹‰
 			{
 				TreeNode* idlist = tree->child[0];
 
@@ -355,7 +355,7 @@ void IR_Analyze(TreeNode* tree)
 				IR_Analyze(tree->child[0]);
 			}
 			break;
-			case DecKind::Var_DefK:					// ±äÁ¿¶¨Òå
+			case DecKind::Var_DefK:					// å˜é‡å®šä¹‰
 			{
 				TreeNode* idlist = tree->child[0];
 				char* name;
@@ -371,9 +371,9 @@ void IR_Analyze(TreeNode* tree)
 				}
 			}
 			break;
-			case DecKind::Func_DecK:					// º¯Êı¶¨Òå
+			case DecKind::Func_DecK:					// å‡½æ•°å®šä¹‰
 			{
-				// ´Ë´¦bug£º tree->type  >> tree->pfinfo->rettype
+				// æ­¤å¤„bugï¼š tree->type  >> tree->pfinfo->rettype
 				gen("Func", 
 					(tree->pfinfo->rettype == Type::T_INTEGER) ? (char*)"int" : (tree->pfinfo->rettype == Type::T_CHAR) ? (char*)"char" : (char*)"void",
 					newempty(),
@@ -404,12 +404,12 @@ void IR_Analyze(TreeNode* tree)
 				break;
 			}
 		}
-		else if (NodeKind::StmtK == tree->nodekind) {		// ´Ë´¦ÓĞÒ»Ğ©ÖØ´óbug£¬ caseÀïÃæ±ğĞ´return£»»á°ÑºóÃæµÄĞÖµÜ½ÚµãÌø¹ı
+		else if (NodeKind::StmtK == tree->nodekind) {		// æ­¤å¤„æœ‰ä¸€äº›é‡å¤§bugï¼Œ caseé‡Œé¢åˆ«å†™returnï¼›ä¼šæŠŠåé¢çš„å…„å¼ŸèŠ‚ç‚¹è·³è¿‡
 			switch (tree->kind.stmt)
 			{
-			case StmtKind::Assign_StmtK:					// ¸³ÖµÓï¾ä
+			case StmtKind::Assign_StmtK:					// èµ‹å€¼è¯­å¥
 			{
-				if (tree->child[1]) {		// ¸³¸øÊı×é
+				if (tree->child[1]) {		// èµ‹ç»™æ•°ç»„
 					IR_Exp(tree->child[0]);
 					IR_Exp(tree->child[1]);
 
@@ -453,7 +453,7 @@ void IR_Analyze(TreeNode* tree)
 
 				gen("lab", newempty(), newempty(), truelabel);
 				backPatch(tree->child[0]->TC, truelabel);
-				// Ñ­»·Ìå
+				// å¾ªç¯ä½“
 				IR_Analyze(tree->child[1]);
 				gen("j", newempty(), newempty(), looplabel);
 
@@ -464,31 +464,31 @@ void IR_Analyze(TreeNode* tree)
 			break;
 			case StmtKind::For_StmtK:
 			{
-				// ³õÊ¼¸³ÖµÓï¾ä
+				// åˆå§‹èµ‹å€¼è¯­å¥
 				IR_Analyze(tree->child[1]);
-				// Ñ­»·Ìå¿ªÊ¼
+				// å¾ªç¯ä½“å¼€å§‹
 				char* looplabel = newlabel();
 				gen("lab", newempty(), newempty(), looplabel);
 
-				// ²¼¶û±í´ïÊ½
+				// å¸ƒå°”è¡¨è¾¾å¼
 				IR_BoolExp(tree->child[0]);
 				
 				char* truelabel = newlabel();
 				char* falselabel = newlabel();
 				gen("lab", newempty(), newempty(), truelabel);
 				backPatch(tree->child[0]->TC, truelabel);
-				// Ñ­»·ÌåÓï¾ä
+				// å¾ªç¯ä½“è¯­å¥
 				IR_Analyze(tree->child[2]);
-				// ÎŞÌõ¼şÌø»ØÅĞ¶Ï
+				// æ— æ¡ä»¶è·³å›åˆ¤æ–­
 				gen("j", newempty(), newempty(), looplabel);
 
-				// Ìø³öÑ­»·Ìå
+				// è·³å‡ºå¾ªç¯ä½“
 				gen("lab", newempty(), newempty(), falselabel);
 				backPatch(tree->child[0]->FC, falselabel);
 
 			}
 			break;
-			case StmtKind::Call_StmtK:			// ÎŞ·µ»ØÖµº¯Êıµ÷ÓÃ
+			case StmtKind::Call_StmtK:			// æ— è¿”å›å€¼å‡½æ•°è°ƒç”¨
 			{
 				insertPara(tree->child[0]);
 				
@@ -512,9 +512,9 @@ void IR_Analyze(TreeNode* tree)
 			case StmtKind::Write_StmtK:
 			{
 				//char* pstr = newempty();
-				if (NULL != tree->child[0]) {		// ÓĞStr
+				if (NULL != tree->child[0]) {		// æœ‰Str
 					stringlist[str_index] = tree->child[0]->attr.str;
-					if (NULL != tree->child[1]) {		// ÓĞExp
+					if (NULL != tree->child[1]) {		// æœ‰Exp
 						IR_Exp(tree->child[1]);
 						gen("print", newitoa(str_index), tree->child[1]->place, (tree->type == Type::T_INTEGER) ? (char*)"int" : (char*)"char");
 					}
@@ -523,15 +523,15 @@ void IR_Analyze(TreeNode* tree)
 					}
 					str_index++;
 				}
-				else {								// Ã»ÓĞStr
-					if (NULL != tree->child[1]) {		// ÓĞExp
+				else {								// æ²¡æœ‰Str
+					if (NULL != tree->child[1]) {		// æœ‰Exp
 						IR_Exp(tree->child[1]);
 						gen("print", newempty(), tree->child[1]->place, (tree->child[1]->type == Type::T_INTEGER) ? (char*)"int" : (char*)"char");
 					}
 				}
 			}
 			break;
-			case StmtKind::Write_StmtK_Str:			// ²¢²»»á½øÈëÕâÀï£¬ ÉÏÒ»¼¶ ´¦ÀíÁË
+			case StmtKind::Write_StmtK_Str:			// å¹¶ä¸ä¼šè¿›å…¥è¿™é‡Œï¼Œ ä¸Šä¸€çº§ å¤„ç†äº†
 				break;
 			case StmtKind::Ret_StmtK:
 				if (NULL != tree->child[0]) {
@@ -547,12 +547,12 @@ void IR_Analyze(TreeNode* tree)
 				break;
 			}
 		}
-		else if (NodeKind::ExpK == tree->nodekind) {			// ÒòÎª±í´ïÊ½µ¥¶À´¦Àí£¬²¢ÇÒÃ»ÓĞĞÖµÜ½Úµã£¬Ö±½Ó·µ»Ø
-			// µ¥¶À´¦Àí±í´ïÊ½
+		else if (NodeKind::ExpK == tree->nodekind) {			// å› ä¸ºè¡¨è¾¾å¼å•ç‹¬å¤„ç†ï¼Œå¹¶ä¸”æ²¡æœ‰å…„å¼ŸèŠ‚ç‚¹ï¼Œç›´æ¥è¿”å›
+			// å•ç‹¬å¤„ç†è¡¨è¾¾å¼
 			IR_Exp(tree);
 			return;
 		}
-		else // ²¼¶û±í´ïÊ½
+		else // å¸ƒå°”è¡¨è¾¾å¼
 		{
 			IR_BoolExp(tree);
 			return;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #ifndef GLOBAL_H
 #define GLOBAL_H
 #pragma warning(disable:4996)
@@ -24,67 +24,67 @@
 #define INFO_ASM(format, ...)    /* do nothing */
 #endif
 
-//Ã¶¾ÙÀàÐÍTokenType£º
+//æžšä¸¾ç±»åž‹TokenTypeï¼š
 typedef enum {
-    //¹Ø¼ü×Ö£º
+    //å…³é”®å­—ï¼š
     CHAR, CONST, ELSE, FALSE, FOR,              //0-4
     IF, INT, MAIN, PRINTF, RETURN,              //5-9
     SCANF, TRUE, VOID, WHILE,                   //10-13
-    NUM, IDEN, LETTER, STRING,                  //14-17:Êý×Ö¡¢±êÊ¶·û¡¢×Ö·û¡¢×Ö·û´®
+    NUM, IDEN, LETTER, STRING,                  //14-17:æ•°å­—ã€æ ‡è¯†ç¬¦ã€å­—ç¬¦ã€å­—ç¬¦ä¸²
     PLUS, MINU, MULT, DIV,                      //18-21:+ - * /
     AND, OR, NOT,                               //22-24:&& || !
-    LSS, LEQ, GRE, GEQ, NEQ, EQL,               //25-30¹ØÏµÔËËã·û: < <= > >= != ==
+    LSS, LEQ, GRE, GEQ, NEQ, EQL,               //25-30å…³ç³»è¿ç®—ç¬¦: < <= > >= != ==
     ASSIGN, COMMA, SEMICOLON,                   //31-33: =  ,  ;
     LBRACE, RBRACE, LBRACKET, RBRACKET,         //34-37:{ } [ ]
     LPARENTHES, RPARENTHES,                     //38-39:( )      
-    CALL, ARRAYAT,                              // ÔÚ±í´ïÊ½ÖÐ¶îÍâµÄ²Ù×÷£ºº¯Êýµ÷ÓÃ¡¢Êý×é£¬µ«²»»áÔÚÓï·¨·ÖÎö½×¶Î³öÏÖ
-    END                                         // ÎÄ¼þ½áÊø                                               
+    CALL, ARRAYAT,                              // åœ¨è¡¨è¾¾å¼ä¸­é¢å¤–çš„æ“ä½œï¼šå‡½æ•°è°ƒç”¨ã€æ•°ç»„ï¼Œä½†ä¸ä¼šåœ¨è¯­æ³•åˆ†æžé˜¶æ®µå‡ºçŽ°
+    END                                         // æ–‡ä»¶ç»“æŸ                                               
 }TokenType;
 
-//Token:Ã¶¾ÙÀàÐÍTokenType¡¢Öµstring value
+//Token:æžšä¸¾ç±»åž‹TokenTypeã€å€¼string value
 typedef struct {
     TokenType   opType;
     char value[4096];
 }_tToken;
 
-//Ô´ÎÄ¼þ
+//æºæ–‡ä»¶
 extern FILE* sourceFile;
 extern FILE* AST_File;
 extern FILE* IR_FILE;
 extern FILE* ASM_FILE;
 
-//ÐÐºÅ
+//è¡Œå·
 extern int g_lineNumber;
-//ÔÚbufÖÐµÄÖ¸Õë£»
+//åœ¨bufä¸­çš„æŒ‡é’ˆï¼›
 extern int g_lexBegin;
-//forward Ö¸ÏòÏÂÒ»¸ö½«Òª¶ÁÈ¡µÄ×Ö·û£»lexBegin±íÊ¾¸Ãtoken¿ªÊ¼µÄÎ»ÖÃ
+//forward æŒ‡å‘ä¸‹ä¸€ä¸ªå°†è¦è¯»å–çš„å­—ç¬¦ï¼›lexBeginè¡¨ç¤ºè¯¥tokenå¼€å§‹çš„ä½ç½®
 extern int g_forward;
 
 extern int g_errorNum;
 
 //token
 extern _tToken g_token;
-//ÊÇ·ñµ½´ïÎÄ¼þÄ©Î²
+//æ˜¯å¦åˆ°è¾¾æ–‡ä»¶æœ«å°¾
 extern bool EOF_flag;
 
 /////////////////////////// FOR  AST
-#define MAX_TREENODE_CHILD_NUM  3                       // ×î´óº¢×Ó½ÚµãÊý
-#define MAX_PARAMETERE_NUM      8                       // ×î´ó²ÎÊý¸öÊý
+#define MAX_TREENODE_CHILD_NUM  3                       // æœ€å¤§å­©å­èŠ‚ç‚¹æ•°
+#define MAX_PARAMETERE_NUM      8                       // æœ€å¤§å‚æ•°ä¸ªæ•°
 
 typedef enum {
-    DecK, StmtK, ExpK, BoolExpK                         //ÉùÃ÷£¬Óï¾ä£¬±í´ïÊ½£¬²¼¶û±í´ïÊ½
+    DecK, StmtK, ExpK, BoolExpK                         //å£°æ˜Žï¼Œè¯­å¥ï¼Œè¡¨è¾¾å¼ï¼Œå¸ƒå°”è¡¨è¾¾å¼
 }NodeKind;
 
 typedef enum {
-    Const_DecK, Var_DecK, Func_DecK, MainFunc_DecK,         //³£Á¿ËµÃ÷£¬±äÁ¿ËµÃ÷£¬ ·ÇÖ÷º¯ÊýËµÃ÷£¬ Ö÷º¯ÊýËµÃ÷
-    Const_DefK, Var_DefK                                    //³£Á¿¶¨Òå£¬±äÁ¿¶¨Òå
+    Const_DecK, Var_DecK, Func_DecK, MainFunc_DecK,         //å¸¸é‡è¯´æ˜Žï¼Œå˜é‡è¯´æ˜Žï¼Œ éžä¸»å‡½æ•°è¯´æ˜Žï¼Œ ä¸»å‡½æ•°è¯´æ˜Ž
+    Const_DefK, Var_DefK                                    //å¸¸é‡å®šä¹‰ï¼Œå˜é‡å®šä¹‰
 }DecKind;
 
 typedef enum {
-    If_StmtK, While_StmtK, For_StmtK, Assign_StmtK,         //Ìõ¼þ£¬ Ñ­»·£¬ ¸³Öµ Óï¾ä
-    Call_StmtK, Seq_StmtK, Read_StmtK, Write_StmtK,         //µ÷ÓÃ£¬ Óï¾äÁÐ£¬ ¶Á£¬Ð´Óï¾ä
-    Ret_StmtK,                                              //·µ»ØÓï¾ä
-    // ÎªÁË±ãÓÚ±éÀúAST£¬ Ôö¼Ó½ÚµãÀàÐÍ£º¼´Óï¾äÃ¿¸ö³É·Ö¶¼ÓÐÒ»¸öÀàÐÍ
+    If_StmtK, While_StmtK, For_StmtK, Assign_StmtK,         //æ¡ä»¶ï¼Œ å¾ªçŽ¯ï¼Œ èµ‹å€¼ è¯­å¥
+    Call_StmtK, Seq_StmtK, Read_StmtK, Write_StmtK,         //è°ƒç”¨ï¼Œ è¯­å¥åˆ—ï¼Œ è¯»ï¼Œå†™è¯­å¥
+    Ret_StmtK,                                              //è¿”å›žè¯­å¥
+    // ä¸ºäº†ä¾¿äºŽéåŽ†ASTï¼Œ å¢žåŠ èŠ‚ç‚¹ç±»åž‹ï¼šå³è¯­å¥æ¯ä¸ªæˆåˆ†éƒ½æœ‰ä¸€ä¸ªç±»åž‹
     Write_StmtK_Str,
     Read_StmtK_Idlist
 
@@ -93,23 +93,23 @@ typedef enum {
 
 
 typedef enum {
-    Op_ExpK, Num_ExpK, Iden_ExpK                           //²Ù×÷ÀàÐÍ £¬ Êý×Ö£¨×ÖÄ¸³£Á¿°´Êý×Ö±£´æ£©£¬ ±êÊ¶·û
+    Op_ExpK, Num_ExpK, Iden_ExpK                           //æ“ä½œç±»åž‹ ï¼Œ æ•°å­—ï¼ˆå­—æ¯å¸¸é‡æŒ‰æ•°å­—ä¿å­˜ï¼‰ï¼Œ æ ‡è¯†ç¬¦
 }ExpKind;
 
 typedef enum {
-    Op_BoolEK,                                              //²¼¶û±í´ïÊ½²Ù×÷£ºÓë»ò·Ç£» 
-    Const_BoolEK, ConOp_BoolEK                              //²¼¶û³£Á¿£¬ Ìõ¼þÔËËã·û
+    Op_BoolEK,                                              //å¸ƒå°”è¡¨è¾¾å¼æ“ä½œï¼šä¸Žæˆ–éžï¼› 
+    Const_BoolEK, ConOp_BoolEK                              //å¸ƒå°”å¸¸é‡ï¼Œ æ¡ä»¶è¿ç®—ç¬¦
 
-    //ConFac_BoolEK                                           // Ìõ¼þÒò×Ó£¬ ÆäÊµ¾ÍÊÇ¼ò»¯ÁËÒ»µãµÄ±í´ïÊ½
-    // Ìõ¼þÒò×Ó ÓÃµÄÊÇ±í´ïÊ½½Úµã£¬Óë±í´ïÊ½¹¹Ôì·½·¨ÏàÍ¬£¬ µ«ÊÇÔÚÁíÒ»¸ö¹ý³ÌÀïÊµÏÖ£¨Óï·¨¶¨ÒåÖÐ²»ÊÇ±í´ïÊ½£¬µ«Êµ¼ÊÊÇ£©
+    //ConFac_BoolEK                                           // æ¡ä»¶å› å­ï¼Œ å…¶å®žå°±æ˜¯ç®€åŒ–äº†ä¸€ç‚¹çš„è¡¨è¾¾å¼
+    // æ¡ä»¶å› å­ ç”¨çš„æ˜¯è¡¨è¾¾å¼èŠ‚ç‚¹ï¼Œä¸Žè¡¨è¾¾å¼æž„é€ æ–¹æ³•ç›¸åŒï¼Œ ä½†æ˜¯åœ¨å¦ä¸€ä¸ªè¿‡ç¨‹é‡Œå®žçŽ°ï¼ˆè¯­æ³•å®šä¹‰ä¸­ä¸æ˜¯è¡¨è¾¾å¼ï¼Œä½†å®žé™…æ˜¯ï¼‰
 }BoolExpKind;
 
-// ÀàÐÍÐÅÏ¢£º ¿ÉÒÔÊÇ¶¨ÒåÊ± ±£´æµÄÀàÐÍÐÅÏ¢£»Ò²¿ÉÒÔÓÃÓÚ ¼ìÑé±í´ïÊ½ÖÐÀàÐÍÊÇ·ñÆ¥Åä
+// ç±»åž‹ä¿¡æ¯ï¼š å¯ä»¥æ˜¯å®šä¹‰æ—¶ ä¿å­˜çš„ç±»åž‹ä¿¡æ¯ï¼›ä¹Ÿå¯ä»¥ç”¨äºŽ æ£€éªŒè¡¨è¾¾å¼ä¸­ç±»åž‹æ˜¯å¦åŒ¹é…
 typedef enum {
     T_VOID, T_INTEGER, T_CHAR, T_ERROR
 }Type;
 
-// º¯ÊýÐÅÏ¢£º·µ»ØÀàÐÍºÍ²ÎÊý±í£»Ò²¿ÉÒÔÁ´½Óµ½·ûºÅ±íÖÐ
+// å‡½æ•°ä¿¡æ¯ï¼šè¿”å›žç±»åž‹å’Œå‚æ•°è¡¨ï¼›ä¹Ÿå¯ä»¥é“¾æŽ¥åˆ°ç¬¦å·è¡¨ä¸­
 typedef struct {
     Type rettype;
     struct {
@@ -119,70 +119,70 @@ typedef struct {
     int paranum;
 }FuncInfo;
 
-// AST µÄ½Úµã£º×óº¢×ÓÓÒÐÖµÜµÄÊ÷ÐÎ½á¹¹£»µ«±í´ïÊ½²¿·Ö ÓÖÊÇ¶þ²æÊ÷½á¹¹
+// AST çš„èŠ‚ç‚¹ï¼šå·¦å­©å­å³å…„å¼Ÿçš„æ ‘å½¢ç»“æž„ï¼›ä½†è¡¨è¾¾å¼éƒ¨åˆ† åˆæ˜¯äºŒå‰æ ‘ç»“æž„
 typedef struct TreeNode {
-    struct TreeNode* child[MAX_TREENODE_CHILD_NUM];     // ×óº¢×Ó£¬×î¶àÈý¸ö£¬Í¨³£Ö»ÓÐÒ»¸ö£¬ÌØ¶¨Óï¾äÓÐ¶à¸ö
-    struct TreeNode* sibling;                           // ÓÒÐÖµÜ
-    int lineno;                                     // ´íÎó±¨¸æÐÐºÅ
+    struct TreeNode* child[MAX_TREENODE_CHILD_NUM];     // å·¦å­©å­ï¼Œæœ€å¤šä¸‰ä¸ªï¼Œé€šå¸¸åªæœ‰ä¸€ä¸ªï¼Œç‰¹å®šè¯­å¥æœ‰å¤šä¸ª
+    struct TreeNode* sibling;                           // å³å…„å¼Ÿ
+    int lineno;                                     // é”™è¯¯æŠ¥å‘Šè¡Œå·
     
-    NodeKind nodekind;                              // ½ÚµãÀàÐÍ
+    NodeKind nodekind;                              // èŠ‚ç‚¹ç±»åž‹
     union {
         DecKind dec;
         StmtKind stmt;
         ExpKind exp;
         BoolExpKind bexp;
-    }kind;                                          // ½Úµã¾ßÌåÀàÐÍ
+    }kind;                                          // èŠ‚ç‚¹å…·ä½“ç±»åž‹
 
     union {
-        TokenType op;                                   // ²Ù×÷ÀàÐÍ£ºÍ¨³£ÊÇ±í´ïÊ½ÖÐ
-        int val;                                        // NUMµÄÖµ£ºexpÖÐ charÒ²ÊÇ´æÕâ¸ö
-        unsigned char cval;                             // Char ÐÍ Öµ£º³£Á¿¶¨Òå
-        char* name;                                     // Id µÄÖµ£¬Ò²¿ÉÒÔÊÇº¯ÊýÃû£¬StrµÄÖµ
-        bool bval;                                      // bool ³£Á¿
-        char* str;                                      // String ÀàÐÍ
-    }attr;                                          // ½ÚµãÊôÐÔ
-    int vec;                                        // ±äÁ¿¶¨Òå½×¶ÎÉèÖÃ£ºÊý×é³¤¶È£¬²»ÊÇÊý×é¾ÍÊÇ-1 £» 
-    Type type;                                      // ³£¡¢±äÁ¿¶¨Òå £¬ÀàÐÍËµÃ÷ ºÍ ±í´ïÊ½ÀàÐÍ¼ì²é
-                                                    // º¯ÊýÐÅÏ¢£º·µ»ØÀàÐÍºÍ²ÎÊý±í£»Ò²¿ÉÒÔÁ´½Óµ½·ûºÅ±íÖÐ
-    FuncInfo* pfinfo;                               // º¯Êý¶¨Òå½×¶ÎÉèÖÃ£ºº¯ÊýÐÅÏ¢£» »òÕßÊÇº¯Êýµ÷ÓÃ½×¶ÎµÄ²ÎÊý±í
+        TokenType op;                                   // æ“ä½œç±»åž‹ï¼šé€šå¸¸æ˜¯è¡¨è¾¾å¼ä¸­
+        int val;                                        // NUMçš„å€¼ï¼šexpä¸­ charä¹Ÿæ˜¯å­˜è¿™ä¸ª
+        unsigned char cval;                             // Char åž‹ å€¼ï¼šå¸¸é‡å®šä¹‰
+        char* name;                                     // Id çš„å€¼ï¼Œä¹Ÿå¯ä»¥æ˜¯å‡½æ•°åï¼ŒStrçš„å€¼
+        bool bval;                                      // bool å¸¸é‡
+        char* str;                                      // String ç±»åž‹
+    }attr;                                          // èŠ‚ç‚¹å±žæ€§
+    int vec;                                        // å˜é‡å®šä¹‰é˜¶æ®µè®¾ç½®ï¼šæ•°ç»„é•¿åº¦ï¼Œä¸æ˜¯æ•°ç»„å°±æ˜¯-1 ï¼› 
+    Type type;                                      // å¸¸ã€å˜é‡å®šä¹‰ ï¼Œç±»åž‹è¯´æ˜Ž å’Œ è¡¨è¾¾å¼ç±»åž‹æ£€æŸ¥
+                                                    // å‡½æ•°ä¿¡æ¯ï¼šè¿”å›žç±»åž‹å’Œå‚æ•°è¡¨ï¼›ä¹Ÿå¯ä»¥é“¾æŽ¥åˆ°ç¬¦å·è¡¨ä¸­
+    FuncInfo* pfinfo;                               // å‡½æ•°å®šä¹‰é˜¶æ®µè®¾ç½®ï¼šå‡½æ•°ä¿¡æ¯ï¼› æˆ–è€…æ˜¯å‡½æ•°è°ƒç”¨é˜¶æ®µçš„å‚æ•°è¡¨
 
-    // ×ª»¯³ÉIRÖÐÓÃµ½
+    // è½¬åŒ–æˆIRä¸­ç”¨åˆ°
     char* place;
     int TC, FC;
 
-    // ´íÎó´¦Àí
+    // é”™è¯¯å¤„ç†
     bool error;
 
 }TreeNode;
 
 
-/////////////////// ÓïÒå·ÖÎö
+/////////////////// è¯­ä¹‰åˆ†æž
 #define SYMBOL_TABLE_SIZE 211
 
 typedef enum IDType {
     Const_ID, Var_ID, Para_ID, Func_ID
 }IDType;
 
-// ·ûºÅ±íÖÐµÄÃ¿Ò»Ïî
+// ç¬¦å·è¡¨ä¸­çš„æ¯ä¸€é¡¹
 typedef struct Symbol {
-    char* name;					// ±êÊ¶·ûÃû×Ö
-    IDType type;				// IDÀàÐÍ£º const£¬var£¬para£¬function
-    Type valueType;				// IDµÄÀàÐÍÖµ£º³£±äÁ¿µÄÀàÐÍ¡¢²ÎÊýÀàÐÍ¡¢º¯Êý·µ»ØÀàÐÍ
-    int value;					// ³£Á¿¶¨ÒåÖµ						Ö»ÓÐ³£Êý¶¨Òå²Å»á´«Èë
-    int adress;					// ÄÚ´æµØÖ·
-    int vec;					// Êý×é´óÐ¡£¬²»ÊÇÊý×éÎª-1£»			Ö»ÓÐ¶¨ÒåÊý×éÊ±£¬²Å»á´«Èë
-    FuncInfo* pfinfo;			// º¯ÊýÐÅÏ¢£¬ASTÖÐÒÑÓÐ£¬¿½±´¼´¿É£»  Ö»ÓÐº¯Êý¶¨ÒåÊÇ£¬²Å»á´«½ø£¬·ñÔòNULL
-    struct Symbol* next;		// ÓÐÏàÍ¬hashÖµÊ±£¬ÏÂÒ»Ìõ
+    char* name;					// æ ‡è¯†ç¬¦åå­—
+    IDType type;				// IDç±»åž‹ï¼š constï¼Œvarï¼Œparaï¼Œfunction
+    Type valueType;				// IDçš„ç±»åž‹å€¼ï¼šå¸¸å˜é‡çš„ç±»åž‹ã€å‚æ•°ç±»åž‹ã€å‡½æ•°è¿”å›žç±»åž‹
+    int value;					// å¸¸é‡å®šä¹‰å€¼						åªæœ‰å¸¸æ•°å®šä¹‰æ‰ä¼šä¼ å…¥
+    int adress;					// å†…å­˜åœ°å€
+    int vec;					// æ•°ç»„å¤§å°ï¼Œä¸æ˜¯æ•°ç»„ä¸º-1ï¼›			åªæœ‰å®šä¹‰æ•°ç»„æ—¶ï¼Œæ‰ä¼šä¼ å…¥
+    FuncInfo* pfinfo;			// å‡½æ•°ä¿¡æ¯ï¼ŒASTä¸­å·²æœ‰ï¼Œæ‹·è´å³å¯ï¼›  åªæœ‰å‡½æ•°å®šä¹‰æ˜¯ï¼Œæ‰ä¼šä¼ è¿›ï¼Œå¦åˆ™NULL
+    struct Symbol* next;		// æœ‰ç›¸åŒhashå€¼æ—¶ï¼Œä¸‹ä¸€æ¡
 
-    bool isreg;                 // isreg ÓÃÓÚÉú³ÉÄ¿±ê´úÂë½×¶Î£¬¼ÇÂ¼ÊÇ·ñ±£´æÔÚ¼Ä´æÆ÷ÖÐ£»Ä¬ÈÏÎªfalse£»Óë¼Ä´æÆ÷·ÖÅäÏà¹Ø
+    bool isreg;                 // isreg ç”¨äºŽç”Ÿæˆç›®æ ‡ä»£ç é˜¶æ®µï¼Œè®°å½•æ˜¯å¦ä¿å­˜åœ¨å¯„å­˜å™¨ä¸­ï¼›é»˜è®¤ä¸ºfalseï¼›ä¸Žå¯„å­˜å™¨åˆ†é…ç›¸å…³
     
 }Symbol, * SymbolList;
 
 typedef struct SymTab {
-    SymTab* next;				// ¶àÕÅ±í£»Ö¸ÏòÏÂÒ»ÕÅ±í
-    char* fname;                // ±íÃû = º¯ÊýÃû
-    SymbolList hashTable[SYMBOL_TABLE_SIZE];        // ¹þÏ£±í
-    int varsize;                // º¯Êý¾Ö²¿±äÁ¿ºÍÁÙÊ±±äÁ¿µÄ¿Õ¼ä´óÐ¡
+    SymTab* next;				// å¤šå¼ è¡¨ï¼›æŒ‡å‘ä¸‹ä¸€å¼ è¡¨
+    char* fname;                // è¡¨å = å‡½æ•°å
+    SymbolList hashTable[SYMBOL_TABLE_SIZE];        // å“ˆå¸Œè¡¨
+    int varsize;                // å‡½æ•°å±€éƒ¨å˜é‡å’Œä¸´æ—¶å˜é‡çš„ç©ºé—´å¤§å°
 }SymTab;
 
 extern SymTab* g_symtab;
@@ -195,7 +195,7 @@ extern SymTab* g_symtab;
 
 typedef struct {
     char op[15];
-    // ¸Ä½ø5£º×Ö·û´®¸Ä½øÃ¶¾Ù£¬ÐÔÄÜ²î
+    // æ”¹è¿›5ï¼šå­—ç¬¦ä¸²æ”¹è¿›æžšä¸¾ï¼Œæ€§èƒ½å·®
     char* var1;
     char* var2;
     char* var3;
@@ -215,16 +215,16 @@ typedef struct {
 
 
 typedef enum {
-    LACK_SEMI_CST,              // ³£Á¿¶¨ÒåÃ»ÓÐ·ÖºÅ£¬Ìø³öµ±Ç°£¬Ö±µ½ÔÙ´ÎÓöµ½³£Á¿¶¨Òå¡¢±äÁ¿¶¨Òå¡¢Óï¾ä
-    LACK_TYPE_CST,              // Ã»ÓÐÀàÐÍ
-    LACK_ID_CST,                // Ã»ÓÐ±êÊ¶·û
-    LACK_ASSIGN_CST,            // Ã»ÓÐ¸³Öµ·ûºÅ
+    LACK_SEMI_CST,              // å¸¸é‡å®šä¹‰æ²¡æœ‰åˆ†å·ï¼Œè·³å‡ºå½“å‰ï¼Œç›´åˆ°å†æ¬¡é‡åˆ°å¸¸é‡å®šä¹‰ã€å˜é‡å®šä¹‰ã€è¯­å¥
+    LACK_TYPE_CST,              // æ²¡æœ‰ç±»åž‹
+    LACK_ID_CST,                // æ²¡æœ‰æ ‡è¯†ç¬¦
+    LACK_ASSIGN_CST,            // æ²¡æœ‰èµ‹å€¼ç¬¦å·
 
-    LACK_XXX_VARDEF,            // ±äÁ¿¶¨Òå³ö´í£¬Ö±½ÓÅ×Æúµ±Ç°Óï¾ä
+    LACK_XXX_VARDEF,            // å˜é‡å®šä¹‰å‡ºé”™ï¼Œç›´æŽ¥æŠ›å¼ƒå½“å‰è¯­å¥
 
-    LACK_TYPE_FUN,              // º¯ÊýÀàÐÍÎ´ËµÃ÷
-    LACK_IDEN_FUN,              // º¯ÊýÃûÎ´ËµÃ÷   £¬ 
-    LACK_KUOHAO_FUN,            // º¯ÊýÀ¨ºÅ¶ªÊ§   £¬ Ìø¹ýµ±Ç°º¯Êý
+    LACK_TYPE_FUN,              // å‡½æ•°ç±»åž‹æœªè¯´æ˜Ž
+    LACK_IDEN_FUN,              // å‡½æ•°åæœªè¯´æ˜Ž   ï¼Œ 
+    LACK_KUOHAO_FUN,            // å‡½æ•°æ‹¬å·ä¸¢å¤±   ï¼Œ è·³è¿‡å½“å‰å‡½æ•°
 
     SENTENCE_ERROR
 }ErrorType;

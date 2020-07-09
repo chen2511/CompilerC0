@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef SEMANTIC_H
 #define SEMANTIC_H

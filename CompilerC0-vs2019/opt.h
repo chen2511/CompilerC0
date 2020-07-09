@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef OPT_H
 #define OPT_H
 

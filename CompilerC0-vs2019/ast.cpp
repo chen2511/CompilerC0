@@ -1,13 +1,13 @@
-#include "ast.h"
+ï»¿#include "ast.h"
 
 /*
-	ÄÚÈİ°üÀ¨Á½²¿·Ö£º
-		AST½ÚµãµÄ½¨Á¢	new***Node()¡¢·ÖÅä´æ´¢¿Õ¼ä copystring()
-		Êä³öASTµ½ÎÄ¼şµÄÊµÏÖ printAST()
+	å†…å®¹åŒ…æ‹¬ä¸¤éƒ¨åˆ†ï¼š
+		ASTèŠ‚ç‚¹çš„å»ºç«‹	new***Node()ã€åˆ†é…å­˜å‚¨ç©ºé—´ copystring()
+		è¾“å‡ºASTåˆ°æ–‡ä»¶çš„å®ç° printAST()
 */
 
 
-// ´´½¨ÉùÃ÷½Úµã£º°üÀ¨³£Á¿¡¢±äÁ¿¡¢º¯ÊıµÈµÈËµÃ÷¶¨Òå£¬´«Èë¾ßÌåÉùÃ÷ÀàĞÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºå£°æ˜èŠ‚ç‚¹ï¼šåŒ…æ‹¬å¸¸é‡ã€å˜é‡ã€å‡½æ•°ç­‰ç­‰è¯´æ˜å®šä¹‰ï¼Œä¼ å…¥å…·ä½“å£°æ˜ç±»å‹ï¼Œè¿”å›èŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newDecNode(DecKind kind) {
 	TreeNode* t = new TreeNode;
 
@@ -19,10 +19,10 @@ TreeNode* newDecNode(DecKind kind) {
 	}
 	t->sibling = NULL;
 	t->lineno = g_lineNumber;
-	//ÀàĞÍĞÅÏ¢
+	//ç±»å‹ä¿¡æ¯
 	t->nodekind = NodeKind::DecK;
 	t->kind.dec = kind;
-	// attr type ²»×ö³õÊ¼»¯
+	// attr type ä¸åšåˆå§‹åŒ–
 	t->vec = -1;
 	t->pfinfo = NULL;
 
@@ -31,7 +31,7 @@ TreeNode* newDecNode(DecKind kind) {
 	return t;
 }
 
-// ´´½¨Óï¾ä½Úµã£º´«Èë¾ßÌåÉùÃ÷ÀàĞÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºè¯­å¥èŠ‚ç‚¹ï¼šä¼ å…¥å…·ä½“å£°æ˜ç±»å‹ï¼Œè¿”å›èŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newStmtNode(StmtKind kind) {
 	TreeNode* t = new TreeNode;
 
@@ -45,7 +45,7 @@ TreeNode* newStmtNode(StmtKind kind) {
 	t->lineno = g_lineNumber;
 	t->nodekind = NodeKind::StmtK;
 	t->kind.stmt = kind;
-	// attr type ²»×ö³õÊ¼»¯
+	// attr type ä¸åšåˆå§‹åŒ–
 	t->vec = -1;
 	t->pfinfo = NULL;
 
@@ -54,7 +54,7 @@ TreeNode* newStmtNode(StmtKind kind) {
 	return t;
 }
 
-// ´´½¨±í´ïÊ½½Úµã£º´«Èë¾ßÌåÉùÃ÷ÀàĞÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºè¡¨è¾¾å¼èŠ‚ç‚¹ï¼šä¼ å…¥å…·ä½“å£°æ˜ç±»å‹ï¼Œè¿”å›èŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newExpNode(ExpKind kind) {
 	TreeNode* t = new TreeNode;
 
@@ -68,7 +68,7 @@ TreeNode* newExpNode(ExpKind kind) {
 	t->lineno = g_lineNumber;
 	t->nodekind = NodeKind::ExpK;
 	t->kind.exp = kind;
-	// attr type ²»×ö³õÊ¼»¯
+	// attr type ä¸åšåˆå§‹åŒ–
 	t->vec = -1;
 	t->pfinfo = NULL;
 
@@ -77,7 +77,7 @@ TreeNode* newExpNode(ExpKind kind) {
 	return t;
 }
 
-// ´´½¨²¼¶û±í´ïÊ½½Úµã£º´«Èë¾ßÌåÉùÃ÷ÀàĞÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºå¸ƒå°”è¡¨è¾¾å¼èŠ‚ç‚¹ï¼šä¼ å…¥å…·ä½“å£°æ˜ç±»å‹ï¼Œè¿”å›èŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newBoolExpNode(BoolExpKind kind) {
 	TreeNode* t = new TreeNode;
 
@@ -91,7 +91,7 @@ TreeNode* newBoolExpNode(BoolExpKind kind) {
 	t->lineno = g_lineNumber;
 	t->nodekind = NodeKind::BoolExpK;
 	t->kind.bexp = kind;
-	// attr type ²»×ö³õÊ¼»¯
+	// attr type ä¸åšåˆå§‹åŒ–
 	t->vec = -1;
 	t->pfinfo = NULL;
 
@@ -99,7 +99,7 @@ TreeNode* newBoolExpNode(BoolExpKind kind) {
 	return t;
 }
 
-// ¶¨Òåº¯ÊıÊ±£¬±£´æº¯ÊıĞÅÏ¢£º·µ»ØÀàĞÍºÍ²ÎÊı±í
+// å®šä¹‰å‡½æ•°æ—¶ï¼Œä¿å­˜å‡½æ•°ä¿¡æ¯ï¼šè¿”å›ç±»å‹å’Œå‚æ•°è¡¨
 //FuncInfo* newFuncInfo(Type t)
 //{
 //	return nullptr;
@@ -121,7 +121,7 @@ char* copyString(char* s)
 }
 
 
-// opÊä³ö ´ÓÊı×Ö±ä³É ²Ù×÷·û
+// opè¾“å‡º ä»æ•°å­—å˜æˆ æ“ä½œç¬¦
 static char op_code[10];
 void tran2opcode(TokenType op) {
 	switch (op)
@@ -198,8 +198,8 @@ void tran2opcode(TokenType op) {
 	}
 }
 
-// ÖĞĞòÊä³ö ±í´ïÊ½ £» Ö®Ç°ÊÇÏÈĞò
-// ÊÂÊµÉÏÕâÀïÓĞ¸öbug£¬¹ØÓÚº¯Êıµ÷ÓÃ£¬²ÎÊıÏÔÊ¾²»ÍêÈ«£»µ«ASTÊÇÕıÈ·µÄ£»ÒÔºóÔÙĞŞ¸Ä°Ñ
+// ä¸­åºè¾“å‡º è¡¨è¾¾å¼ ï¼› ä¹‹å‰æ˜¯å…ˆåº
+// äº‹å®ä¸Šè¿™é‡Œæœ‰ä¸ªbugï¼Œå…³äºå‡½æ•°è°ƒç”¨ï¼Œå‚æ•°æ˜¾ç¤ºä¸å®Œå…¨ï¼›ä½†ASTæ˜¯æ­£ç¡®çš„ï¼›ä»¥åå†ä¿®æ”¹æŠŠ
 void printExp(TreeNode* exp) {
 	if (NULL == exp)
 		return;
@@ -267,7 +267,7 @@ void printParaList(TreeNode* st) {
 	fprintf(AST_File, "\n");
 }
 
-// Êä³ö³éÏóÓï·¨Ê÷£»»¹ÊÇÓĞ±ØÒªµÄ£¬ÒòÎªºóÃæµ÷ÊÔµÄÊ±ºò£¬ÒªÊÇ³öÊ²Ã´ÎÊÌâ£¬¿ÉÒÔÍ¨¹ıÊä³öµÄ½á¹ûÀ´²éÕÒÎÊÌâ£»ÊÇÄÄÒ»½×¶ÎµÄÎÊÌâ
+// è¾“å‡ºæŠ½è±¡è¯­æ³•æ ‘ï¼›è¿˜æ˜¯æœ‰å¿…è¦çš„ï¼Œå› ä¸ºåé¢è°ƒè¯•çš„æ—¶å€™ï¼Œè¦æ˜¯å‡ºä»€ä¹ˆé—®é¢˜ï¼Œå¯ä»¥é€šè¿‡è¾“å‡ºçš„ç»“æœæ¥æŸ¥æ‰¾é—®é¢˜ï¼›æ˜¯å“ªä¸€é˜¶æ®µçš„é—®é¢˜
 void printAST(TreeNode* tree)
 {
 	if (NULL == tree)
@@ -298,7 +298,7 @@ void printAST(TreeNode* tree)
 					tree = tree->sibling;
 				}
 				
-				if (NULL != st->sibling) {		// ¶à¸ö³£Á¿¶¨ÒåÁĞ±í
+				if (NULL != st->sibling) {		// å¤šä¸ªå¸¸é‡å®šä¹‰åˆ—è¡¨
 					st = st->sibling;
 					printAST(st);
 				}
@@ -323,7 +323,7 @@ void printAST(TreeNode* tree)
 					tree = tree->sibling;
 				}
 				fprintf(AST_File, "\n");
-				st = st->sibling;					// ¶à¸ö±äÁ¿¶¨ÒåÁĞ±í
+				st = st->sibling;					// å¤šä¸ªå˜é‡å®šä¹‰åˆ—è¡¨
 				if (NULL != st) {
 					printAST(st);
 				}
@@ -388,7 +388,7 @@ void printAST(TreeNode* tree)
 			}
 		}
 		else if (NodeKind::ExpK == tree->nodekind) {
-			// ºÃÏñ»¹ÊÇ Ô­À´µÄË³Ğò±È½ÏºÃ£» ÕâÑùµÄ»° Êä³ö½á¹ûÃ»ÓĞÀ¨ºÅ£¬ÓĞÆçÒå
+			// å¥½åƒè¿˜æ˜¯ åŸæ¥çš„é¡ºåºæ¯”è¾ƒå¥½ï¼› è¿™æ ·çš„è¯ è¾“å‡ºç»“æœæ²¡æœ‰æ‹¬å·ï¼Œæœ‰æ­§ä¹‰
 			printExp(tree);
 			return;
 		}
@@ -413,16 +413,16 @@ void printAST(TreeNode* tree)
 		}
 		if (NULL != tree) {
 			for (int i = 0; i < MAX_TREENODE_CHILD_NUM; i++) {
-				if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Call_StmtK) 	// º¯Êıµ÷ÓÃ
+				if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Call_StmtK) 	// å‡½æ•°è°ƒç”¨
 					break;
 				if (NULL != tree->child[i])
 					printAST(tree->child[i]);
 			}
-			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Seq_StmtK) {		// Óï¾äÁĞ
+			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Seq_StmtK) {		// è¯­å¥åˆ—
 				fprintf(AST_File, "\n<<<Stmt Sequence End  \n");
 			}
 
-			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Call_StmtK) {		// º¯Êıµ÷ÓÃ
+			if (tree->nodekind == NodeKind::StmtK && tree->kind.stmt == StmtKind::Call_StmtK) {		// å‡½æ•°è°ƒç”¨
 				printParaList(tree->child[0]);
 			}
 			tree = tree->sibling;

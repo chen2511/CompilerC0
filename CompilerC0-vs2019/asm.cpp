@@ -1,22 +1,22 @@
-#include "asm.h"
+ï»¿#include "asm.h"
 #include "symtab.h"
 #include <list>
 
-// ¼Ä´æÆ÷Óë±äÁ¿µÄÓ³Éä¶ÓÁĞ
+// å¯„å­˜å™¨ä¸å˜é‡çš„æ˜ å°„é˜Ÿåˆ—
 std::list<RegInfo> regInfoList;
-// Ê£Óà¿ÉÓÃregÊıÁ¿:t0-t9£¬Ã¿´Îº¯Êıµ÷ÓÃÇ°£¬Ó¦±£´æ¼Ä´æÆ÷Êı¾İ£¬º¯ÊıÄÚ²¿ÖØĞÂ¸³Öµ10
+// å‰©ä½™å¯ç”¨regæ•°é‡:t0-t9ï¼Œæ¯æ¬¡å‡½æ•°è°ƒç”¨å‰ï¼Œåº”ä¿å­˜å¯„å­˜å™¨æ•°æ®ï¼Œå‡½æ•°å†…éƒ¨é‡æ–°èµ‹å€¼10
 static int s_emptyRegNum = 10;
-// µ±Ç°·ÖÎöµ½µÄËÄÔªÊ½ĞòºÅ
+// å½“å‰åˆ†æåˆ°çš„å››å…ƒå¼åºå·
 static int cur_4var = 0;
-// ÊÇ·ñÒÑÔÚ¼Ä´æÆ÷ÖĞ
+// æ˜¯å¦å·²åœ¨å¯„å­˜å™¨ä¸­
 static bool isInReg = false;
-// Òª¶ÁÈ¡µÄ±äÁ¿ÊÇ·ñÈ«¾Ö±äÁ¿
+// è¦è¯»å–çš„å˜é‡æ˜¯å¦å…¨å±€å˜é‡
 static bool isGlobal = false;
-// ÒªĞ´ÈëÄÚ´æµÄ±äÁ¿ÊÇ·ñÈ«¾Ö±äÁ¿
+// è¦å†™å…¥å†…å­˜çš„å˜é‡æ˜¯å¦å…¨å±€å˜é‡
 static bool p_isGlobal = false;
-// º¯Êı·µ»ØÀàĞÍ
+// å‡½æ•°è¿”å›ç±»å‹
 static Type s_funcRetType;
-// º¯ÊıÃû
+// å‡½æ•°å
 static char* s_funcName;
 
 void globaldata2asm();
@@ -58,7 +58,7 @@ void print2asm();
 void ret2asm();
 
 void saveReg();
-// ¶ÁÈ¡Ö¸¶¨±éÀúµ½Ö¸¶¨¼Ä´æÆ÷
+// è¯»å–æŒ‡å®šéå†åˆ°æŒ‡å®šå¯„å­˜å™¨
 void mem2reg(char* varname, int reg);
 void baseAddr2reg(char* varname, int reg);
 
@@ -66,14 +66,14 @@ void updateOldVarWhenRead(Symbol* sb);
 void basicBlockDivide();
 
 /*
-¸ù¾İ±äÁ¿Ãû£¬·µ»ØËùÔÚµÄ¼Ä´æÆ÷ºÅ£»
-Í¬Ê±ĞèÒª¸üĞÂ´Ë¼Ä´æÆ÷µ½¶ÓÁĞÄ©Î²
+æ ¹æ®å˜é‡åï¼Œè¿”å›æ‰€åœ¨çš„å¯„å­˜å™¨å·ï¼›
+åŒæ—¶éœ€è¦æ›´æ–°æ­¤å¯„å­˜å™¨åˆ°é˜Ÿåˆ—æœ«å°¾
 */
 int checkRegInfoList(char* varname) {
 	std::list<RegInfo>::iterator iter = regInfoList.begin();
 	for (; iter != regInfoList.end(); ++iter) {
 		if (!strcmp((*iter).varname, varname)) {
-			INFO("Ê£Óà¼Ä´æÆ÷£º%d£¬ÒÑÔÚ¼Ä´æÆ÷£ºtrue£¬±äÁ¿Ãû£º%s£¬¼Ä´æÆ÷ĞòºÅ£º%d\n", s_emptyRegNum, varname, std::distance(regInfoList.begin(),iter));
+			INFO("å‰©ä½™å¯„å­˜å™¨ï¼š%dï¼Œå·²åœ¨å¯„å­˜å™¨ï¼štrueï¼Œå˜é‡åï¼š%sï¼Œå¯„å­˜å™¨åºå·ï¼š%d\n", s_emptyRegNum, varname, std::distance(regInfoList.begin(),iter));
 			break;
 		}
 	}
@@ -91,11 +91,11 @@ int checkRegInfoList(char* varname) {
 
 
 /*
-ÈôÓĞ¿Õ¼Ä´æÆ÷£¬·µ»ØÏÂÒ»¸ö¼Ä´æÆ÷ĞòºÅ£»
-ÈôÎŞ£¬FIFOÔ­Ôò£¬ÍË³öÒ»¸ö
+è‹¥æœ‰ç©ºå¯„å­˜å™¨ï¼Œè¿”å›ä¸‹ä¸€ä¸ªå¯„å­˜å™¨åºå·ï¼›
+è‹¥æ— ï¼ŒFIFOåŸåˆ™ï¼Œé€€å‡ºä¸€ä¸ª
 */
 int getAnEmptyReg(char* varname, Symbol* sb) {
-	if (s_emptyRegNum > 0) {					// ÓĞ¿ÕÏĞµÄ¼Ä´æÆ÷£º·ûºÅ±íisreg±êÖ¾ÖÃÎªtrue£¬¿ÕÏĞ¼Ä´æÆ÷ÊıÁ¿-1£¬Ó³Éä¶ÓÁĞ²åÈëĞÂÔªËØ
+	if (s_emptyRegNum > 0) {					// æœ‰ç©ºé—²çš„å¯„å­˜å™¨ï¼šç¬¦å·è¡¨isregæ ‡å¿—ç½®ä¸ºtrueï¼Œç©ºé—²å¯„å­˜å™¨æ•°é‡-1ï¼Œæ˜ å°„é˜Ÿåˆ—æ’å…¥æ–°å…ƒç´ 
 		if (sb) {
 			sb->isreg = true;
 		}
@@ -106,24 +106,24 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 		RegInfo nn = { index, varname };
 		regInfoList.push_back(nn);
 
-		INFO("Ê£Óà¼Ä´æÆ÷£º%d£¬±äÁ¿Ãû£º%s£¬¼Ä´æÆ÷ĞòºÅ£º%d\n", s_emptyRegNum, varname, index);
+		INFO("å‰©ä½™å¯„å­˜å™¨ï¼š%dï¼Œå˜é‡åï¼š%sï¼Œå¯„å­˜å™¨åºå·ï¼š%d\n", s_emptyRegNum, varname, index);
 		return index;
 	}
-	else {									// Ã»ÓĞ¿ÕÏĞ¼Ä´æÆ÷£¬ĞèÒªÇåÀí³öÒ»¸ö
-		// ½«Ò»¸ö¼Ä´æÆ÷ÊÍ·Å£¬ËÍÈëÄÚ´æ£¬isreg±êÖ¾Î»¸Ä±ä£¬Ó³Éä¶ÓÁĞpop£»ĞÂÔªËØisregÎªtrue£¬Ó³Éä¶ÓÁĞpushback¡£
+	else {									// æ²¡æœ‰ç©ºé—²å¯„å­˜å™¨ï¼Œéœ€è¦æ¸…ç†å‡ºä¸€ä¸ª
+		// å°†ä¸€ä¸ªå¯„å­˜å™¨é‡Šæ”¾ï¼Œé€å…¥å†…å­˜ï¼Œisregæ ‡å¿—ä½æ”¹å˜ï¼Œæ˜ å°„é˜Ÿåˆ—popï¼›æ–°å…ƒç´ isregä¸ºtrueï¼Œæ˜ å°„é˜Ÿåˆ—pushbackã€‚
 		RegInfo nn = regInfoList.front();
 		regInfoList.pop_front();
 
-		if (isdigit(nn.varname[0]) || '-' == nn.varname[0]) {		// µ¯³öµÄÊÇÁ¢¼´Êı£¬²»ÓÃËÍÖÁÄÚ´æ
+		if (isdigit(nn.varname[0]) || '-' == nn.varname[0]) {		// å¼¹å‡ºçš„æ˜¯ç«‹å³æ•°ï¼Œä¸ç”¨é€è‡³å†…å­˜
 			//return nn.regindex;
 		}
 		else {
 			Symbol* sb_pop = lookUp_SymTab(nn.varname, p_isGlobal);
 			sb_pop->isreg = false;
-			if (sb_pop->vec >= 0) {				// µ¯³öµÄÊÇÊı×éµÄ»ùµØÖ·£¬Ò²²»ÓÃËÍÈëÄÚ´æ
+			if (sb_pop->vec >= 0) {				// å¼¹å‡ºçš„æ˜¯æ•°ç»„çš„åŸºåœ°å€ï¼Œä¹Ÿä¸ç”¨é€å…¥å†…å­˜
 				//return nn.regindex;
 			}
-			else {								// µ¯³öµÄÊÇ±äÁ¿£º·ÖÎªÈ«¾ÖºÍ¾Ö²¿£¨ÁÙÊ±£©
+			else {								// å¼¹å‡ºçš„æ˜¯å˜é‡ï¼šåˆ†ä¸ºå…¨å±€å’Œå±€éƒ¨ï¼ˆä¸´æ—¶ï¼‰
 				if (p_isGlobal) {
 					fprintf(ASM_FILE, "\tsw\t\t$t%d, $%s\n",
 						nn.regindex,
@@ -139,7 +139,7 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 				//return nn.regindex;
 			}
 		}
-		// µ¯³öµÄÔªËØ´¦ÀíÍê±Ï
+		// å¼¹å‡ºçš„å…ƒç´ å¤„ç†å®Œæ¯•
 		if (sb) {
 			sb->isreg = true;
 		}
@@ -147,45 +147,45 @@ int getAnEmptyReg(char* varname, Symbol* sb) {
 		RegInfo ttt = { nn.regindex, varname };
 		regInfoList.push_back(ttt);
 
-		INFO("Ê£Óà¼Ä´æÆ÷£º%d£¬old±äÁ¿Ãû£º%s£¬±äÁ¿Ãû£º%s£¬¼Ä´æÆ÷ĞòºÅ£º%d\n", s_emptyRegNum, nn.varname, varname, nn.regindex);
+		INFO("å‰©ä½™å¯„å­˜å™¨ï¼š%dï¼Œoldå˜é‡åï¼š%sï¼Œå˜é‡åï¼š%sï¼Œå¯„å­˜å™¨åºå·ï¼š%d\n", s_emptyRegNum, nn.varname, varname, nn.regindex);
 
 		return nn.regindex;
 	}
 }
 
 /*
-ÓÃÍ¾£º¹ÜÀí¼Ä´æÆ÷¶Ñ¡£µ±ĞèÒª¼ÓÔØ²Ù×÷ÊıÊ±£¨Á¢¼´Êı¡¢±äÁ¿Öµ¡¢Êı×é»ùµØÖ·£©£¬²é¿´ÊÇ·ñÒÑÔÚ¼Ä´æÆ÷£¬»ò¼ÓÔØµ½ÄÄ¸ö¼Ä´æÆ÷¡£
-ÊäÈë£º±äÁ¿Ãû
-Êä³ö£º¸Ã±äÁ¿¿ÉÒÔ´æÈëµÄ¼Ä´æÆ÷index£¬»òÕßÊÇÒÑ¾­´æÔÚµÄ¼Ä´æÆ÷ĞòºÅ, isInReg, isGlobal
-Ê×ÏÈ²éÕÒ·ûºÅ±íÖĞ¸Ã±äÁ¿ÊÇ·ñÔÚ¼Ä´æÆ÷ÖĞ£¬
-	Èç¹ûÔÚ£º·µ»ØĞòºÅ£¬Î¬»¤¼Ä´æÆ÷×´Ì¬ÁĞ±í£¨¶ÔÓÚÈ«¾Ö¡¢¾Ö²¿¡¢ÁÙÊ±±äÁ¿¶¼±íÊ¾ÖµÊÇ·ñÔÚ¼Ä´æÆ÷£¬Êı×é±íÊ¾»ùµØÖ·ÊÇ·ñÔÚ£©
-	²»ÔÚ£º²é¿´ÊÇ·ñÓĞ¿Õ¼Ä´æÆ÷£¬ÈôÎŞ£¬FIFOÔ­ÔòÎ¬»¤¼Ä´æÆ÷¶Ñ
+ç”¨é€”ï¼šç®¡ç†å¯„å­˜å™¨å †ã€‚å½“éœ€è¦åŠ è½½æ“ä½œæ•°æ—¶ï¼ˆç«‹å³æ•°ã€å˜é‡å€¼ã€æ•°ç»„åŸºåœ°å€ï¼‰ï¼ŒæŸ¥çœ‹æ˜¯å¦å·²åœ¨å¯„å­˜å™¨ï¼Œæˆ–åŠ è½½åˆ°å“ªä¸ªå¯„å­˜å™¨ã€‚
+è¾“å…¥ï¼šå˜é‡å
+è¾“å‡ºï¼šè¯¥å˜é‡å¯ä»¥å­˜å…¥çš„å¯„å­˜å™¨indexï¼Œæˆ–è€…æ˜¯å·²ç»å­˜åœ¨çš„å¯„å­˜å™¨åºå·, isInReg, isGlobal
+é¦–å…ˆæŸ¥æ‰¾ç¬¦å·è¡¨ä¸­è¯¥å˜é‡æ˜¯å¦åœ¨å¯„å­˜å™¨ä¸­ï¼Œ
+	å¦‚æœåœ¨ï¼šè¿”å›åºå·ï¼Œç»´æŠ¤å¯„å­˜å™¨çŠ¶æ€åˆ—è¡¨ï¼ˆå¯¹äºå…¨å±€ã€å±€éƒ¨ã€ä¸´æ—¶å˜é‡éƒ½è¡¨ç¤ºå€¼æ˜¯å¦åœ¨å¯„å­˜å™¨ï¼Œæ•°ç»„è¡¨ç¤ºåŸºåœ°å€æ˜¯å¦åœ¨ï¼‰
+	ä¸åœ¨ï¼šæŸ¥çœ‹æ˜¯å¦æœ‰ç©ºå¯„å­˜å™¨ï¼Œè‹¥æ— ï¼ŒFIFOåŸåˆ™ç»´æŠ¤å¯„å­˜å™¨å †
 
-	´ËÍâ»¹ĞèÎ¬»¤Á½¸öÈ«¾Ö±äÁ¿: ±íÊ¾ÊÇ·ñÔÚ¼Ä´æÆ÷ÖĞ£¨ÓÃÓÚ¸Ãº¯ÊıÌåÍâ£©£¬ÊÇ·ñÈ«¾Ö±äÁ¿£¨.data¶ÎÈ«¾Ö±äÁ¿¿ÉÒÔÍ¨¹ı±äÁ¿ÃûÖ±½Ó»ñÈ¡¡¢´æ´¢£©
+	æ­¤å¤–è¿˜éœ€ç»´æŠ¤ä¸¤ä¸ªå…¨å±€å˜é‡: è¡¨ç¤ºæ˜¯å¦åœ¨å¯„å­˜å™¨ä¸­ï¼ˆç”¨äºè¯¥å‡½æ•°ä½“å¤–ï¼‰ï¼Œæ˜¯å¦å…¨å±€å˜é‡ï¼ˆ.dataæ®µå…¨å±€å˜é‡å¯ä»¥é€šè¿‡å˜é‡åç›´æ¥è·å–ã€å­˜å‚¨ï¼‰
 */
 int getRegIndex(char* varname) {
-	// bug ¿ªÊ¼ÊÇ¸ººÅ ÒÅÂ©ÁË
-	if (isdigit(varname[0]) || varname[0] == '-') {			// Á¢¼´Êı£¬²»²éÑ¯ÊÇ·ñÔÚ¼Ä´æÆ÷£¬Ö±½Ó»ñÈ¡Ò»¸ö
+	// bug å¼€å§‹æ˜¯è´Ÿå· é—æ¼äº†
+	if (isdigit(varname[0]) || varname[0] == '-') {			// ç«‹å³æ•°ï¼Œä¸æŸ¥è¯¢æ˜¯å¦åœ¨å¯„å­˜å™¨ï¼Œç›´æ¥è·å–ä¸€ä¸ª
 		return getAnEmptyReg(varname, NULL);
 	}
-	// ±äÁ¿
+	// å˜é‡
 	Symbol* sb = lookUp_SymTab(varname, isGlobal);
 	if (!sb) {
 		printf("unexpect error: cannot find symbol\n");
 		exit(-1);
 	}
 
-	if (sb->isreg) {						// ÒÑ¾­ÔÚ¼Ä´æÆ÷¶ÑÖĞ
+	if (sb->isreg) {						// å·²ç»åœ¨å¯„å­˜å™¨å †ä¸­
 		isInReg = true;
 		return checkRegInfoList(varname);
 	}
-	else {									// ²»ÔÚ¼Ä´æÆ÷ÖĞ
+	else {									// ä¸åœ¨å¯„å­˜å™¨ä¸­
 		isInReg = false;
 		return getAnEmptyReg(varname, sb);
 	}
 }
 
-// Î¬»¤·ûºÅ±í£ºµÚÒ»ÕÅÈ«¾Ö±í²»¶¯£»Ö®ºó±íÄæĞò£¬°´ÕÕº¯Êı¶¨ÒåµÄË³Ğò
+// ç»´æŠ¤ç¬¦å·è¡¨ï¼šç¬¬ä¸€å¼ å…¨å±€è¡¨ä¸åŠ¨ï¼›ä¹‹åè¡¨é€†åºï¼ŒæŒ‰ç…§å‡½æ•°å®šä¹‰çš„é¡ºåº
 void updateSymTab() {
 	SymTab* st1, * st2;
 
@@ -203,14 +203,14 @@ void updateSymTab() {
 }
 
 /*
-Éú³ÉMIPS»ã±à´úÂë£»
-Ê×ÏÈÎ¬»¤·ûºÅ±í£¨²¿·ÖÄæĞò£©£»Ö®ºó¸ù¾İËÄÔªÊ½Éú³É
+ç”ŸæˆMIPSæ±‡ç¼–ä»£ç ï¼›
+é¦–å…ˆç»´æŠ¤ç¬¦å·è¡¨ï¼ˆéƒ¨åˆ†é€†åºï¼‰ï¼›ä¹‹åæ ¹æ®å››å…ƒå¼ç”Ÿæˆ
 */
 void genasm()
 {
-	// ·ûºÅ±í²¿·ÖÄæĞò£¬°´º¯Êı¶¨ÒåË³Ğò
+	// ç¬¦å·è¡¨éƒ¨åˆ†é€†åºï¼ŒæŒ‰å‡½æ•°å®šä¹‰é¡ºåº
 	updateSymTab();
-	// È«¾Ö±äÁ¿
+	// å…¨å±€å˜é‡
 	globaldata2asm();
 
 	fprintf(ASM_FILE, ".text:\n");
@@ -218,10 +218,10 @@ void genasm()
 	//fprintf(ASM_FILE, "#TODO\n");
 	fprintf(ASM_FILE, "\tli\t\t$v0, 10\n");
 	fprintf(ASM_FILE, "\tsyscall\n");
-	// ¿ªÊ¼´¦Àíº¯Êı£ºÏÈ´¦ÀíÕ»¡¢ÔÙ´¦Àí¾Ö²¿±äÁ¿¡¢ÁÙÊ±±äÁ¿¡¢×îºóÖğ²½´¦ÀíËÄÔªÊ½
+	// å¼€å§‹å¤„ç†å‡½æ•°ï¼šå…ˆå¤„ç†æ ˆã€å†å¤„ç†å±€éƒ¨å˜é‡ã€ä¸´æ—¶å˜é‡ã€æœ€åé€æ­¥å¤„ç†å››å…ƒå¼
 	while (cur_4var < NXQ) {
 		if (!strcmp(quadvarlist[cur_4var].op, "Func")) {
-			// Òª¼ÇÂ¼º¯Êı·µ»ØÀàĞÍ£¬±ãÓÚ½Ø¶ÏÊı¾İ
+			// è¦è®°å½•å‡½æ•°è¿”å›ç±»å‹ï¼Œä¾¿äºæˆªæ–­æ•°æ®
 			if (quadvarlist[cur_4var].var1[0] == 'i') {
 				s_funcRetType = Type::T_INTEGER;
 			}
@@ -239,32 +239,32 @@ void genasm()
 			fprintf(ASM_FILE, "main:\n");
 			s_funcRetType = Type::T_VOID;
 		}
-		else {						// Õı³£Çé¿ö²»Ó¦¸Ã½øÈë´Ë·ÖÖ§
+		else {						// æ­£å¸¸æƒ…å†µä¸åº”è¯¥è¿›å…¥æ­¤åˆ†æ”¯
 			printf("unexpected error in genasm()\n");
 		}
-		// ´¦Àíº¯ÊıÌå
+		// å¤„ç†å‡½æ•°ä½“
 		cur_4var++;
 		function2asm();
 
-		// µ±Ç°º¯Êı·ÖÎöÍê³É£¬½øÈëÏÂÒ»¸öº¯Êı
+		// å½“å‰å‡½æ•°åˆ†æå®Œæˆï¼Œè¿›å…¥ä¸‹ä¸€ä¸ªå‡½æ•°
 		g_symtab->next = g_symtab->next->next;
 	}
 }
 
 /*
-³õÊ¼»¯ .data¶Î	+ È«¾Ö±äÁ¿ºÍ×Ö·û´®
+åˆå§‹åŒ– .dataæ®µ	+ å…¨å±€å˜é‡å’Œå­—ç¬¦ä¸²
 */
 void globaldata2asm() {
 
 	fprintf(ASM_FILE, ".data:\n");
 
-	// È«¾Ö±äÁ¿
+	// å…¨å±€å˜é‡
 	while (strcmp("Func", quadvarlist[cur_4var].op)) {
 		if (!strcmp("Main", quadvarlist[cur_4var].op)) {
 			break;
 		}
 		if (!strcmp("const", quadvarlist[cur_4var].op)) {
-			// ÎŞÂÛÊÇint »¹ÊÇ char ¶¼ÊÇ´æ´¢ÊıÖµ£»ÕâÀïµÄÊıÖµÔÚÖ®Ç°ÒÑ¾­È«²¿È·¶¨ÁË£¬Òç³öµÄcharÖµ£¬È¡Ä£
+			// æ— è®ºæ˜¯int è¿˜æ˜¯ char éƒ½æ˜¯å­˜å‚¨æ•°å€¼ï¼›è¿™é‡Œçš„æ•°å€¼åœ¨ä¹‹å‰å·²ç»å…¨éƒ¨ç¡®å®šäº†ï¼Œæº¢å‡ºçš„charå€¼ï¼Œå–æ¨¡
 			fprintf(ASM_FILE, "\t$%s:\t\t.word\t%s\n",
 				quadvarlist[cur_4var].var3,
 				quadvarlist[cur_4var].var2
@@ -275,7 +275,7 @@ void globaldata2asm() {
 				quadvarlist[cur_4var].var3
 			);
 		}
-		else if (!strcmp("char", quadvarlist[cur_4var].op)) {	// ÊÂÊµÉÏÕâÀï£¬char·ÖÅäµÄ¿Õ¼äÒ²ÊÇ4
+		else if (!strcmp("char", quadvarlist[cur_4var].op)) {	// äº‹å®ä¸Šè¿™é‡Œï¼Œcharåˆ†é…çš„ç©ºé—´ä¹Ÿæ˜¯4
 			fprintf(ASM_FILE, "\t$%s:\t\t.space\t4\n",
 				quadvarlist[cur_4var].var3
 			);
@@ -301,7 +301,7 @@ void globaldata2asm() {
 		cur_4var++;
 	}
 
-	// ×Ö·û´®
+	// å­—ç¬¦ä¸²
 	for (int i = 0; i < str_index; i++) {
 		fprintf(ASM_FILE, "\t$string%d:\t.asciiz\t\"%s\"\n",
 			i, stringlist[i]
@@ -313,26 +313,26 @@ void globaldata2asm() {
 
 
 void function2asm() {
-	s_emptyRegNum = 10;								// ¼Ä´æÆ÷Çå¿Õ£¬µ«¼Ä´æÆ÷Ğ´ÈëÄÚ´æÓÉº¯Êıµ÷ÓÃÕßÊµÏÖ
-	regInfoList.clear();							// Çå¿Õ¶ÓÁĞ
-	// ·ûºÅ±í²»´¦Àí£¬ÒòÎªÁ¬º¯Êı±í¶¼±»Å×ÆúÁË
-													// Õ»µÄ±ä»¯
+	s_emptyRegNum = 10;								// å¯„å­˜å™¨æ¸…ç©ºï¼Œä½†å¯„å­˜å™¨å†™å…¥å†…å­˜ç”±å‡½æ•°è°ƒç”¨è€…å®ç°
+	regInfoList.clear();							// æ¸…ç©ºé˜Ÿåˆ—
+	// ç¬¦å·è¡¨ä¸å¤„ç†ï¼Œå› ä¸ºè¿å‡½æ•°è¡¨éƒ½è¢«æŠ›å¼ƒäº†
+													// æ ˆçš„å˜åŒ–
 	fprintf(ASM_FILE, "\tsw\t\t$fp, ($sp)\n");		// ($sp) = $fp
 	fprintf(ASM_FILE, "\tmove\t$fp, $sp\n");		// $fp = $sp
 	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, 8\n");		// $sp -= 8
 	fprintf(ASM_FILE, "\tsw\t\t$ra, 4($sp)\n");		// $ra
 
-	// ÓĞĞ©²ÎÊıÀàĞÍĞèÒª×ª»»
+	// æœ‰äº›å‚æ•°ç±»å‹éœ€è¦è½¬æ¢
 	matchParaType();
 
 	ignoreVarDef();
 
 	insertTempVar(cur_4var);
 
-	// Îªº¯Êı²ÎÊı¡¢¾Ö²¿±äÁ¿¡¢ÁÙÊ±±äÁ¿·ÖÅä¿Õ¼ä
+	// ä¸ºå‡½æ•°å‚æ•°ã€å±€éƒ¨å˜é‡ã€ä¸´æ—¶å˜é‡åˆ†é…ç©ºé—´
 	fprintf(ASM_FILE, "\tsubi\t$sp, $sp, %d\n", g_symtab->next->varsize - 8);
 
-	// ¿ªÊ¼·ÖÎö
+	// å¼€å§‹åˆ†æ
 	while (strcmp(quadvarlist[cur_4var].op, "endf")) {
 		if (0 == strcmp(quadvarlist[cur_4var].op, "+")) {
 			add2asm();
@@ -439,16 +439,16 @@ void function2asm() {
 		cur_4var++;
 	}
 
-	// º¯ÊıÌå½áÊø£¬´¦ÀíÕ»µÄ±ä»¯µÈµÈ
-	// ÕâÒ»²½Ò²ºÜÖØÒª£¬¼Ä´æÆ÷µÄÖµ²»ÒªÍüÁËĞ´»Ø
+	// å‡½æ•°ä½“ç»“æŸï¼Œå¤„ç†æ ˆçš„å˜åŒ–ç­‰ç­‰
+	// è¿™ä¸€æ­¥ä¹Ÿå¾ˆé‡è¦ï¼Œå¯„å­˜å™¨çš„å€¼ä¸è¦å¿˜äº†å†™å›
 	fprintf(ASM_FILE, "ret_%s:\n", s_funcName);
 
-	saveReg();										// È«¾Ö±äÁ¿ĞèÒª±£´æ¡¢¾Ö²¿±äÁ¿ÒÑ¾­Ã»ÓĞÒâÒå
-	//s_emptyRegNum = 10;								// ¼Ä´æÆ÷Çå¿Õ
-	//regInfoList.clear();							// Çå¿Õ¶ÓÁĞ
+	saveReg();										// å…¨å±€å˜é‡éœ€è¦ä¿å­˜ã€å±€éƒ¨å˜é‡å·²ç»æ²¡æœ‰æ„ä¹‰
+	//s_emptyRegNum = 10;								// å¯„å­˜å™¨æ¸…ç©º
+	//regInfoList.clear();							// æ¸…ç©ºé˜Ÿåˆ—
 
-	// »Ö¸´×´Ì¬
-	fprintf(ASM_FILE, "\tlw\t\t$ra, -4($fp)\n");	// »Ö¸´$ra
+	// æ¢å¤çŠ¶æ€
+	fprintf(ASM_FILE, "\tlw\t\t$ra, -4($fp)\n");	// æ¢å¤$ra
 	fprintf(ASM_FILE, "\tmove\t$sp, $fp\n");		// $sp = $fp
 	fprintf(ASM_FILE, "\tlw\t\t$fp, ($fp)\n");		// $fp = ($fp)
 	
@@ -460,7 +460,7 @@ void function2asm() {
 
 }
 
-// Ìø¹ıÇ°ÃæµÄ±äÁ¿¶¨Òå£¬²ÎÊı
+// è·³è¿‡å‰é¢çš„å˜é‡å®šä¹‰ï¼Œå‚æ•°
 void ignoreVarDef() {
 	while (!strcmp(quadvarlist[cur_4var].op, "const")
 		|| !strcmp(quadvarlist[cur_4var].op, "int")
@@ -473,7 +473,7 @@ void ignoreVarDef() {
 	}
 }
 
-// Æ¥Åä²ÎÊıÀàĞÍ: ÓĞÊ±ºò´«ÈëµÄÊµ²ÎÊÇintĞÍ£¬ĞÎ²ÎÊÇchar£¬Òª×ª»»
+// åŒ¹é…å‚æ•°ç±»å‹: æœ‰æ—¶å€™ä¼ å…¥çš„å®å‚æ˜¯intå‹ï¼Œå½¢å‚æ˜¯charï¼Œè¦è½¬æ¢
 void matchParaType() {
 	Symbol* sbf = lookUp_SymTab(s_funcName);
 
@@ -482,7 +482,7 @@ void matchParaType() {
 	
 	for (int i = 0; !strcmp(quadvarlist[cur_4var].op, "para"); i++, cur_4var++) {
 		if (pf->paratable[i].ptype == Type::T_CHAR) {
-			// ×ª»»
+			// è½¬æ¢
 			
 			fprintf(ASM_FILE, "\tlw\t\t$a0, -%d($fp)\n", 8 + 4 * i);
 			fprintf(ASM_FILE, "\tandi\t$a0, $a0, 0xff\n");
@@ -492,9 +492,9 @@ void matchParaType() {
 	INFO_ASM("\t#match finished\n");
 }
 
-// ±éÀú£¬½«ÁÙÊ±±äÁ¿²åÈë·ûºÅ±í
+// éå†ï¼Œå°†ä¸´æ—¶å˜é‡æ’å…¥ç¬¦å·è¡¨
 void insertTempVar(int t) {
-	// ÁÙÊ±±äÁ¿¶¨Òå Ö»»á³öÏÖÔÚ var3µÄÎ»ÖÃ
+	// ä¸´æ—¶å˜é‡å®šä¹‰ åªä¼šå‡ºç°åœ¨ var3çš„ä½ç½®
 	while (strcmp(quadvarlist[t].op, "endf")) {
 		if (quadvarlist[t].var3[0] == '$') {
 			insertTempVar2SymTab(quadvarlist[t].var3);
@@ -511,13 +511,13 @@ id = id/num + id/num
 void add2asm()
 {
 	/*
-	getRegIndexÓ¦ÓÃ¾ÙÀı£º ÓĞÁ½ÖÖÇé¿ö£ºÊı×Ö»òÕß±êÊ¶·û£¨Êı×é´æµÄÊÇ»ùµØÖ·£©
-		Êı×Ö£º²»²éÑ¯¼Ä´æÆ÷ÊÇ·ñÒÑ¾­´æ´¢£¬Ö±½Ó»ñµÃÒ»¸ö¿ÉÓÃ¼Ä´æÆ÷£¨¿ÉÓÃ¼õÒ» or ½«Ò»¸ö¼Ä´æÆ÷ËÍÈëÄÚ´æ£©
-		±êÊ¶·û£ºÏÈ²é¿´ÊÇ·ñÔÚ¼Ä´æÆ÷£¬Èç¹ûÔÚ£¬·µ»ØËùÔÚĞòºÅ£¬¸üĞÂ¶ÓÁĞ
-				Èô²»ÔÚ£¬»ñµÃÒ»¸ö¿ÉÓÃ¼Ä´æÆ÷£¨¿ÉÓÃ¼õÒ» or ½«Ò»¸ö¼Ä´æÆ÷ËÍÈëÄÚ´æ£©
+	getRegIndexåº”ç”¨ä¸¾ä¾‹ï¼š æœ‰ä¸¤ç§æƒ…å†µï¼šæ•°å­—æˆ–è€…æ ‡è¯†ç¬¦ï¼ˆæ•°ç»„å­˜çš„æ˜¯åŸºåœ°å€ï¼‰
+		æ•°å­—ï¼šä¸æŸ¥è¯¢å¯„å­˜å™¨æ˜¯å¦å·²ç»å­˜å‚¨ï¼Œç›´æ¥è·å¾—ä¸€ä¸ªå¯ç”¨å¯„å­˜å™¨ï¼ˆå¯ç”¨å‡ä¸€ or å°†ä¸€ä¸ªå¯„å­˜å™¨é€å…¥å†…å­˜ï¼‰
+		æ ‡è¯†ç¬¦ï¼šå…ˆæŸ¥çœ‹æ˜¯å¦åœ¨å¯„å­˜å™¨ï¼Œå¦‚æœåœ¨ï¼Œè¿”å›æ‰€åœ¨åºå·ï¼Œæ›´æ–°é˜Ÿåˆ—
+				è‹¥ä¸åœ¨ï¼Œè·å¾—ä¸€ä¸ªå¯ç”¨å¯„å­˜å™¨ï¼ˆå¯ç”¨å‡ä¸€ or å°†ä¸€ä¸ªå¯„å­˜å™¨é€å…¥å†…å­˜ï¼‰
 
-		mem2reg£º»ñµÃÁË·µ»ØµÄ¼Ä´æÆ÷ĞòºÅ¡¢isInReg£¬isGlobal×´Ì¬ Ö®ºó£¬Êı×ÖÖ±½Ó¶ÁÈë¼Ä´æÆ÷£»
-				±äÁ¿£º¸ù¾İisInRegÅĞ¶ÏÊÇ·ñĞèÒª´ÓÄÚ´æ¶ÁÈ¡£¬¸ù¾İisGlobal¾õµÃ¶ÁÈ¡·½·¨
+		mem2regï¼šè·å¾—äº†è¿”å›çš„å¯„å­˜å™¨åºå·ã€isInRegï¼ŒisGlobalçŠ¶æ€ ä¹‹åï¼Œæ•°å­—ç›´æ¥è¯»å…¥å¯„å­˜å™¨ï¼›
+				å˜é‡ï¼šæ ¹æ®isInRegåˆ¤æ–­æ˜¯å¦éœ€è¦ä»å†…å­˜è¯»å–ï¼Œæ ¹æ®isGlobalè§‰å¾—è¯»å–æ–¹æ³•
 	*/
 	int r1, r2, r3;
 	//  var1
@@ -557,7 +557,7 @@ void sub2asm()
 
 /*
 (*,id/num,id/num,id)
-MIPSÖ¸Áî£ºmul	$s1, $s0, $s2 ==> s1 = s0 * s2 Òç³ö²»¿¼ÂÇ
+MIPSæŒ‡ä»¤ï¼šmul	$s1, $s0, $s2 ==> s1 = s0 * s2 æº¢å‡ºä¸è€ƒè™‘
 */
 void mul2asm()
 {
@@ -631,7 +631,7 @@ void div2asm()
 }
 
 /*
-callret,id£¨º¯ÊıÃû£©, ,id(ret)
+callret,idï¼ˆå‡½æ•°åï¼‰, ,id(ret)
 */
 void callret2asm()
 {
@@ -644,21 +644,21 @@ void callret2asm()
 }
 
 /*
-(getarray,id£¨Êı×éÃû£©,id/num£¨index£©,id)
+(getarray,idï¼ˆæ•°ç»„åï¼‰,id/numï¼ˆindexï¼‰,id)
 */
 void getarray2asm()
 {
-	// Êı×éÃû
+	// æ•°ç»„å
 	int r1 = getRegIndex(quadvarlist[cur_4var].var1);
-	// ÓÉÓÚÈ«¾ÖÊı×éºÍ¾Ö²¿Êı×éµÄµØÖ·Ôö³¤·½Ïò²»Ò»Ñù£¬Òª¼ÇÂ¼
+	// ç”±äºå…¨å±€æ•°ç»„å’Œå±€éƒ¨æ•°ç»„çš„åœ°å€å¢é•¿æ–¹å‘ä¸ä¸€æ ·ï¼Œè¦è®°å½•
 	bool isGlobArray = isGlobal;
-	// ÒòÎªÕâÀïÒª¶ÁÈ¡µÄÊ±Êı×éµÄ»ùµØÖ·£»¶ø²»ÊÇÀïÃæµÄÖµ£»²»ÄÜÓÃmem2reg
+	// å› ä¸ºè¿™é‡Œè¦è¯»å–çš„æ—¶æ•°ç»„çš„åŸºåœ°å€ï¼›è€Œä¸æ˜¯é‡Œé¢çš„å€¼ï¼›ä¸èƒ½ç”¨mem2reg
 	baseAddr2reg(quadvarlist[cur_4var].var1, r1);
 
 	int r2 = getRegIndex(quadvarlist[cur_4var].var2);
 	mem2reg(quadvarlist[cur_4var].var2, r2);
 
-	// ¼ÆËãindexµØÖ·
+	// è®¡ç®—indexåœ°å€
 	fprintf(ASM_FILE, "\tmul\t\t$s0, $t%d, 4\n", r2);
 	if (isGlobArray) {
 		fprintf(ASM_FILE, "\tadd\t\t$s0, $t%d, $s0\n", r1);
@@ -768,7 +768,7 @@ void jnz2asm()
 	fprintf(ASM_FILE, "\tbnez\t$t%d, %s\n", r1, quadvarlist[cur_4var].var3);
 }
 
-// matchTypeÒÑ¾­Íê³ÉÁË
+// matchTypeå·²ç»å®Œæˆäº†
 void para2asm()
 {
 	/* do nothing*/
@@ -781,17 +781,17 @@ name[index] = id/num
 */
 void setarray2asm()
 {
-	// Êı×éÃû
+	// æ•°ç»„å
 	int r3 = getRegIndex(quadvarlist[cur_4var].var3);
-	// ÓÉÓÚÈ«¾ÖÊı×éºÍ¾Ö²¿Êı×éµÄµØÖ·Ôö³¤·½Ïò²»Ò»Ñù£¬Òª¼ÇÂ¼
+	// ç”±äºå…¨å±€æ•°ç»„å’Œå±€éƒ¨æ•°ç»„çš„åœ°å€å¢é•¿æ–¹å‘ä¸ä¸€æ ·ï¼Œè¦è®°å½•
 	bool isGlobArray = isGlobal;
-	// ÒòÎªÕâÀïÒª¶ÁÈ¡µÄÊ±Êı×éµÄ»ùµØÖ·£»¶ø²»ÊÇÀïÃæµÄÖµ£»²»ÄÜÓÃmem2reg
+	// å› ä¸ºè¿™é‡Œè¦è¯»å–çš„æ—¶æ•°ç»„çš„åŸºåœ°å€ï¼›è€Œä¸æ˜¯é‡Œé¢çš„å€¼ï¼›ä¸èƒ½ç”¨mem2reg
 	baseAddr2reg(quadvarlist[cur_4var].var3, r3);
 
 	int r2 = getRegIndex(quadvarlist[cur_4var].var2);
 	mem2reg(quadvarlist[cur_4var].var2, r2);
 
-	// ¼ÆËãindexµØÖ·
+	// è®¡ç®—indexåœ°å€
 	fprintf(ASM_FILE, "\tmul\t\t$s0, $t%d, 4\n", r2);
 	if (isGlobArray) {
 		fprintf(ASM_FILE, "\tadd\t\t$s0, $t%d, $s0\n", r3);
@@ -813,7 +813,7 @@ void setarray2asm()
 }
 
 /*
-£¨assign£¬id/num£¬£¬name£©
+ï¼ˆassignï¼Œid/numï¼Œï¼Œnameï¼‰
 */
 void assign2asm()
 {
@@ -839,7 +839,7 @@ void lab2asm()
 }
 
 /*
-£¨callret,id£¨º¯ÊıÃû£©,  ,  £©
+ï¼ˆcallret,idï¼ˆå‡½æ•°åï¼‰,  ,  ï¼‰
 */
 void call2asm()
 {
@@ -856,28 +856,28 @@ void vpara2asm()
 	while(!strcmp(quadvarlist[cur_4var].op, "vpara")) {
 		int addr = 8 + 4 * cnt;
 
-		// ÏÈ½«Êı¾İ¶ÁÈë¼Ä´æÆ÷
+		// å…ˆå°†æ•°æ®è¯»å…¥å¯„å­˜å™¨
 		int rr = getRegIndex(quadvarlist[cur_4var].var3);
 		mem2reg(quadvarlist[cur_4var].var3, rr);
-		// ½«¼Ä´æÆ÷µÄÊı¾İËÍÈëÖ¸¶¨Î»ÖÃ
+		// å°†å¯„å­˜å™¨çš„æ•°æ®é€å…¥æŒ‡å®šä½ç½®
 		fprintf(ASM_FILE, "\tsw\t\t$t%d, -%d($sp)\n", rr, addr);
 
 		cnt++;
 		cur_4var++;
 	}
-	cur_4var--;		// ²»È»»áÌø¹ıº¯Êıµ÷ÓÃ
+	cur_4var--;		// ä¸ç„¶ä¼šè·³è¿‡å‡½æ•°è°ƒç”¨
 	INFO_ASM("\t#End of value Para\n");
 }
 
 /*
 (scanf,  ,  ,name)
-ÊäÈëÕûĞÎºÍ×Ö·û
+è¾“å…¥æ•´å½¢å’Œå­—ç¬¦
 */
 void scanf2asm()
 {
 	Symbol* sb = lookUp_SymTab(quadvarlist[cur_4var].var3, isGlobal);
 
-	if (Type::T_INTEGER == sb->valueType) {			// Êı×Ö
+	if (Type::T_INTEGER == sb->valueType) {			// æ•°å­—
 		fprintf(ASM_FILE, "\tli\t\t$v0, 5\n");
 		fprintf(ASM_FILE, "\tsyscall\n");
 		if (isGlobal) {
@@ -889,7 +889,7 @@ void scanf2asm()
 			fprintf(ASM_FILE, "\tsw\t\t$v0, -%d($fp)\n", addr);
 		}
 	}
-	else {											// ×Ö·û
+	else {											// å­—ç¬¦
 		fprintf(ASM_FILE, "\tli\t\t$v0, 12\n");
 		fprintf(ASM_FILE, "\tsyscall\n");
 		if (isGlobal) {
@@ -902,16 +902,16 @@ void scanf2asm()
 		}
 	}
 
-	// ĞŞ¸´¶à´Î¶ÁÈ¡³ö´íbug
+	// ä¿®å¤å¤šæ¬¡è¯»å–å‡ºé”™bug
 	updateOldVarWhenRead(sb);
 }
 
 /*
 (print,str_index, , )
 (print,  ,id/num, int/char)
-ÕâÀïÓĞµãÎÊÌâ£¬ ×îºóint/charÃ»ÓÃ£»Í¨¹ıid/numÀ´ÅĞ¶ÏµÄ
+è¿™é‡Œæœ‰ç‚¹é—®é¢˜ï¼Œ æœ€åint/charæ²¡ç”¨ï¼›é€šè¿‡id/numæ¥åˆ¤æ–­çš„
 
-´òÓ¡ÕûĞÎ£¬ ×Ö·û£¬ Êı×Ö
+æ‰“å°æ•´å½¢ï¼Œ å­—ç¬¦ï¼Œ æ•°å­—
 */
 void print2asm()
 {
@@ -931,8 +931,8 @@ void print2asm()
 
 			return;
 		}
-		// ±êÊ¶·û·ÖÎª ÕûĞÎºÍ×Ö·û£¬Í¨¹ı²éÕÒ·ûºÅ±íÈ·¶¨
-		// ÊÂÊµÉÏÕâÀïÓĞ¸öbug£ºirÖĞÊ¼ÖÕÏÔÊ¾µÄÊÇ intĞÍ£»ÔİÎ´½â¾ö£»ÒòÎªÓÃÏÂÃæµÄ·½·¨È·¶¨ÀàĞÍ£¬²»Ó°Ïì½á¹û
+		// æ ‡è¯†ç¬¦åˆ†ä¸º æ•´å½¢å’Œå­—ç¬¦ï¼Œé€šè¿‡æŸ¥æ‰¾ç¬¦å·è¡¨ç¡®å®š
+		// äº‹å®ä¸Šè¿™é‡Œæœ‰ä¸ªbugï¼širä¸­å§‹ç»ˆæ˜¾ç¤ºçš„æ˜¯ intå‹ï¼›æš‚æœªè§£å†³ï¼›å› ä¸ºç”¨ä¸‹é¢çš„æ–¹æ³•ç¡®å®šç±»å‹ï¼Œä¸å½±å“ç»“æœ
 		if (Type::T_INTEGER == lookUp_SymTab(quadvarlist[cur_4var].var2)->valueType) {
 			fprintf(ASM_FILE, "\tmove\t$a0, $t%d\n", r2);
 			fprintf(ASM_FILE, "\tli\t\t$v0, 1\n");
@@ -954,21 +954,21 @@ ret, , ,
 void ret2asm()
 {
 	
-	if (quadvarlist[cur_4var].var3[0] == ' ') {		// == Ğ´³É =ÁË ¡£¡£¡£¡£¡£²éÁË¼¸·ÖÖÓ°Ñ£¬»¹ºÃÕÒ³öÀ´ÁË
+	if (quadvarlist[cur_4var].var3[0] == ' ') {		// == å†™æˆ =äº† ã€‚ã€‚ã€‚ã€‚ã€‚æŸ¥äº†å‡ åˆ†é’ŸæŠŠï¼Œè¿˜å¥½æ‰¾å‡ºæ¥äº†
 		/* do nothing */
 		if (Type::T_VOID != s_funcRetType) {
 			printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
 		}
 	}
 	else {
-		// ±£´æ·µ»ØÖµ
+		// ä¿å­˜è¿”å›å€¼
 		int r3 = getRegIndex(quadvarlist[cur_4var].var3);
 		mem2reg(quadvarlist[cur_4var].var3, r3);
 		fprintf(ASM_FILE, "\tmove\t$v0, $t%d\n", r3);
 
 
-		// ÅĞ¶Ï·µ»ØÀàĞÍ
-		if (isdigit(quadvarlist[cur_4var].var3[0])) {			// ·µ»ØµÄÊÇÊı×Ö
+		// åˆ¤æ–­è¿”å›ç±»å‹
+		if (isdigit(quadvarlist[cur_4var].var3[0])) {			// è¿”å›çš„æ˜¯æ•°å­—
 			if (Type::T_VOID == s_funcRetType) {
 				// void : error
 				printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
@@ -981,9 +981,9 @@ void ret2asm()
 				/* int: do nothing */
 			}
 		}
-		else {													// ±êÊ¶·û
+		else {													// æ ‡è¯†ç¬¦
 			Type real_ret_type = lookUp_SymTab(quadvarlist[cur_4var].var3)->valueType;
-			// ÉÏÃæÒ»¾äËÆºõÃ»ÓÃ£¿
+			// ä¸Šé¢ä¸€å¥ä¼¼ä¹æ²¡ç”¨ï¼Ÿ
 			if (Type::T_VOID == s_funcRetType) {
 				// void : error
 				printf("return type error ,id: %s\n", quadvarlist[cur_4var].var3);
@@ -1001,7 +1001,7 @@ void ret2asm()
 	fprintf(ASM_FILE, "\tj\t\tret_%s\n", s_funcName);
 }
 
-// ÔÚº¯Êıµ÷ÓÃÇ°£¬½«¼Ä´æÆ÷µÄÖµĞ´ÈëÄÚ´æ
+// åœ¨å‡½æ•°è°ƒç”¨å‰ï¼Œå°†å¯„å­˜å™¨çš„å€¼å†™å…¥å†…å­˜
 void saveReg() {
 	s_emptyRegNum = 10;
 
@@ -1010,16 +1010,16 @@ void saveReg() {
 		RegInfo nn = regInfoList.front();
 		regInfoList.pop_front();
 
-		if (isdigit(nn.varname[0])) {		// µ¯³öµÄÊÇÁ¢¼´Êı£¬²»ÓÃËÍÖÁÄÚ´æ
+		if (isdigit(nn.varname[0])) {		// å¼¹å‡ºçš„æ˜¯ç«‹å³æ•°ï¼Œä¸ç”¨é€è‡³å†…å­˜
 			continue;
 		}
 		else {
 			Symbol* sb_pop = lookUp_SymTab(nn.varname, p_isGlobal);
 			sb_pop->isreg = false;
-			if (sb_pop->vec >= 0) {				// µ¯³öµÄÊÇÊı×éµÄ»ùµØÖ·£¬Ò²²»ÓÃËÍÈëÄÚ´æ
+			if (sb_pop->vec >= 0) {				// å¼¹å‡ºçš„æ˜¯æ•°ç»„çš„åŸºåœ°å€ï¼Œä¹Ÿä¸ç”¨é€å…¥å†…å­˜
 				continue;
 			}
-			else {								// µ¯³öµÄÊÇ±äÁ¿£º·ÖÎªÈ«¾ÖºÍ¾Ö²¿£¨ÁÙÊ±£©
+			else {								// å¼¹å‡ºçš„æ˜¯å˜é‡ï¼šåˆ†ä¸ºå…¨å±€å’Œå±€éƒ¨ï¼ˆä¸´æ—¶ï¼‰
 				if (p_isGlobal) {
 					fprintf(ASM_FILE, "\tsw\t\t$t%d, $%s\n",
 						nn.regindex,
@@ -1038,35 +1038,35 @@ void saveReg() {
 	INFO_ASM("\t#End of Saving RegFile\n");
 }
 
-// ´ÓÄÚ´æ¶ÁÈë¼Ä´æÆ÷
+// ä»å†…å­˜è¯»å…¥å¯„å­˜å™¨
 void mem2reg(char* varname, int reg) {
-	// Êı×ÖÖ±½Ó¶ÁÈë
+	// æ•°å­—ç›´æ¥è¯»å…¥
 	if (isdigit(varname[0]) || '-' == varname[0]) {
 		fprintf(ASM_FILE, "\tli\t\t$t%d, %s\n", reg, varname);
 		return;
 	}
-	// ±äÁ¿£º
-	// ²»ÔÚ¼Ä´æÆ÷£¬ĞèÒª¶ÁÈ¡
+	// å˜é‡ï¼š
+	// ä¸åœ¨å¯„å­˜å™¨ï¼Œéœ€è¦è¯»å–
 	if (!isInReg) {
-		if (isGlobal) {						// ¶ÁÈ¡È«¾Ö±äÁ¿
+		if (isGlobal) {						// è¯»å–å…¨å±€å˜é‡
 			fprintf(ASM_FILE, "\tlw\t\t$t%d, $%s\n", reg, varname);
 		}
-		else {								// ¶ÁÈ¡¾Ö²¿±äÁ¿
+		else {								// è¯»å–å±€éƒ¨å˜é‡
 			int addr = lookUp_SymTab(varname)->adress;
 			fprintf(ASM_FILE, "\tlw\t\t$t%d, -%d($fp)\n", reg, addr);
 		}
 	}
 }
 
-// Êı×éµÄ»ùµØÖ·¶ÁÈëÄÚ´æ
+// æ•°ç»„çš„åŸºåœ°å€è¯»å…¥å†…å­˜
 void baseAddr2reg(char* varname, int reg) {
 	INFO_ASM("\t# Array BaseAddr\n");
 	if (!isInReg) {
-		if (isGlobal) {						// È«¾Ö±äÁ¿ »ùµØÖ·
+		if (isGlobal) {						// å…¨å±€å˜é‡ åŸºåœ°å€
 			fprintf(ASM_FILE, "\tla\t\t$t%d, $%s\n", reg, varname);
 		}
 		else {
-			// »ùµØÖ·
+			// åŸºåœ°å€
 			int addr = lookUp_SymTab(varname)->adress;
 
 			//fprintf(ASM_FILE, "\tli\t\t$t%d, %d\n", reg, addr);
@@ -1078,11 +1078,11 @@ void baseAddr2reg(char* varname, int reg) {
 
 
 /*
-bug£º¶à´Î¶ÁÈ¡Í¬Ãû±äÁ¿Ê±£¬ÓÉÓÚscanfÊÇÖ±½ÓĞ´ÈëÄÚ´æ£¬µ«»òĞíÖ®Ç°Ê¹ÓÃ¹ıÕâ¸ö±äÁ¿£¬²¢ÇÒÒÑ¾­µ÷Èë¼Ä´æÆ÷£»²é±íµÄÊ±ºò»áÏÔÊ¾ÔÚ
-	¼Ä´æÆ÷¶ÑÖĞ£¬ÕâÑù¾Í»á¶ÁÈ¡¾ÍÖµ£»
-	·¢ÏÖÓÚ Test11.c0£»¶à´ÎÊäÈëx£¬·¢ÏÖºóÃæÊ¹ÓÃµÄxµÄÖµÊ¼ÖÕ²»±ä
-	(old£¬»á´øÀ´ĞÂÎÊÌâ£¬¿ÉÓÃ¼Ä´æÆ÷ÊıÄ¿²»¶Ï¼õÉÙ)´¦Àí£º´Ó¼Ä´æÆ÷¶ÑÖĞÒÆ³ı´Ë±äÁ¿£¬ÇÒ²»ÓÃĞ´»ØÄÚ´æ£»¹ÊÖ»Ğè¸üĞÂ·ûºÅ±í×´Ì¬¡¢¼Ä´æÆ÷Ó³Éä¶ÓÁĞ¡¢¿ÉÓÃ¼Ä´æÆ÷ÊıÄ¿
-	(new)´¦Àí£ºÈç¹ûÔÚ¼Ä´æÆ÷£¬Ôò¸üĞÂ¼Ä´æÆ÷Êı¾İ¼´¿É£¬ÆäËû²»±ä
+bugï¼šå¤šæ¬¡è¯»å–åŒåå˜é‡æ—¶ï¼Œç”±äºscanfæ˜¯ç›´æ¥å†™å…¥å†…å­˜ï¼Œä½†æˆ–è®¸ä¹‹å‰ä½¿ç”¨è¿‡è¿™ä¸ªå˜é‡ï¼Œå¹¶ä¸”å·²ç»è°ƒå…¥å¯„å­˜å™¨ï¼›æŸ¥è¡¨çš„æ—¶å€™ä¼šæ˜¾ç¤ºåœ¨
+	å¯„å­˜å™¨å †ä¸­ï¼Œè¿™æ ·å°±ä¼šè¯»å–å°±å€¼ï¼›
+	å‘ç°äº Test11.c0ï¼›å¤šæ¬¡è¾“å…¥xï¼Œå‘ç°åé¢ä½¿ç”¨çš„xçš„å€¼å§‹ç»ˆä¸å˜
+	(oldï¼Œä¼šå¸¦æ¥æ–°é—®é¢˜ï¼Œå¯ç”¨å¯„å­˜å™¨æ•°ç›®ä¸æ–­å‡å°‘)å¤„ç†ï¼šä»å¯„å­˜å™¨å †ä¸­ç§»é™¤æ­¤å˜é‡ï¼Œä¸”ä¸ç”¨å†™å›å†…å­˜ï¼›æ•…åªéœ€æ›´æ–°ç¬¦å·è¡¨çŠ¶æ€ã€å¯„å­˜å™¨æ˜ å°„é˜Ÿåˆ—ã€å¯ç”¨å¯„å­˜å™¨æ•°ç›®
+	(new)å¤„ç†ï¼šå¦‚æœåœ¨å¯„å­˜å™¨ï¼Œåˆ™æ›´æ–°å¯„å­˜å™¨æ•°æ®å³å¯ï¼Œå…¶ä»–ä¸å˜
 */
 void updateOldVarWhenRead(Symbol* sb)
 {
@@ -1091,7 +1091,7 @@ void updateOldVarWhenRead(Symbol* sb)
 		std::list<RegInfo>::iterator iter = regInfoList.begin();
 		for (; iter != regInfoList.end(); ++iter) {
 			if (!strcmp((*iter).varname, sb->name)) {
-				INFO("Ê£Óà¼Ä´æÆ÷£º%d£¬ÒÑÔÚ¼Ä´æÆ÷£ºtrue£¬±äÁ¿Ãû£º%s£¬¼Ä´æÆ÷ĞòºÅ£º%d\n", s_emptyRegNum, varname, std::distance(regInfoList.begin(), iter));
+				INFO("å‰©ä½™å¯„å­˜å™¨ï¼š%dï¼Œå·²åœ¨å¯„å­˜å™¨ï¼štrueï¼Œå˜é‡åï¼š%sï¼Œå¯„å­˜å™¨åºå·ï¼š%d\n", s_emptyRegNum, varname, std::distance(regInfoList.begin(), iter));
 				break;
 			}
 		}
@@ -1101,7 +1101,7 @@ void updateOldVarWhenRead(Symbol* sb)
 	}
 }
 
-// »®·Ö»ù±¾¿é
+// åˆ’åˆ†åŸºæœ¬å—
 void basicBlockDivide()
 {
 	int index = 0;

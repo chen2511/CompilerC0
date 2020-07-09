@@ -1,28 +1,28 @@
-#pragma once
+ï»¿#pragma once
 #ifndef AST_H
 #define AST_H
 
 #include "global.h"
 
-// ´´½¨ÉùÃ÷½Úµã£º°üÀ¨³£Á¿¡¢±äÁ¿¡¢º¯ÊýµÈµÈËµÃ÷¶¨Òå£¬´«Èë¾ßÌåÉùÃ÷ÀàÐÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºå£°æ˜ŽèŠ‚ç‚¹ï¼šåŒ…æ‹¬å¸¸é‡ã€å˜é‡ã€å‡½æ•°ç­‰ç­‰è¯´æ˜Žå®šä¹‰ï¼Œä¼ å…¥å…·ä½“å£°æ˜Žç±»åž‹ï¼Œè¿”å›žèŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newDecNode(DecKind kind);
 
-// ´´½¨Óï¾ä½Úµã£º´«Èë¾ßÌåÉùÃ÷ÀàÐÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºè¯­å¥èŠ‚ç‚¹ï¼šä¼ å…¥å…·ä½“å£°æ˜Žç±»åž‹ï¼Œè¿”å›žèŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newStmtNode(StmtKind kind);
 
-// ´´½¨±í´ïÊ½½Úµã£º´«Èë¾ßÌåÉùÃ÷ÀàÐÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºè¡¨è¾¾å¼èŠ‚ç‚¹ï¼šä¼ å…¥å…·ä½“å£°æ˜Žç±»åž‹ï¼Œè¿”å›žèŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newExpNode(ExpKind kind);
 
-// ´´½¨²¼¶û±í´ïÊ½½Úµã£º´«Èë¾ßÌåÉùÃ÷ÀàÐÍ£¬·µ»Ø½ÚµãÖ¸Õë
+// åˆ›å»ºå¸ƒå°”è¡¨è¾¾å¼èŠ‚ç‚¹ï¼šä¼ å…¥å…·ä½“å£°æ˜Žç±»åž‹ï¼Œè¿”å›žèŠ‚ç‚¹æŒ‡é’ˆ
 TreeNode* newBoolExpNode(BoolExpKind kind);
 
-// ¶¨Òåº¯ÊýÊ±£¬±£´æº¯ÊýÐÅÏ¢£º·µ»ØÀàÐÍºÍ²ÎÊý±í
+// å®šä¹‰å‡½æ•°æ—¶ï¼Œä¿å­˜å‡½æ•°ä¿¡æ¯ï¼šè¿”å›žç±»åž‹å’Œå‚æ•°è¡¨
 // FuncInfo* newFuncInfo(Type t);
 
-// ¿½±´tokenÖÐµÄ×Ö·û´®µ½¶¯Ì¬·ÖÅäµÄ¿Õ¼ä
+// æ‹·è´tokenä¸­çš„å­—ç¬¦ä¸²åˆ°åŠ¨æ€åˆ†é…çš„ç©ºé—´
 char* copyString(char* s);
 
-// Êä³ö³éÏóÓï·¨Ê÷µ½ÎÄ¼þ
+// è¾“å‡ºæŠ½è±¡è¯­æ³•æ ‘åˆ°æ–‡ä»¶
 void printAST(TreeNode* tree);
 
 #endif // !AST_H

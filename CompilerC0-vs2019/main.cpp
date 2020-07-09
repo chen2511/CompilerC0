@@ -1,4 +1,4 @@
-#include "global.h"
+ï»¿#include "global.h"
 #include "scan.h"
 #include "parser.h"
 #include "semantic.h"
@@ -71,38 +71,38 @@ int main(int argc, char* argv[])
         cout << "source file open successfully!\n";
     }
 
-    // Óï·¨·ÖÎö£¬Éú³É³éÏóÓï·¨Ê÷
+    // è¯­æ³•åˆ†æžï¼Œç”ŸæˆæŠ½è±¡è¯­æ³•æ ‘
     TreeNode* synaxtree = parser();
 
-    //// ÓÐ´íÎó£¬²»¼ÌÐø±àÒë£¬ÍË³ö
+    //// æœ‰é”™è¯¯ï¼Œä¸ç»§ç»­ç¼–è¯‘ï¼Œé€€å‡º
     //if (g_errorNum) {
     //    exit(-1);
     //}
 
-    // ÓïÒå·ÖÎö¡¢¹¹Ôì·ûºÅ±í
+    // è¯­ä¹‰åˆ†æžã€æž„é€ ç¬¦å·è¡¨
     g_symtab = initSimpleSymTable((char*)("Global"));
     semanticAnalyze(synaxtree);
 
-    // ÓÐ´íÎó£¬²»¼ÌÐø±àÒë£¬ÍË³ö
+    // æœ‰é”™è¯¯ï¼Œä¸ç»§ç»­ç¼–è¯‘ï¼Œé€€å‡º
     if (g_errorNum) {
-        printf("Ò»¹²ÓÐ %d ¸ö´íÎó\n", g_errorNum);
+        printf("ä¸€å…±æœ‰ %d ä¸ªé”™è¯¯\n", g_errorNum);
         exit(-1);
     }
 
-    // Éú³ÉËÄÔªÊ½
+    // ç”Ÿæˆå››å…ƒå¼
     IR_Analyze(synaxtree);
     IR_FILE = fopen(irfilename.c_str(), "w+");
 
-    // ÓÅ»¯
+    // ä¼˜åŒ–
     if (OPTIMIZE_SWITCH) {
         optimize();
     }
 
-    // Êä³öËÄÔªÊ½
+    // è¾“å‡ºå››å…ƒå¼
     printIR();
     fclose(IR_FILE);
 
-    // Éú³É»ã±à´úÂë
+    // ç”Ÿæˆæ±‡ç¼–ä»£ç 
     ASM_FILE = fopen(asmfilename.c_str(), "w+");
     genasm();
 
