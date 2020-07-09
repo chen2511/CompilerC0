@@ -11,8 +11,8 @@ const char* reservedWords[] = {
     "scanf", "true", "void", "while"
 };
 
-//缓冲数组
-char g_lineBuf[4097];
+//缓冲数组     
+char g_lineBuf[4097];   
 //在buf中的指针；
 int g_lexBegin = 0;
 //forward 指向下一个将要读取的字符；lexBegin表示该token开始的位置
