@@ -44,7 +44,7 @@ void copyValue(string tmpstr)
     g_token.value[i] = '\0';
 }
 
-//查看是否为关键字，若是，改变token Type
+//查看是否为关键字，若是，改变token Type  
 void compareWithKeyWord()
 {
     for (int i = 0; i < RESERVEDWORD_NUM; i++) {
