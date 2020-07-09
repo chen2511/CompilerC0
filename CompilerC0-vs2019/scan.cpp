@@ -4,7 +4,7 @@
 
 using namespace std;
 
-//在识别出标识符之后，验证是否关键字
+//在识别出标识符之后，验证是否关键字  
 const char* reservedWords[] = {
     "char", "const",  "else", "false", "for",
     "if", "int", "main", "printf", "return",
@@ -22,7 +22,7 @@ int g_bufSize = 0;
 //是否文件末尾
 bool EOF_flag = false;
 
-//状态机的所有状态
+//状态机的所有状态       
 typedef enum {
     STATE_START, STATE_NUM, STATE_ID, STATE_CHAR, STATE_STRING, STATE_DONE
 }StateType;
@@ -33,8 +33,8 @@ void backSpace()
 {
     g_forward--;
 }
-
-//将值拷贝到token的value中
+ 
+//将值拷贝到token的value中 
 void copyValue(string tmpstr)
 {
     int i;
@@ -72,11 +72,11 @@ void getNextToken() {
 
         switch (state)
         {
-        case STATE_START: {      /////////////////////开始状态
+        case STATE_START: {      /////////////////////start
             if (' ' == ch || '\t' == ch || '\n' == ch) {
 
             }
-            else if (isdigit(ch)) {                  //数字
+            else if (isdigit(ch)) {                  //digital
                 if ('0' == ch) {
                     state = STATE_DONE;
                     tmpstr += ch;
@@ -199,7 +199,7 @@ void getNextToken() {
                     g_token.opType = TokenType::LPARENTHES;
                     break;
                 case ')':
-                    g_token.opType = TokenType::RPARENTHES;
+                    g_token.opType = TokenType::RPARENTHES; 
                     break;
                 }
             }
@@ -263,9 +263,6 @@ void getNextToken() {
         default:
             break;
         }
-    }
-    if (TokenType::IDEN == g_token.opType) {             //查询关键字表
-
     }
 
     copyValue(tmpstr);
