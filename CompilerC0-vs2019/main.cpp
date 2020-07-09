@@ -22,10 +22,15 @@ _tToken g_token;
 SymTab* g_symtab;
 
 
-string sourcefilename = "./Input/Test";
-string asmfilename = "./Output/ASM";
-string astfilename = "./Output/AST";
-string irfilename = "./Output/IR";
+//string sourcefilename = "./Input/Test";
+//string asmfilename = "./Output/ASM";
+//string astfilename = "./Output/AST";
+//string irfilename = "./Output/IR";
+
+string sourcefilename;
+string asmfilename = "asm.txt";
+string astfilename = "ast.txt";
+string irfilename = "ir.txt";
 
 void processFileName(int index) {
     char num[5];
@@ -46,7 +51,15 @@ void processFileName(int index) {
 
 int main(int argc, char* argv[])
 {
-    processFileName(12);
+    //processFileName(8);
+    if (2 == argc) {
+        sourcefilename = argv[1];
+
+    }
+    else {
+        cout << "error argvs!" << endl;
+        exit(-1);
+    }
         
     sourceFile = fopen(sourcefilename.c_str(), "r");
     AST_File = fopen(astfilename.c_str(), "w+");
