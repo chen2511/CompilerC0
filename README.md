@@ -21,6 +21,43 @@ Visual Studio 2019， C++
 -   semantic.h：
 -   semantic.cpp：遍历AST，构建符号表、语义检查
 
+## 使用说明
+
+```c
+int main(int argc, char* argv[])
+{
+    processFileName(8);
+    //if (2 == argc) {
+    //    sourcefilename = argv[1];
+
+    //}
+    //else {
+    //    cout << "error argvs!" << endl;
+    //    exit(-1);
+    //}
+        
+    sourceFile = fopen(sourcefilename.c_str(), "r");
+    AST_File = fopen(astfilename.c_str(), "w+");
+```
+
+`main.cpp`主函数需要调整，有两种方式：
+
+
+
+1、调试项目时，使用第三行`processFileName(8);`代码，即处理input文件夹下`8.c0`文件
+
+或者使用4-11行代码，或者命令行参数输入，处理源文件名字；
+
+2、Visual Studio 采用Release x86 模式进行编译，生成可执行文件。
+
+格式：执行文件 源文件
+
+例如：`.\CompilerC0-vs2019.exe .\Test12.c0`
+
+即可生成目标代码asm.txt
+
+
+
 # 一、文法设计
 
 ```cpp
